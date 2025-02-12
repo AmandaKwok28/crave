@@ -28,11 +28,11 @@ College Students
     - As a college student, I want to filter recipes by specific categories so that I can only see recipes that are relevant to the resources I have available to me.
     - As a college student, I want to search for recipes using keywords, so that I can easily find a specific recipe that relates to what I want to cook.
     - As a college student, I want to be able to mark my unfinished recipes as drafts before posting them so that I can save any unfinished ideas I might have.
-    - As a college student, I want to have my own profile that displays all my created, liked, and bookmarked recipes so I can refer back to my own recipes when I want to use them again.
+    - As a college student, I want to have my own profile that displays all my created, liked, and bookmarked recipes so I can refer back to recipes when I want to use them again.
     - As a college student, I want to be able to see recommended recipes based on my account history on the site (likes, bookmarks, searches, etc.).
     - As a college student, I want to be able to sort recipes by date or trending (likes valued by time of like) so that I can narrow my search to recipes that other students approve of.
     - As a college student, I want to be able to follow different creators whose recipes I like, and only see their recipes on a specific feed.
-    
+
 - Nice to haves:
     - As a college student, I want to be able to be able to invite friends to collaboratively create meals through a unique link that recommends us recipes based on our combined ingredients, time, and ability.
     - As a college student, I want to be able to direct message my friends on the app so that I can send them both recipe cards and text.

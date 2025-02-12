@@ -28,7 +28,7 @@ Implement majority of search functionality including tags/filtering, sorting, li
   
   * [ ] As a college student, I want to search for recipes using keywords, so that I can easily find a specific recipe that relates to what I want to cook.
   * [ ] As a college student, I want to filter recipes by specific categories so that I can only see recipes that are relevant to the resources I have available to me.
-  * [ ] As a college student I want to see automatically generated tags for common allergies so that I can avoid harming myself or others. 
+  * [ ] As a college student, I want to see automatically generated tags for common allergies so that I can avoid harming myself or others. 
   * [ ] As a college student, I want to be able to like and bookmark recipes so that I can show appreciation for the recipe and view them later. 
   * [ ] As a college student, I want to to be able comment on recipes so that I can gain an overall impression of others’ experience and recommendations for these recipes.  
 
@@ -42,7 +42,7 @@ Update the profile page with more features. Implement recommendation algorithm f
 
 * **Must-Have Features:**
 
-  * [ ] As a college student, I want to have my own profile that displays all my created, liked, and bookmarked recipes so I can refer back to my own recipes when I want to use them again.
+  * [ ] As a college student, I want to have my own profile that displays all my created, liked, and bookmarked recipes so I can refer back to recipes when I want to use them again.
   * [ ] As a college student, I want to be able to see recommended recipes based on my account history on the site (likes, bookmarks, searches, etc.).
   * [ ] As a college student, I want to be able to sort recipes by date or trending (likes valued by time of like) so that I can narrow my search to recipes that other students approve of. 
   * [ ] As a college student, I want to be able to follow different creators whose recipes I like, and only see their recipes on a specific feed.
