@@ -36,7 +36,7 @@ Update the profile page with more features. Implement recommendation algorithm f
 Mon, 3/17 - Mon, 4/6
 
 * **Goal:**
-Implement majority of search functionality including tags/filtering, sorting, liking and bookmarking. Also add comments to recipes.
+Implement and maintain a similar recipe algorithm, as well as the majority of search functionality including tags/filtering, sorting, liking and bookmarking. Also add comments to recipes.
 
 * **Must-Have Features:**
   
