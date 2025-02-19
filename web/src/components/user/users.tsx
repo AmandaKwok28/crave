@@ -6,7 +6,6 @@ const Users = () => {
 
   return (
     <div>
-        test2
       {users
         .map((user) => (
             <User key={user.id} user={user} />

@@ -1,5 +1,6 @@
 import Demo from "./components/layout/demo";
 import Users from "./components/user/users";
+import { Blockquote} from "@chakra-ui/react";
 
 function App() {
 
@@ -8,8 +9,13 @@ function App() {
       <div>
         <Demo></Demo>
       </div>
-      <div>
-        <Users/>
+      <div ml-4>
+        <Blockquote.Root>
+          <Blockquote.Content>
+            <Users/>
+          </Blockquote.Content>
+        </Blockquote.Root>
+        
       </div>
     </div>
   );

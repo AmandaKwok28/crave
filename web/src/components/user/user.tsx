@@ -8,7 +8,7 @@ type UserProps = {
 const User = ({ user }: UserProps) => {
   return (
     <Text>
-        test1
+        Test user:
         {user.name}
     </Text>
   )
