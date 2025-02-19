@@ -1,10 +1,16 @@
-import Demo from "./components/ui/layout/demo";
-
+import Demo from "./components/layout/demo";
+import Users from "./components/user/users";
 
 function App() {
+
   return (
-    <div className="flex justify-center items-center text-3xl min-h-screen">
-      <Demo></Demo>
+    <div className="flex items-center justify-center min-h-screen text-3xl">
+      <div>
+        <Demo></Demo>
+      </div>
+      <div>
+        <Users/>
+      </div>
     </div>
   );
 }
