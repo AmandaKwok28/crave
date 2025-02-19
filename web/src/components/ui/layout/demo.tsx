@@ -7,7 +7,7 @@ const Demo = () => {
         query={["World"]}
         styles={{ px: "0.5", color: "orange" }}
       >
-        Hello World
+        Hello World!
       </Highlight>
     </Heading>
   )
