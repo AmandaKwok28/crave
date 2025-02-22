@@ -1,4 +1,4 @@
-import { Button, Flex, MenuContent, MenuItem, MenuRoot, MenuTrigger, Spacer, Text } from "@chakra-ui/react";
+import { Button, Flex, MenuContent, MenuItem, MenuRoot, MenuTrigger, Spacer } from "@chakra-ui/react";
 
 const NavBar = () => {
     return (

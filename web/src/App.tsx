@@ -1,5 +1,3 @@
-import { Box, Flex} from "@chakra-ui/react";
-import NavBar from "./components/layout/navBar";
 import { useStore } from "@nanostores/react";
 import { $router } from "./lib/router";
 import Home from "./pages/home";
