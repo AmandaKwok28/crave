@@ -1,22 +1,26 @@
-import Demo from "./components/layout/demo";
-import Users from "./components/user/users";
-import { Blockquote} from "@chakra-ui/react";
+import { Box, Flex} from "@chakra-ui/react";
+import NavBar from "./components/layout/navBar";
+import { useStore } from "@nanostores/react";
+import { $router } from "./lib/router";
+import Home from "./pages/home";
 
 function App() {
 
+  const page = useStore($router);
+
+  if (!page) {
+    return (
+      <div className="flex justify-center items-center">
+        404 Not found
+      </div>
+    )
+  }
+
   return (
-    <div className="flex items-center justify-center min-h-screen text-3xl">
-      <div>
-        <Demo></Demo>
-      </div>
-      <div ml-4>
-        <Blockquote.Root>
-          <Blockquote.Content>
-            <Users/>
-          </Blockquote.Content>
-        </Blockquote.Root>
-        
-      </div>
+    <div>
+      {page.route === "home" && (
+        <Home/>
+      )}
     </div>
   );
 }

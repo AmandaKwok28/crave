@@ -17,6 +17,9 @@ importers:
       '@nanostores/react':
         specifier: ^0.8.4
         version: 0.8.4(nanostores@0.11.4)(react@19.0.0)
+      '@nanostores/router':
+        specifier: ^0.16.1
+        version: 0.16.1(nanostores@0.11.4)
       nanostores:
         specifier: ^0.11.4
         version: 0.11.4
@@ -489,6 +492,12 @@ packages:
     peerDependencies:
       nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0
       react: '>=18.0.0'
+
+  '@nanostores/router@0.16.1':
+    resolution: {integrity: sha512-An3REnN66g8jRA6Y4Lio5zj2vW7REqlqN+m1cgCTGFtV1EA0g80V2PmgH94KO/h14gPa1/AiU+6r0s+e9kBzPA==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2256,6 +2265,10 @@ snapshots:
     dependencies:
       nanostores: 0.11.4
       react: 19.0.0
+
+  '@nanostores/router@0.16.1(nanostores@0.11.4)':
+    dependencies:
+      nanostores: 0.11.4
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
