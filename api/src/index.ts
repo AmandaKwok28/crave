@@ -1,12 +1,18 @@
 import { Prisma, PrismaClient } from '@prisma/client'
 import express from 'express'
+import recipeRoutes from './routes/recipe.routes'
+import userRoutes from './routes/user.routes'
+import feedRoutes from './routes/feed.routes'
 
 const prisma = new PrismaClient()
 const app = express()
 const cors = require('cors');
 app.use(cors())
-
 app.use(express.json())
+
+app.use('/recipe', recipeRoutes)
+app.use('/user', userRoutes)
+app.use('/feed', feedRoutes)
 
 app.post(`/signup`, async (req, res) => {
   const { name, email } = req.body
