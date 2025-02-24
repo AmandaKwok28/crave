@@ -20,7 +20,7 @@ const Login = () => {
                 </a>
                 </p>
 
-                <Stack className="w-1/5 gap-2">
+                <Stack className="w-[350px] gap-2">
                 
                     <Field label="Username" required className="py-1">
                         <Input placeholder="Enter your username" className="border-[1px] p-1" style={{borderColor: "black"}}/>

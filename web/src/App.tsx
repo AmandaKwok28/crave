@@ -2,10 +2,12 @@ import { useStore } from "@nanostores/react";
 import { $router } from "./lib/router";
 import Home from "./pages/home";
 import Login from "./pages/login";
+import Profile from "./pages/profile";
 
 function App() {
 
   const page = useStore($router);
+  
 
   if (!page) {
     return (
@@ -22,6 +24,9 @@ function App() {
       )}
       {page.route === "login" && (
         <Login/>
+      )}
+      {page.route === "profile" && (
+        <Profile/>
       )}
     </div>
   );
