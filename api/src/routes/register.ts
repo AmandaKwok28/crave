@@ -2,11 +2,9 @@ import { PrismaClient } from '@prisma/client'
 import express from 'express'
 import { z } from 'zod';
 import { hashPassword } from '../lib/password';
+import prisma from '..';
 
-const route = express();
-
-// TODO: Move prismaclient to new file and export it?
-const prisma = new PrismaClient()
+const registerRoute = express.Router();
 
 const registerSchema = z.object({
   name: z.string().nonempty(),
@@ -16,7 +14,7 @@ const registerSchema = z.object({
   year: z.number().int().gt(2000)
 })
 
-route.post('/register', async (req, res) => {
+registerRoute.post('/register', async (req, res) => {
   const result = registerSchema.safeParse(req.body);
   if (!result.success) {
     res.status(400).json({
@@ -34,7 +32,7 @@ route.post('/register', async (req, res) => {
     data: {
       email: data.email,
       name: data.name,
-      passwordHash,
+      passwordHash: passwordHash,
       school: data.school,
       year: data.year
     }
@@ -48,4 +46,4 @@ route.post('/register', async (req, res) => {
   });
 });
 
-export default route;
+export default registerRoute;
