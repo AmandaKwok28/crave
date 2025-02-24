@@ -9,84 +9,76 @@ app.use(cors())
 app.use(express.json())
 
 app.post(`/signup`, async (req, res) => {
-  const { name, email, posts } = req.body
+  const { name, email } = req.body
 
-  const postData = posts?.map((post: Prisma.PostCreateInput) => {
-    return { title: post?.title, content: post?.content }
-  })
-
-  const result = await prisma.user.create({
-    data: {
-      name,
-      email,
-      posts: {
-        create: postData,
+  try {
+    const result = await prisma.user.create({
+      data: {
+        name,
+        email,
       },
-    },
-  })
-  res.json(result)
+    })
+    res.json(result)
+  } catch (error) {
+    res.json({ error: 'Failed to create user' })
+  }
 })
 
-app.post(`/post`, async (req, res) => {
-  const { title, content, authorEmail } = req.body
-  const result = await prisma.post.create({
+// Create new recipe
+app.post(`/recipe`, async (req, res) => {
+  const { title, description, ingredients, instructions, authorId, image } = req.body
+  const result = await prisma.recipe.create({
     data: {
       title,
-      content,
-      author: { connect: { email: authorEmail } },
+      description,
+      ingredients,
+      instructions,
+      image,
+      author: { connect: { id: Number(authorId) } },
     },
   })
   res.json(result)
 })
 
-app.put('/post/:id/views', async (req, res) => {
+// Update recipe views
+app.put('/recipe/:id/views', async (req, res) => {
   const { id } = req.params
-
   try {
-    const post = await prisma.post.update({
+    const recipe = await prisma.recipe.update({
       where: { id: Number(id) },
-      data: {
-        viewCount: {
-          increment: 1,
-        },
-      },
+      data: { viewCount: { increment: 1 } },
     })
-
-    res.json(post)
+    res.json(recipe)
   } catch (error) {
-    res.json({ error: `Post with ID ${id} does not exist in the database` })
+    res.json({ error: `Recipe with ID ${id} does not exist in the database` })
   }
 })
 
-app.put('/publish/:id', async (req, res) => {
+// Toggle recipe publish status
+app.put('/recipe/:id/publish', async (req, res) => {
   const { id } = req.params
-
   try {
-    const postData = await prisma.post.findUnique({
+    const recipeData = await prisma.recipe.findUnique({
       where: { id: Number(id) },
-      select: {
-        published: true,
-      },
+      select: { published: true },
     })
-
-    const updatedPost = await prisma.post.update({
-      where: { id: Number(id) || undefined },
-      data: { published: !postData?.published },
+    const updatedRecipe = await prisma.recipe.update({
+      where: { id: Number(id) },
+      data: { published: !recipeData?.published },
     })
-    res.json(updatedPost)
+    res.json(updatedRecipe)
   } catch (error) {
-    res.json({ error: `Post with ID ${id} does not exist in the database` })
+    res.json({ error: `Recipe with ID ${id} does not exist in the database` })
   }
 })
 
-app.delete(`/post/:id`, async (req, res) => {
+// Delete recipe
+app.delete(`/recipe/:id`, async (req, res) => {
   const { id } = req.params
-  const post = await prisma.post.delete({
-    where: {
-      id: Number(id),
-    },
+  const recipe = await prisma.recipe.delete({
+    where: { id: Number(id) },
   })
-  res.json(post)
+  res.json(recipe)
 })
 
 app.get('/users', async (req, res) => {
@@ -94,44 +86,43 @@ app.get('/users', async (req, res) => {
   res.json(users)
 })
 
+// Get user's unpublished recipes
 app.get('/user/:id/drafts', async (req, res) => {
   const { id } = req.params
-
   const drafts = await prisma.user
     .findUnique({
-      where: {
-        id: Number(id),
-      },
+      where: { id: Number(id) },
     })
-    .posts({
+    .recipes({
       where: { published: false },
     })
-
   res.json(drafts)
 })
 
-app.get(`/post/:id`, async (req, res) => {
-  const { id }: { id?: string } = req.params
-
-  const post = await prisma.post.findUnique({
+// Get single recipe
+app.get(`/recipe/:id`, async (req, res) => {
+  const { id } = req.params
+  const recipe = await prisma.recipe.findUnique({
     where: { id: Number(id) },
+    include: { author: true }
   })
-  res.json(post)
+  res.json(recipe)
 })
 
+// Get all published recipes with search
 app.get('/feed', async (req, res) => {
   const { searchString, skip, take, orderBy } = req.query
 
-  const or: Prisma.PostWhereInput = searchString
+  const or: Prisma.RecipeWhereInput = searchString
     ? {
         OR: [
           { title: { contains: searchString as string } },
-          { content: { contains: searchString as string } },
+          { description: { contains: searchString as string } },
         ],
       }
     : {}
 
-  const posts = await prisma.post.findMany({
+  const recipes = await prisma.recipe.findMany({
     where: {
       published: true,
       ...or,
@@ -143,8 +134,7 @@ app.get('/feed', async (req, res) => {
       updatedAt: orderBy as Prisma.SortOrder,
     },
   })
-
-  res.json(posts)
+  res.json(recipes)
 })
 
 const server = app.listen(3000, () =>
