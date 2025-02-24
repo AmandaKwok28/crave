@@ -1,15 +1,15 @@
-import { Prisma, PrismaClient } from '@prisma/client'
-import express from 'express'
+import { Prisma, PrismaClient } from '@prisma/client';
+import express from 'express';
+import cors from 'cors';
+import { prisma } from '../prisma/db';
 
-const prisma = new PrismaClient()
-const app = express()
-const cors = require('cors');
-app.use(cors())
+const app = express();
 
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
 app.post(`/post`, async (req, res) => {
-  const { title, content, authorEmail } = req.body
+  const { title, content, authorEmail } = req.body;
   const result = await prisma.post.create({
     data: {
       title,

@@ -1,12 +1,9 @@
-import { PrismaClient } from '@prisma/client'
 import express from 'express'
 import { z } from 'zod';
 import { hashPassword } from '../lib/password';
+import { prisma } from '../../prisma/db';
 
 const route = express();
-
-// TODO: Move prismaclient to new file and export it?
-const prisma = new PrismaClient()
 
 const registerSchema = z.object({
   name: z.string().nonempty(),
@@ -30,15 +27,21 @@ route.post('/register', async (req, res) => {
 
   const passwordHash = await hashPassword(data.password);
 
-  const user = prisma.user.create({
-    data: {
-      email: data.email,
-      name: data.name,
-      passwordHash,
-      school: data.school,
-      year: data.year
-    }
-  });
+  try {
+    await prisma.user.create({
+      data: {
+        email: data.email,
+        name: data.name,
+        passwordHash,
+        school: data.school,
+        year: data.year
+      }
+    });  
+  } catch (error) {
+    res.status(400).json({
+      message: 'Could not create new user client' 
+    });
+  }
 
   res.json({
     data: {
