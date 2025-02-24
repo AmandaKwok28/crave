@@ -8,25 +8,6 @@ app.use(cors())
 
 app.use(express.json())
 
-app.post(`/signup`, async (req, res) => {
-  const { name, email, posts } = req.body
-
-  const postData = posts?.map((post: Prisma.PostCreateInput) => {
-    return { title: post?.title, content: post?.content }
-  })
-
-  const result = await prisma.user.create({
-    data: {
-      name,
-      email,
-      posts: {
-        create: postData,
-      },
-    },
-  })
-  res.json(result)
-})
-
 app.post(`/post`, async (req, res) => {
   const { title, content, authorEmail } = req.body
   const result = await prisma.post.create({
