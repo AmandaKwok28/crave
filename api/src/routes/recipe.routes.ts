@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 // Create new recipe
 router.post('/', async (req, res) => {
     const { title, description, ingredients, instructions, authorId, image } = req.body
-    const result = await prisma.recipe.create({
+    const recipe = await prisma.recipe.create({
       data: {
         title,
         description,
@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
         author: { connect: { id: Number(authorId) } },
       },
     })
-    res.json(result)
+    res.json(recipe)
   })
 
 // Update recipe views

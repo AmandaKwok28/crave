@@ -5,7 +5,7 @@ const router = Router();
 const prisma = new PrismaClient();
 
 // Get all published recipes with search
-router.get('/feed', async (req, res) => {
+router.get('/', async (req, res) => {
   const { searchString, skip, take, orderBy } = req.query
 
   const or: Prisma.RecipeWhereInput = searchString
