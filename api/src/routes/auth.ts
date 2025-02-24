@@ -67,7 +67,6 @@ auth_route.post('/login', async (req, res) => {
     
 })
 
-
 auth_route.post('/register', async (req, res) => {
   const result = registerSchema.safeParse(req.body);
   if (!result.success) {
