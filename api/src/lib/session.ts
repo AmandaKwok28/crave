@@ -4,6 +4,7 @@ import type { User, Session } from "@prisma/client";
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
 import { sha256 } from '@oslojs/crypto/sha2';
 import { prisma } from "../../prisma/db";
+import { Response } from "express";
 
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20);
@@ -73,6 +74,41 @@ export async function invalidateAllSessions(userId: number): Promise<void> {
 			userId: userId
 		}
 	});
+}
+
+
+export function setSessionTokenCookie(response: Response, token: string, expiresAt: Date): void {
+	if (process.env.NODE_ENV === 'production') {
+		response.cookie('session', token, {
+			httpOnly: true,
+			sameSite: 'lax',
+			expires: expiresAt,
+			secure: true
+		});
+	} else {
+		response.cookie('session', token, {
+			httpOnly: true,
+			sameSite: 'lax',
+			expires: expiresAt
+		});
+	}
+}
+
+export function deleteSessionTokenCookie(response: Response): void {
+	if (process.env.NODE_ENV === 'production') {
+		response.cookie('session', '', {
+			httpOnly: true,
+			sameSite: 'lax',
+			maxAge: 0,
+			secure: true
+		});
+	} else {
+		response.cookie('session', '', {
+			httpOnly: true,
+			sameSite: 'lax',
+			maxAge: 0
+		});
+	}
 }
 
 export type SessionValidationResult =

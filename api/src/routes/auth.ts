@@ -2,8 +2,11 @@ import express from 'express'
 import { z } from 'zod';
 import { hashPassword } from '../lib/password';
 import { prisma } from '../../prisma/db';
+import { createSession, deleteSessionTokenCookie, generateSessionToken, setSessionTokenCookie } from '../lib/session';
+import { authGuard } from '../middleware/auth';
+import { User } from '@prisma/client';
 
-const route = express();
+const auth_route = express.Router();
 
 const registerSchema = z.object({
   name: z.string().nonempty(),
@@ -13,7 +16,7 @@ const registerSchema = z.object({
   year: z.number().int().gt(2000)
 })
 
-route.post('/register', async (req, res) => {
+auth_route.post('/register', async (req, res) => {
   const result = registerSchema.safeParse(req.body);
   if (!result.success) {
     res.status(400).json({
@@ -27,8 +30,10 @@ route.post('/register', async (req, res) => {
 
   const passwordHash = await hashPassword(data.password);
 
+  let user: User | null = null;
+
   try {
-    await prisma.user.create({
+    user = await prisma.user.create({
       data: {
         email: data.email,
         name: data.name,
@@ -37,18 +42,42 @@ route.post('/register', async (req, res) => {
         year: data.year
       }
     });  
+
+    if (!user) {
+      throw new Error();
+    }
   } catch (error) {
     res.status(400).json({
-      message: 'Could not create new user client' 
+      message: 'Could not register new user'
     });
+
+    return;
   }
+
+  const token = generateSessionToken();
+  const session = await createSession(token, user.id); 
+  setSessionTokenCookie(res, token, session.expiresAt);
 
   res.json({
     data: {
-      ...data,
-      password: undefined
+      ...user,
+      passwordHash: undefined
     }
   });
 });
 
-export default route;
+auth_route.post('/logout', authGuard, async (req, res) => {
+  deleteSessionTokenCookie(res);
+
+  res.json({
+    message: 'Successfully logged out'
+  })
+});
+
+auth_route.get('/validate-session', authGuard, async (req, res) => {
+  res.json({
+    message: 'Successfully authenticated'
+  });
+});
+
+export default auth_route;

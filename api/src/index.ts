@@ -1,12 +1,19 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import express from 'express';
 import cors from 'cors';
 import { prisma } from '../prisma/db';
+import cookieParser from 'cookie-parser';
+import { auth } from './middleware/auth';
+import auth_route from './routes/auth';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+app.use(auth);
+
+app.use(auth_route);
 
 app.post(`/post`, async (req, res) => {
   const { title, content, authorEmail } = req.body;
