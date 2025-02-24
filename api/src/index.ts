@@ -81,11 +81,6 @@ app.delete(`/recipe/:id`, async (req, res) => {
   res.json(recipe)
 })
 
-app.get('/users', async (req, res) => {
-  const users = await prisma.user.findMany()
-  res.json(users)
-})
-
 // Get user's unpublished recipes
 app.get('/user/:id/drafts', async (req, res) => {
   const { id } = req.params
