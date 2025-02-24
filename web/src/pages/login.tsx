@@ -1,12 +1,13 @@
-import { Input, Stack } from "@chakra-ui/react"
+import { Box, Input, Stack } from "@chakra-ui/react"
 import { Field } from "@/components/ui/field"
 import { Button } from "@chakra-ui/react"
 import { PasswordInput } from "@/components/ui/password-input"
 
 const Login = () => {
     return (
-        <div className="bg-white w-screen h-screen">
-            <div className="flex items-center justify-center h-full flex-col" style={{color: "black"}}>
+        <Box className="bg-white w-screen h-screen" bgGradient="to-r" gradientFrom="cyan.100" gradientTo="blue.400">
+            <Box className="flex items-center justify-center h-full flex-col" style={{color: "black"}}>
+                <Box className="bg-white p-5" borderRadius="lg" py="20">
                 <h2 className="text-3xl font-bold tracking-tight text-center text-foreground">
                     Sign in to your account
                 </h2>
@@ -34,11 +35,12 @@ const Login = () => {
                     </Button>
 
                 </Stack>
+                </Box>
 
                 
-            </div>
+            </Box>
             
-        </div>
+        </Box>
     )
 }
 

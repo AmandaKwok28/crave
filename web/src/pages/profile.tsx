@@ -3,9 +3,9 @@ import { Image } from "@chakra-ui/react"
 
 const Profile = () => {
     return (
-        <div className="bg-white w-screen h-screen text-black">
+        <div className="bg-white w-screen h-screen text-black overflow-hidden">
             <Box 
-                bgGradient="to-r" gradientFrom="cyan.400" gradientTo="cyan.700"
+                bgGradient="to-r" gradientFrom="blue.400" gradientTo="cyan.100"
                 h="50px" 
                 display="flex"
                 alignItems="center"
@@ -30,7 +30,7 @@ const Profile = () => {
             <div className="flex flex-row h-full">
                 <Box 
                     className="h-full w-1/4 flex flex-row max-h-sm items-start items-start"
-                    bgGradient="to-r" gradientFrom="purple.600" gradientTo="cyan.200"
+                    bgGradient="to-l" gradientFrom="green.200" gradientTo="blue.300"
                 >
                     <div className="items-center flex flex-row">
                         <Box className="p-4 items-center">
