@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/react";
 import { $router } from "./lib/router";
 import Home from "./pages/home";
+import Login from "./pages/login";
 
 function App() {
 
@@ -18,6 +19,9 @@ function App() {
     <div>
       {page.route === "home" && (
         <Home/>
+      )}
+      {page.route === "login" && (
+        <Login/>
       )}
     </div>
   );
