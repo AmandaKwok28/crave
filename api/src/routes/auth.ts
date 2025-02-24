@@ -2,7 +2,7 @@ import express from 'express'
 import { z } from 'zod';
 import { hashPassword } from '../lib/password';
 import { prisma } from '../../prisma/db';
-import { createSession, deleteSessionTokenCookie, generateSessionToken, setSessionTokenCookie } from '../lib/session';
+import { createSession, deleteSessionTokenCookie, generateSessionToken, setSessionTokenCookie, validateSessionToken } from '../lib/session';
 import { authGuard } from '../middleware/auth';
 import { User } from '@prisma/client';
 
@@ -72,6 +72,18 @@ auth_route.post('/logout', authGuard, async (req, res) => {
   res.json({
     message: 'Successfully logged out'
   })
+});
+
+auth_route.get('/get-user', authGuard, async (req, res) => {
+  const token = req.cookies['session'];
+  const { user } = await validateSessionToken(token);
+
+  res.json({
+    data: {
+      ...user,
+      passwordHash: undefined
+    }
+  });
 });
 
 auth_route.get('/validate-session', authGuard, async (req, res) => {
