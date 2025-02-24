@@ -1,23 +1,19 @@
-import { PrismaClient, Prisma } from '@prisma/client'
-import express from 'express'
-import loginRouter from './routes/login';
-import registerRoute from './routes/register';
+import express from 'express';
+import cors from 'cors';
+import { prisma } from '../prisma/db';
+import cookieParser from 'cookie-parser';
+import { auth } from './middleware/auth';
+import auth_route from './routes/auth';
 
-const prisma = new PrismaClient()
-const app = express()
-const cors = require('cors');
-app.use(cors())
+const app = express();
 
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
+app.use(auth);
 
-app.get('/', (req, res) => {
-  res.json({
-    message: 'hello world'
-  });
-});
+app.use(auth_route);
 
-app.use('/', loginRouter);
-app.use('/', registerRoute);
 
 const server = app.listen(3000, () =>
   console.log(`
