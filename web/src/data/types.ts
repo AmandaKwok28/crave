@@ -3,5 +3,5 @@ export interface UserType {
   email: string;
   name: string;
   school: string;
-  year: number;
+  major: string;
 }

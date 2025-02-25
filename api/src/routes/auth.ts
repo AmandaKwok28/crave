@@ -13,7 +13,7 @@ const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6, 'Passwords must be at least 6 characters long'),
   school: z.string().nonempty(),
-  year: z.number().int().gt(2000)
+  major: z.string().nonempty()
 })
 
 auth_route.post('/register', async (req, res) => {
@@ -39,7 +39,7 @@ auth_route.post('/register', async (req, res) => {
         name: data.name,
         passwordHash,
         school: data.school,
-        year: data.year
+        major: data.major
       }
     });  
 

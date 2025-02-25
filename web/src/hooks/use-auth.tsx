@@ -19,7 +19,13 @@ export function useAuth() {
     setUser(json['data']);
   }
 
-  async function register(email: string, password: string, name: string, school: string, year: number) {
+  async function register(
+    email: string,
+    password: string,
+    name: string,
+    school: string,
+    major: string)
+  {
     const res = await fetch(`${API_URL}/register`, {
       method: 'POST',
       credentials: 'include',
@@ -28,7 +34,7 @@ export function useAuth() {
         password,
         name,
         school,
-        year
+        major
       })
     });
 

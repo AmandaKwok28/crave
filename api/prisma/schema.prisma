@@ -13,7 +13,7 @@ model User {
   name  String
   passwordHash String
   school String
-  year Int
+  major String
   posts Post[]
   session Session[]
 }
