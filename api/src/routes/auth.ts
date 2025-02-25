@@ -54,11 +54,7 @@ auth_route.post('/login', async (req, res) => {
        
         res.json({
             message: "You have been signed in!",
-            user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-            },
+            user: user
         });
         
     } catch (error) {

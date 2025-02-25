@@ -11,3 +11,26 @@ export const fetchUsers = async (): Promise<UserType[]> => {
     console.log(data);
     return data;
 };
+
+
+// login
+export const login = async ( username: string, password: string ): Promise<UserType> => {
+    const res = await fetch(`${API_URL}/login`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Request failed with status ${res.status}`);
+    }
+
+    const { user }:{user: UserType} = await res.json();
+    return user;
+}
