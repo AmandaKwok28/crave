@@ -6,7 +6,7 @@ export const $user = persistentAtom<UserType>('user', {
   email: '',
   name: '',
   school: '',
-  year: 0
+  major: ''
 }, {
   encode: JSON.stringify,
   decode: JSON.parse
@@ -18,7 +18,7 @@ export function clearUser() {
     email: '',
     name: '',
     school: '',
-    year: 0  
+    major: ''
   });
 }
 

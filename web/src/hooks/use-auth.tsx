@@ -29,6 +29,9 @@ export function useAuth() {
     const res = await fetch(`${API_URL}/register`, {
       method: 'POST',
       credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         email,
         password,
@@ -47,9 +50,23 @@ export function useAuth() {
     setUser(json['data']);
   }
 
+  async function logout() {
+    const res = await fetch(`${API_URL}/register`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+
+    if (!res.ok) {
+      return;
+    }
+
+    clearUser();
+  }
+
   return {
     user,
     getUser,
-    register
+    register,
+    logout
   }
 }

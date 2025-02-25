@@ -6,7 +6,17 @@ import auth_route from './routes/auth';
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: true,
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization'
+  ],
+  exposedHeaders: [ 'Set-Cookie' ],
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(auth);

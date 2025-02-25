@@ -2,16 +2,57 @@ import { Avatar } from "@/components/ui/avatar";
 import { Field } from "@/components/ui/field";
 import { PasswordInput } from "@/components/ui/password-input";
 import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValueText } from "@/components/ui/select";
+import { toaster } from "@/components/ui/toaster";
+import { useAuth } from "@/hooks/use-auth";
+import { $router } from "@/lib/router";
 import { Card, Image, Flex, Input, VStack, createListCollection, Button, HStack } from "@chakra-ui/react";
+import { redirectPage } from "@nanostores/router";
+import { useRef, useState } from "react";
 
 export default function Register() {
+  const { register } = useAuth();
+
+  const name_ref = useRef<HTMLInputElement>(null);
+  const email_ref = useRef<HTMLInputElement>(null);
+  const password_ref = useRef<HTMLInputElement>(null);
+
+  // Select elements don't support refs the same way
+  const [ school, setSchool ] = useState<string>();
+  const [ major, setMajor ] = useState<string>();
+
+  const [ loading, setLoading ] = useState<boolean>(false);
+
+  async function sendRegister() {    
+    const name = name_ref.current?.value;
+    const email = email_ref.current?.value;
+    const password = password_ref.current?.value;
+
+    if (!name || !email || !password || !school || !major) {
+      toaster.create({
+        title: 'Please fill out all required fields'
+      });
+
+      return;
+    }
+
+    setLoading(true);
+
+    register(email, password, name, school, major)
+      .then(() => redirectPage($router, 'home'))
+      .catch(() => toaster.create({
+        title: 'Error during registration',
+        description: 'Please try again later'
+      }))
+      .finally(() => setLoading(false));
+  }
+
+  // 1,000,000% These variables get moved to a db/standardized dictionary somewhere
   const schools = createListCollection({
     items: [
       { label: 'Johns Hopkins University', value: 'jhu' }
     ]
   });
 
-  // 1,000,000% This gets moved to a db/standardized dictionary somewhere
   const majors = createListCollection({
     items: [
       { label: 'Neuroscience', value: 'neuro' },
@@ -44,20 +85,23 @@ export default function Register() {
             </HStack>
 
             <Field label='Name' required>
-              <Input placeholder='John Doe' variant='outline' />
+              <Input ref={name_ref} placeholder='John Doe' variant='outline' />
             </Field>
 
             <Field label='Email' required>
-              <Input placeholder='me@school.edu' variant='outline' />
+              <Input ref={email_ref} placeholder='me@school.edu' variant='outline' />
             </Field>
 
             <Field label='Password' required>
-              <PasswordInput variant='outline' />
+              <PasswordInput ref={password_ref} variant='outline' />
             </Field>
 
             <HStack>
               <Field label='School' required>
-                <SelectRoot collection={schools}>
+                <SelectRoot
+                  collection={schools}
+                  onValueChange={(e) => setSchool(e.value[0])}
+                >
                   <SelectTrigger>
                     <SelectValueText placeholder='Pick your school' />
                   </SelectTrigger>
@@ -72,7 +116,10 @@ export default function Register() {
               </Field>
 
               <Field label='Major' required>
-                <SelectRoot collection={majors}>
+                <SelectRoot
+                  collection={majors}
+                  onValueChange={(e) => setMajor(e.value[0])}
+                >
                   <SelectTrigger>
                     <SelectValueText placeholder='Pick your major' />
                   </SelectTrigger>
@@ -87,8 +134,9 @@ export default function Register() {
               </Field>
             </HStack>
           </Card.Body>
+
           <Card.Footer justifyContent='center'>
-            <Button w='40%'>
+            <Button w='40%' onClick={sendRegister} loading={loading}>
               Register!
             </Button>
           </Card.Footer>
