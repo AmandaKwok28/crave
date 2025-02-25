@@ -61,7 +61,14 @@ export default function Register() {
   });
 
   return (
-    <Flex w='100vw' minH='xl' h='100vh' alignItems='center' justify='flex-end'>
+    <Flex
+      w='100vw' 
+      minH='xl' 
+      h='100vh' 
+      alignItems='center' 
+      justify='flex-end' 
+      background='linear-gradient(155deg, rgba(0,193,186,1) 0%, rgba(6,74,144,1) 55%, rgba(237,0,255,1) 100%)'
+    >
       <Image
         src='register.jpg'
         pos='absolute'
@@ -74,7 +81,7 @@ export default function Register() {
       />
 
       <VStack w={{ base: '100%', lg: '50%' }} alignItems='center' justify='center'>
-        <Card.Root size='md' w={{ base: 'sm', md: 'md' }}>
+        <Card.Root size='md' w={{ base: 'sm', md: 'md' }} variant='subtle'>
           <Card.Body gap='3'>
             <HStack justify='space-between' align='start' gap='2'>
               <VStack align='start'>
