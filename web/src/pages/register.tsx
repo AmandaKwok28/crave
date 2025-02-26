@@ -5,9 +5,21 @@ import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValueText }
 import { toaster } from "@/components/ui/toaster";
 import { useAuth } from "@/hooks/use-auth";
 import { $router } from "@/lib/router";
-import { Card, Image, Flex, Input, VStack, createListCollection, Button, HStack } from "@chakra-ui/react";
+import { Card, Image, Flex, Input, VStack, createListCollection, Button, HStack, Text } from "@chakra-ui/react";
 import { redirectPage } from "@nanostores/router";
 import { useRef, useState } from "react";
+
+function ErrorText({ errors }: { errors?: string[] }) {
+  if (!errors) {
+    return null;
+  }
+
+  return (
+    <Text whiteSpace='pre-line'>
+      {errors.join('\n')}
+    </Text>
+  );
+}
 
 function RegisterForm() {
   const { register } = useAuth();
@@ -24,11 +36,11 @@ function RegisterForm() {
   const [ errors, setErrors ] = useState<RegisterErrorType>({});
 
   type RegisterErrorType = {
-    name?: string;
-    email?: string;
-    password?: string;
-    school?: string;
-    major?: string;
+    name?: string[];
+    email?: string[];
+    password?: string[];
+    school?: string[];
+    major?: string[];
   };
 
   async function sendRegister() {
@@ -77,20 +89,20 @@ function RegisterForm() {
           <Avatar size='xl' shape='rounded' src='croissant.svg' />
         </HStack>
 
-        <Field label='Name' required invalid={!!errors.name} errorText={errors.name}>
+        <Field label='Name' required invalid={!!errors.name} errorText={<ErrorText errors={errors.name} />}>
           <Input ref={name_ref} placeholder='John Doe' variant='outline' />
         </Field>
 
-        <Field label='Email' required invalid={!!errors.email} errorText={errors.email}>
+        <Field label='Email' required invalid={!!errors.email} errorText={<ErrorText errors={errors.email} />}>
           <Input ref={email_ref} placeholder='me@school.edu' variant='outline' />
         </Field>
         
-        <Field label='Password' required invalid={!!errors.password} errorText={errors.password}>
+        <Field label='Password' required invalid={!!errors.password} errorText={<ErrorText errors={errors.password} />}>
           <PasswordInput ref={password_ref} variant='outline' />
         </Field>
 
         <HStack>
-          <Field label='School' required invalid={!!errors.school} errorText={errors.school}>
+          <Field label='School' required invalid={!!errors.school} errorText={<ErrorText errors={errors.school} />}>
             <SelectRoot
               collection={schools}
               onValueChange={(e) => setSchool(e.value[0])}
@@ -108,7 +120,7 @@ function RegisterForm() {
             </SelectRoot>
           </Field>
 
-          <Field label='Major' required invalid={!!errors.major} errorText={errors.major}>
+          <Field label='Major' required invalid={!!errors.major} errorText={<ErrorText errors={errors.major} />}>
             <SelectRoot
               collection={majors}
               onValueChange={(e) => setMajor(e.value[0])}

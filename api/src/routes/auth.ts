@@ -21,7 +21,7 @@ auth_route.post('/register', async (req, res) => {
   if (!result.success) {
     res.status(400).json({
       message: 'JSON Body did not fit schema',
-      error: result.error
+      error: result.error.flatten().fieldErrors
     });
 
     return;
