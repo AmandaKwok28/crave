@@ -22,7 +22,7 @@ export const login = async ( username: string, password: string ): Promise<UserT
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username,
+        email: username,
         password,
       })
     });
@@ -31,6 +31,6 @@ export const login = async ( username: string, password: string ): Promise<UserT
       throw new Error(`Request failed with status ${res.status}`);
     }
 
-    const { user }:{user: UserType} = await res.json();
-    return user;
+    const { data }:{data: UserType} = await res.json();
+    return data;
 }

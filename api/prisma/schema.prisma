@@ -8,19 +8,19 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
+  id    String     @id @default(uuid())
+  email String     @unique
   name  String
   passwordHash String
   school String
-  year Int
+  major String
   posts Post[]
   session Session[]
 }
 
 model Session {
   id        String   @id
-  userId    Int
+  userId    String
   expiresAt DateTime
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
@@ -34,5 +34,5 @@ model Post {
   published Boolean  @default(false)
   viewCount Int      @default(0)
   author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
+  authorId  String?
 }

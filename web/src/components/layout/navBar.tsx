@@ -1,6 +1,16 @@
+import { useAuth } from "@/hooks/use-auth";
+import { $router } from "@/lib/router";
 import { Button, Flex, MenuContent, MenuItem, MenuRoot, MenuTrigger, Spacer } from "@chakra-ui/react";
+import { redirectPage } from "@nanostores/router";
 
 const NavBar = () => {
+
+    const { logout } = useAuth();
+    const handleLogout = async () => {
+        await logout();
+        redirectPage($router, "login");
+    }
+
     return (
         <Flex 
             h="5vh" 
@@ -31,7 +41,7 @@ const NavBar = () => {
                     <MenuItem value="profile">
                         profile
                     </MenuItem>
-                    <MenuItem value="logout">
+                    <MenuItem value="logout" onClick={handleLogout}>
                         logout
                     </MenuItem>
                 </MenuContent>
