@@ -7,6 +7,7 @@ import { $router } from "@/lib/router"
 import { useAuth } from "@/hooks/use-auth"
 import { useState } from "react"
 import { toaster } from "@/components/ui/toaster"
+import FieldErrorText from "@/components/fielderrortext"
 
 const Login = () => {
 
@@ -14,6 +15,14 @@ const Login = () => {
     const [email, setEmail] = useState<string>("");
     const [pass, setPass] = useState<string>("");
 
+    const [ loading, setLoading ] = useState<boolean>(false);
+    const [ errors, setErrors ] = useState<LoginErrorType>({});
+
+    type LoginErrorType = {
+        email?: string[];
+        password?: string[];
+      };
+  
     const handleSubmit = async (email: string, password: string) => {
         if (!email || !password) {
             toaster.create({
@@ -23,15 +32,25 @@ const Login = () => {
             return;
         }
 
+        setLoading(true);
+
         signIn(email, password)
             .then(() => redirectPage($router, 'home'))
-            .catch(() => {
-                toaster.create({
-                    title: 'Error signing in',
-                    description: 'Please try again later'
-                });
-            });
-    }
+            .catch((error) => {
+                // Ew, a try/catch inside a catch block (TODO: fix...)
+                try {
+                    setErrors(JSON.parse(error.message));
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                } catch (_err) {
+                    setErrors({})
+                    toaster.create({
+                        title: 'Error signing in',
+                        description: error.message
+                    })
+                }
+            })
+            .finally(() => setLoading(false));
+        }
 
     const handleSetEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
@@ -62,14 +81,14 @@ const Login = () => {
 
                 <Stack className="w-[350px] gap-2">
                 
-                    <Field label="Email" required className="py-1">
-                        <Input placeholder="Enter your email" className="border-[1px] p-1" style={{borderColor: "black"}} onChange={(e) => handleSetEmail(e)}/>
+                    <Field label="Email" required className="py-1" invalid={!!errors.email} errorText={<FieldErrorText errors={errors.email} />}>
+                        <Input placeholder="Enter your email" variant='outline' onChange={(e) => handleSetEmail(e)}/>
                     </Field>
-                    <Field label="Password" required className="py-1">
-                        <PasswordInput placeholder="Enter your password" className="border-[1px] p-1" style={{borderColor: "black"}} onChange={(e) => handleSetPass(e)}/>
+                    <Field label="Password" required className="py-1" invalid={!!errors.password} errorText={<FieldErrorText errors={errors.password} />}>
+                        <PasswordInput placeholder="Enter your password" variant='outline' onChange={(e) => handleSetPass(e)}/>
                     </Field>
 
-                    <Button className="bg-black text-white" type="submit" onClick={() => handleSubmit(email, pass)}>
+                    <Button className="bg-black text-white" type="submit" loading={loading} onClick={() => handleSubmit(email, pass)}>
                         Sign-In
                     </Button>
 

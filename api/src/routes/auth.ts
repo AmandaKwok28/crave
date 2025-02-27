@@ -10,25 +10,26 @@ const auth_route = express.Router();
 
 const registerSchema = z.object({
   name: z.string().nonempty(),
-  email: z.string().email(),
+  email: z.string().email().nonempty(),
   password: z.string().min(6, 'Passwords must be at least 6 characters long'),
   school: z.string().nonempty(),
   major: z.string().nonempty()
-})
+});
 
 const loginSchema = z.object({
   email: z.string().email().nonempty(),
   password: z.string().nonempty()
-})
-
+});
 
 auth_route.post('/login', async (req, res) => {
     const result = loginSchema.safeParse(req.body);
     if (!result.success) {
-        res.status(400).json({
-        message: result.error.toString()
-        });
-        return;
+      res.status(400).json({
+        message: 'JSON Body did not fit schema',
+        error: result.error.flatten().fieldErrors
+      });
+
+      return;
     }
 
     const data = result.data;

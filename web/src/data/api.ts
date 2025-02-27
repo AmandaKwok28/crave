@@ -28,9 +28,15 @@ export const login = async ( email: string, password: string ): Promise<UserType
     });
 
     if (!res.ok) {
+      // ZodError
+      if (res.status === 400) {
+        const json = await res.json();
+        throw new Error(JSON.stringify(json['error']));
+      }
+
       throw new Error(`Request failed with status ${res.status}`);
     }
 
-    const { data }:{data: UserType} = await res.json();
+    const { data }: { data: UserType } = await res.json();
     return data;
 }
