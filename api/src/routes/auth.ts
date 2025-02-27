@@ -51,6 +51,10 @@ auth_route.post('/login', async (req, res) => {
         if (!validPassword) {
             res.status(401).json({ message: 'Incorrect Password' });
         }
+
+        const token = generateSessionToken();
+        const session = await createSession(token, user.id); 
+        setSessionTokenCookie(res, token, session.expiresAt);
        
         res.json({
             message: "You have been signed in!",

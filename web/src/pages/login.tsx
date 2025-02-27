@@ -26,7 +26,6 @@ const Login = () => {
         setPass(e.target.value);
     }
 
-    // TODO: add state to record input for username and password
     
     return (
         <Box className="bg-white w-screen h-screen flex justify-center" bgGradient="to-r" gradientFrom="cyan.100" gradientTo="blue.400">
@@ -48,10 +47,17 @@ const Login = () => {
                 <Stack className="w-[350px] gap-2">
                 
                     <Field label="Username" required className="py-1">
-                        <Input placeholder="Enter your username" className="border-[1px] p-1" style={{borderColor: "black"}} onChange={(e) => handleSetName(e)}/>
+                        <Input placeholder="Enter your username" 
+                        className="border-[1px] p-1" 
+                        style={{borderColor: "black"}} 
+                        onChange={(e) => handleSetName(e)}/>
                     </Field>
                     <Field label="Password" required className="py-1">
-                        <PasswordInput placeholder="Enter your password" className="border-[1px] p-1" style={{borderColor: "black"}} onChange={(e) => handleSetPass(e)}/>
+                        <PasswordInput 
+                            placeholder="Enter your password" 
+                            className="border-[1px] p-1" 
+                            style={{borderColor: "black"}} 
+                            onChange={(e) => handleSetPass(e)}/>
                     </Field>
 
                     <Button className="bg-black text-white" type="submit" onClick={() => handleSubmit(name, pass)}>

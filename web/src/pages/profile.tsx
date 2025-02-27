@@ -1,7 +1,18 @@
+import { useAuth } from "@/hooks/use-auth";
+import { $router } from "@/lib/router";
 import { Box, Button, Spacer } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react"
+import { openPage, redirectPage } from "@nanostores/router";
 
 const Profile = () => {
+
+    const { logout } = useAuth();
+
+    const handleLogout = async () => {
+        await logout();
+        redirectPage($router, "login");
+    }
+    
     return (
         <div className="bg-white w-screen h-screen text-black overflow-hidden">
             <Box 
@@ -13,7 +24,7 @@ const Profile = () => {
                 fontWeight="bold"
                 fontSize="2xl"
             >
-                <h1> Crave </h1>
+                <Button onClick={() => openPage($router, "home")}> Crave </Button>
                 <Spacer/>
                 <Button 
                     className="text-sm bg-black p-4" 
@@ -22,6 +33,7 @@ const Profile = () => {
                     bg="white"
                     color="black"
                     size="xs"
+                    onClick={handleLogout}
                 >
                     Sign out
                 </Button>
