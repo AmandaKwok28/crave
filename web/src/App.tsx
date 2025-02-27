@@ -8,6 +8,8 @@ import Search from "./pages/search";
 import { redirectPage } from "@nanostores/router";
 import { useEffect } from "react";
 import { useAuth } from "./hooks/use-auth";
+import CreateRecipe from "./pages/createRecipe";
+import ViewRecipe from "./pages/viewRecipe";
 
 function App() {
   const page = useStore($router);
@@ -21,7 +23,7 @@ function App() {
 
   if (!page) {
     return (
-      <div className="flex justify-center items-center">
+      <div className="flex items-center justify-center">
         404 Not found
       </div>
     )
@@ -51,7 +53,12 @@ function App() {
       {page.route === 'search' && (
         <Search />
       )}
-
+      {page.route === "createRecipe" && (
+        <CreateRecipe/>
+      )}
+      {page.route === "recipe" && (
+        <ViewRecipe recipe_id={Number(page.params.recipe_id)}/>
+      )}
     </div>
   );
 }

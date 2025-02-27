@@ -6,5 +6,7 @@ export const $router = createRouter({
   login: `${BASE_URL}login`, // login page
   profile: `${BASE_URL}profile`, // prifle page
   register: `${BASE_URL}register`,
-  search: `${BASE_URL}search`
+  search: `${BASE_URL}search`,
+  createRecipe: `${BASE_URL}create`, // create recipe page
+  recipe: `${BASE_URL}recipe/:recipe_id`, // recipie page with specific recipie by id
 });
