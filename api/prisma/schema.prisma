@@ -8,20 +8,23 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  name     String?
+  recipes  Recipe[]
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  viewCount Int      @default(0)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
+model Recipe {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  title        String
+  image        String?
+  description  String?
+  ingredients  String[]  // Array of ingredients
+  instructions String    // Array of instruction steps
+  published    Boolean  @default(false)
+  viewCount    Int      @default(0)
+  author       User     @relation(fields: [authorId], references: [id])
+  authorId     Int
 }
