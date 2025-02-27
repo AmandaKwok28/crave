@@ -1,15 +1,23 @@
 import { useAuth } from "@/hooks/use-auth";
 import { $router } from "@/lib/router";
-import { Box, Button, Flex, MenuContent, MenuItem, MenuRoot, MenuTrigger, Spacer } from "@chakra-ui/react";
+import { Button, Flex, Spacer, Text } from "@chakra-ui/react";
 import { openPage, redirectPage } from "@nanostores/router";
 import { Ellipsis, Plus, Search } from "lucide-react";
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu";
+import { toaster } from "../ui/toaster";
 
 const NavBar = () => {
 
     const { logout } = useAuth();
     const handleLogout = async () => {
-        await logout();
-        redirectPage($router, "login");
+        logout()
+            .then(() => redirectPage($router, 'login'))
+            .catch(() => {
+                toaster.create({
+                    title: 'Error signing out',
+                    description: 'Please try again later'
+                })
+            });
     }
 
     return (
@@ -21,34 +29,30 @@ const NavBar = () => {
             p="4"
             gap="2"
         >
-            <Button color="white" textStyle="3xl" fontWeight="bold" mb="3px">
-                Crave
-            </Button>
+            <Text fontSize='3xl' fontWeight='bold' color='white'>Crave</Text>
             <Spacer />
             <Button variant="outline" bg="white" size="xs">
-                <Plus />
+                <Plus color='black' />
             </Button>
             <Button variant="outline" bg="white" size="xs">
-                <Search />
+                <Search color='black' />
             </Button>
-            
-            <Box> 
-                <MenuRoot>
-                    <MenuTrigger asChild>
-                        <Button variant="outline" bg="white" size="xs">
-                            <Ellipsis />
-                        </Button>
-                    </MenuTrigger>
-                    <MenuContent position="absolute" right={4} mt={3} zIndex="dropdown">
-                        <MenuItem value="profile" onClick={() => openPage($router, "profile")}>
-                            profile
-                        </MenuItem>
-                        <MenuItem value="logout" onClick={handleLogout}>
-                            logout
-                        </MenuItem>
-                    </MenuContent>
-                </MenuRoot>
-            </Box>
+
+            <MenuRoot>
+                <MenuTrigger asChild>
+                    <Button variant='outline' bg='white' size='xs'>
+                        <Ellipsis color='black' />
+                    </Button>
+                </MenuTrigger>
+                <MenuContent>
+                    <MenuItem value='profile' onClick={() => openPage($router, 'profile')}>
+                        Profile
+                    </MenuItem>
+                    <MenuItem value='logout' color='red.400' onClick={handleLogout}>
+                        Logout
+                    </MenuItem>
+                </MenuContent>
+            </MenuRoot>
         </Flex>
     )
 }
