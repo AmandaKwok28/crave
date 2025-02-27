@@ -44,6 +44,13 @@ export function useAuth() {
 
     if (!res.ok) {
       clearUser();
+      
+      // ZodError, throw specific errors
+      if (res.status === 400) {
+        const json = await res.json();
+        throw new Error(JSON.stringify(json['error']));
+      }
+
       return;
     }
 
@@ -52,16 +59,11 @@ export function useAuth() {
   }
 
   async function signIn(
-    username: string,
+    email: string,
     password: string
   ) {
-    try {
-      const user = await login(username, password);
-      setUser(user);
-    } catch (error) {
-      clearUser();
-      return;
-    }
+    const user = await login(email, password);
+    setUser(user);
   }
 
 

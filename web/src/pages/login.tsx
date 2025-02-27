@@ -6,20 +6,54 @@ import { getPagePath, redirectPage } from "@nanostores/router"
 import { $router } from "@/lib/router"
 import { useAuth } from "@/hooks/use-auth"
 import { useState } from "react"
+import { toaster } from "@/components/ui/toaster"
+import FieldErrorText from "@/components/fielderrortext"
 
 const Login = () => {
 
     const { signIn } = useAuth();
-    const [name, setName] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
     const [pass, setPass] = useState<string>("");
 
-    const handleSubmit = async (username: string, password: string) => {
-        await signIn(username, password);
-        redirectPage($router, "home");
-    }
+    const [ loading, setLoading ] = useState<boolean>(false);
+    const [ errors, setErrors ] = useState<LoginErrorType>({});
 
-    const handleSetName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
+    type LoginErrorType = {
+        email?: string[];
+        password?: string[];
+      };
+  
+    const handleSubmit = async (email: string, password: string) => {
+        if (!email || !password) {
+            toaster.create({
+                title: 'Please fill in all fields'
+            });
+
+            return;
+        }
+
+        setLoading(true);
+
+        signIn(email, password)
+            .then(() => redirectPage($router, 'home'))
+            .catch((error) => {
+                // Ew, a try/catch inside a catch block (TODO: fix...)
+                try {
+                    setErrors(JSON.parse(error.message));
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                } catch (_err) {
+                    setErrors({})
+                    toaster.create({
+                        title: 'Error signing in',
+                        description: error.message
+                    })
+                }
+            })
+            .finally(() => setLoading(false));
+        }
+
+    const handleSetEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value);
     }
 
     const handleSetPass = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,21 +80,14 @@ const Login = () => {
 
                 <Stack className="w-[350px] gap-2">
                 
-                    <Field label="Username" required className="py-1">
-                        <Input placeholder="Enter your username" 
-                        className="border-[1px] p-1" 
-                        style={{borderColor: "black"}} 
-                        onChange={(e) => handleSetName(e)}/>
+                    <Field label="Email" required className="py-1" invalid={!!errors.email} errorText={<FieldErrorText errors={errors.email} />}>
+                        <Input placeholder="Enter your email" variant='outline' onChange={(e) => handleSetEmail(e)}/>
                     </Field>
-                    <Field label="Password" required className="py-1">
-                        <PasswordInput 
-                            placeholder="Enter your password" 
-                            className="border-[1px] p-1" 
-                            style={{borderColor: "black"}} 
-                            onChange={(e) => handleSetPass(e)}/>
+                    <Field label="Password" required className="py-1" invalid={!!errors.password} errorText={<FieldErrorText errors={errors.password} />}>
+                        <PasswordInput placeholder="Enter your password" variant='outline' onChange={(e) => handleSetPass(e)}/>
                     </Field>
 
-                    <Button className="bg-black text-white" type="submit" onClick={() => handleSubmit(name, pass)}>
+                    <Button className="bg-black text-white" type="submit" loading={loading} onClick={() => handleSubmit(email, pass)}>
                         Sign-In
                     </Button>
 
