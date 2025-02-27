@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import prisma from '../lib/prisma';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // Get all published recipes with search
 router.get('/', async (req, res) => {

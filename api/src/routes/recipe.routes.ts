@@ -1,8 +1,6 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
-
+import prisma from '../lib/prisma';
 const router = Router();
-const prisma = new PrismaClient();
 
 // Create new recipe
 router.post('/', async (req, res) => {
@@ -70,7 +68,5 @@ router.get(`/:id`, async (req, res) => {
   })
   res.json(recipe)
 })
-
-// ... other recipe routes
 
 export default router;
