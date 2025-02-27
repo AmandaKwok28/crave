@@ -22,7 +22,7 @@ model Recipe {
   image        String?
   description  String?
   ingredients  String[]  // Array of ingredients
-  instructions String[]  // Array of instruction steps
+  instructions String    // Array of instruction steps
   published    Boolean  @default(false)
   viewCount    Int      @default(0)
   author       User     @relation(fields: [authorId], references: [id])
