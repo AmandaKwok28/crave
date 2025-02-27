@@ -4,14 +4,25 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  name     String?
-  recipes  Recipe[]
+  id           String       @id @default(uuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  school       String
+  major        String
+  recipes      Recipe[]
+  session      Session[]
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Recipe {
@@ -21,10 +32,10 @@ model Recipe {
   title        String
   image        String?
   description  String?
-  ingredients  String[]  // Array of ingredients
-  instructions String    // Array of instruction steps
+  ingredients  String[]
+  instructions String[]
   published    Boolean  @default(false)
   viewCount    Int      @default(0)
+  authorId     String
   author       User     @relation(fields: [authorId], references: [id])
-  authorId     Int
 }

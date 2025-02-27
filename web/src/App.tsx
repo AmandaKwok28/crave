@@ -1,11 +1,23 @@
 import { useStore } from "@nanostores/react";
 import { $router } from "./lib/router";
 import Home from "./pages/home";
+import Login from "./pages/login";
+import Profile from "./pages/profile";
+import Register from "./pages/register";
 import Search from "./pages/search";
+import { redirectPage } from "@nanostores/router";
+import { useEffect } from "react";
+import { useAuth } from "./hooks/use-auth";
 
 function App() {
-
   const page = useStore($router);
+
+  const { user, getUser } = useAuth();
+
+  useEffect(() => {
+    getUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!page) {
     return (
@@ -15,11 +27,31 @@ function App() {
     )
   }
 
+ // if the user hasn't been set, they shouldn't access pages other than login / register
+  if (!user.id) {
+    if (page.route === "home" || page.route === "profile") {
+      redirectPage($router, "login");
+    }
+  }
+
   return (
-    // CHANGE THE ROUTE
-    <div>
-      {page.route === "home" && (<Home/>)} 
-      {page.route === "search" && (<Search/>)}
+    <div className="w-screen">
+      {page.route === "home" && (
+        <Home/>
+      )}
+      {page.route === "login" && (
+        <Login/>
+      )}
+      {page.route === "profile" && (
+        <Profile/>
+      )}
+      {page.route === "register" && (
+        <Register />
+      )}
+      {page.route === 'search' && (
+        <Search />
+      )}
+
     </div>
   );
 }

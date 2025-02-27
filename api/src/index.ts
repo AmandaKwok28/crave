@@ -1,20 +1,34 @@
-import { Prisma, PrismaClient } from '@prisma/client'
-import express from 'express'
+import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import { auth } from './middleware/auth';
+import auth_route from './routes/auth';
 import recipeRoutes from './routes/recipe.routes'
 import userRoutes from './routes/user.routes'
 import feedRoutes from './routes/feed.routes'
 
-const app = express()
-const cors = require('cors');
-app.use(cors())
-app.use(express.json())
+const app = express();
 
-app.use('/recipe', recipeRoutes)
-app.use('/user', userRoutes)
-app.use('/feed', feedRoutes)
+app.use(cors({
+  origin: true,
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization'
+  ],
+  exposedHeaders: [ 'Set-Cookie' ],
+  credentials: true
+}));
 
-const server = app.listen(3000, () =>
-  console.log(`
-🚀 Server ready at: http://localhost:3000
-⭐️ See sample requests: https://github.com/prisma/prisma-examples/blob/latest/orm/express/README.md#using-the-rest-api`),
-)
+app.use(express.json());
+app.use(cookieParser());
+app.use(auth);
+
+app.use(auth_route);
+app.use('/recipe', recipeRoutes);
+app.use('/user', userRoutes);
+app.use('/feed', feedRoutes);
+
+const server = app.listen(3000, () => {
+  console.log(`Listening @ http://localhost:3000`);
+});

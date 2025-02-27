@@ -1,25 +1,25 @@
-import { fetchUsers } from "@/data/api";
-import { $users, setUsers } from "@/lib/store";
-import { useStore } from "@nanostores/react";
-import { useEffect } from "react";
+// import { fetchUsers } from "@/data/api";
+// import { $users, setUsers } from "@/lib/store";
+// import { useStore } from "@nanostores/react";
+// import { useEffect } from "react";
 
-const useQueryUsers = () => {
-    const users = useStore($users);
-    const loadUsers = async () => {
-        try {
-          const fetchedUsers = await fetchUsers();
-          setUsers([...fetchedUsers]);
-        } catch (error) {
-        }
-      };
+// const useQueryUsers = () => {
+//     const users = useStore($users);
+//     const loadUsers = async () => {
+//         try {
+//           const fetchedUsers = await fetchUsers();
+//           setUsers([...fetchedUsers]);
+//         } catch (error) {
+//         }
+//       };
 
-    useEffect(() => {
-        loadUsers();
-    }, [])
+//     useEffect(() => {
+//         loadUsers();
+//     }, [])
 
-    return {
-        users,
-    }
-}
+//     return {
+//         users,
+//     }
+// }
 
-export default useQueryUsers;
+// export default useQueryUsers;

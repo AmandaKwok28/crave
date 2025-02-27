@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import prisma from '../lib/prisma';
+import { prisma } from '../../prisma/db';
 const router = Router();
 
 // Create new recipe
@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
         ingredients,
         instructions,
         image,
-        author: { connect: { id: Number(authorId) } },
+        author: { connect: { id: authorId } },
       },
     })
     res.json(recipe)
