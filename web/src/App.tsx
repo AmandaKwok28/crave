@@ -4,6 +4,7 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Profile from "./pages/profile";
 import Register from "./pages/register";
+import Search from "./pages/search";
 import { redirectPage } from "@nanostores/router";
 import { useEffect } from "react";
 import { useAuth } from "./hooks/use-auth";
@@ -46,6 +47,9 @@ function App() {
       )}
       {page.route === "register" && (
         <Register />
+      )}
+      {page.route === 'search' && (
+        <Search />
       )}
 
     </div>

@@ -3,6 +3,9 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { auth } from './middleware/auth';
 import auth_route from './routes/auth';
+import recipeRoutes from './routes/recipe.routes'
+import userRoutes from './routes/user.routes'
+import feedRoutes from './routes/feed.routes'
 
 const app = express();
 
@@ -22,6 +25,9 @@ app.use(cookieParser());
 app.use(auth);
 
 app.use(auth_route);
+app.use('/recipe', recipeRoutes);
+app.use('/user', userRoutes);
+app.use('/feed', feedRoutes);
 
 const server = app.listen(3000, () => {
   console.log(`Listening @ http://localhost:3000`);

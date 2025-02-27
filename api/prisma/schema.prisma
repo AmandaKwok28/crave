@@ -14,7 +14,7 @@ model User {
   passwordHash String
   school String
   major String
-  posts Post[]
+  recipes Recipe[]
   session Session[]
 }
 
@@ -25,14 +25,17 @@ model Session {
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  viewCount Int      @default(0)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  String?
+model Recipe {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  title        String
+  image        String?
+  description  String?
+  ingredients  String[]  // Array of ingredients
+  instructions String    // Array of instruction steps
+  published    Boolean  @default(false)
+  viewCount    Int      @default(0)
+  author       User     @relation(fields: [authorId], references: [id])
+  authorId     String
 }
