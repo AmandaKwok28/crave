@@ -44,6 +44,13 @@ export function useAuth() {
 
     if (!res.ok) {
       clearUser();
+      
+      // ZodError, throw specific errors
+      if (res.status === 400) {
+        const json = await res.json();
+        throw new Error(JSON.stringify(json['error']));
+      }
+
       return;
     }
 
