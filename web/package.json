@@ -11,6 +11,9 @@
     "prettier": "prettier --write \"src/**/*.{js,ts,jsx,tsx}\" --config \".prettierrc.json\""
   },
   "dependencies": {
+    "@chakra-ui/form-control": "^2.2.0",
+    "@chakra-ui/modal": "^2.3.1",
+    "@chakra-ui/number-input": "^2.1.2",
     "@chakra-ui/react": "^3.8.0",
     "@emotion/react": "^11.14.0",
     "@nanostores/react": "^0.8.4",

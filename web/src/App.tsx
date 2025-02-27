@@ -1,6 +1,8 @@
 import { useStore } from "@nanostores/react";
 import { $router } from "./lib/router";
 import Home from "./pages/home";
+import CreateRecipe from "./pages/createRecipe";
+import ViewRecipe from "./pages/viewRecipe";
 
 function App() {
 
@@ -8,7 +10,7 @@ function App() {
 
   if (!page) {
     return (
-      <div className="flex justify-center items-center">
+      <div className="flex items-center justify-center">
         404 Not found
       </div>
     )
@@ -19,6 +21,13 @@ function App() {
       {page.route === "home" && (
         <Home/>
       )}
+      {page.route === "createRecipe" && (
+        <CreateRecipe/>
+      )}
+      {page.route === "recipe" && (
+        <ViewRecipe recipe_id={Number(page.params.recipe_id)}/>
+      )}
+      
     </div>
   );
 }

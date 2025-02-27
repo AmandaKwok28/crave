@@ -4,8 +4,8 @@ export interface UserType {
     name: string;
 }
 
-export interface Recipe {
-    recipe_id: number;
+export interface RecipeType {
+    id: number;
     title: string;
     ingredient_list: string[];
     instructions: string;
