@@ -5,8 +5,7 @@ import { Image } from "@chakra-ui/react"
 import { openPage, redirectPage } from "@nanostores/router";
 
 const Profile = () => {
-
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
 
     const handleLogout = async () => {
         await logout();
@@ -53,10 +52,10 @@ const Profile = () => {
                             </Box>
                             <div>
                                 <h2 className="text-white text-xl font-bold">
-                                    Anonymous User
+                                    {user.name}
                                 </h2>
                                 <h1 className="text-white">
-                                    @username
+                                    {user.email}
                                 </h1>
                             </div>
                         </div>
