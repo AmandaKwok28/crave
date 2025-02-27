@@ -243,11 +243,7 @@ const Search = () => {
                     </Flex>
                 </Flex>
             </Box>
-            {/* <Flex flex="1" bg="white" p="4" direction="row">
-                {Array.from({ length: 10 }).map((_, index) => (
-                    <RecipeCard key={index} />
-                ))}
-            </Flex> */}
+            <Flex flex="1" bg="white" p="4" direction="row"></Flex>
         </Flex>
     </Flex>
 

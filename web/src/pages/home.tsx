@@ -69,7 +69,7 @@ const Home = () => {
                     m="5vh"
                     direction="column"
                 >
-                    <Stack gap="12" m="5">
+                    {/* <Stack gap="12" m="5">
                         <Input
                             placeholder=" Find the recipes you crave..."
                             color="white"
@@ -92,13 +92,7 @@ const Home = () => {
                                 { value: 50, label: "$50+" },
                               ]}
                         />
-                        <Flex direction="row" gap="4" justifyContent="center">
-
-                            {/* Insert select element here.  */}
-                            
-                        </Flex>
-                    
-                    </Stack>
+                    </Stack> */}
                 </Flex>
             </Flex>
             <Box 

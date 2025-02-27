@@ -16,8 +16,9 @@ function App() {
   }
 
   return (
+    // CHANGE THE ROUTE
     <div>
-      {page.route === "home" && (<Search/>)}
+      {page.route === "home" && (<Home/>)} 
       {page.route === "search" && (<Search/>)}
     </div>
   );

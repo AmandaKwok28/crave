@@ -3,5 +3,5 @@ import { createRouter } from "@nanostores/router";
 
 export const $router = createRouter({
   home: `${BASE_URL}`,
-  search: `${BASE_URL}/search`,
+  search: `${BASE_URL}search`,
 });
