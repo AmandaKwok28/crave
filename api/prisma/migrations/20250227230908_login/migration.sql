@@ -22,7 +22,7 @@ CREATE TABLE "Recipe" (
     "instructions" TEXT[],
     "published" BOOLEAN NOT NULL DEFAULT false,
     "viewCount" INTEGER NOT NULL DEFAULT 0,
-    "authorId" INTEGER NOT NULL,
+    "authorId" TEXT NOT NULL,
 
     CONSTRAINT "Recipe_pkey" PRIMARY KEY ("id")
 );
