@@ -1,5 +1,5 @@
 import { Button, Flex, MenuContent, MenuItem, MenuRoot, MenuTrigger, Spacer } from "@chakra-ui/react";
-
+import { $router } from "@/lib/router";
 const NavBar = () => {
     return (
         <Flex 
@@ -17,7 +17,7 @@ const NavBar = () => {
             <Button variant="outline" bg="white" size="xs">
                 +
             </Button>
-            <Button variant="outline" bg="white" size="xs">
+            <Button variant="outline" bg="white" size="xs" onClick={() => $router.open("search")}>
                 browse
             </Button>
             

@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/react";
 import { $router } from "./lib/router";
 import Home from "./pages/home";
+import Search from "./pages/search";
 
 function App() {
 
@@ -15,10 +16,10 @@ function App() {
   }
 
   return (
+    // CHANGE THE ROUTE
     <div>
-      {page.route === "home" && (
-        <Home/>
-      )}
+      {page.route === "home" && (<Home/>)} 
+      {page.route === "search" && (<Search/>)}
     </div>
   );
 }
