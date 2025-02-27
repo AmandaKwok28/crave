@@ -68,7 +68,7 @@ export function useAuth() {
 
 
   async function logout() {
-    const res = await fetch(`${API_URL}/register`, {
+    const res = await fetch(`${API_URL}/logout`, {
       method: 'POST',
       credentials: 'include'
     });

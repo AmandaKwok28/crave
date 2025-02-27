@@ -11,6 +11,13 @@ import { useAuth } from "./hooks/use-auth";
 function App() {
   const page = useStore($router);
 
+  const { user, getUser } = useAuth();
+
+  useEffect(() => {
+    getUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (!page) {
     return (
       <div className="flex justify-center items-center">
@@ -18,13 +25,6 @@ function App() {
       </div>
     )
   }
-
-  const { user, getUser } = useAuth();
-
-  useEffect(() => {
-    getUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
  // if the user hasn't been set, they shouldn't access pages other than login / register
   if (!user.id) {
