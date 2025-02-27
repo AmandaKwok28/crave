@@ -59,16 +59,11 @@ export function useAuth() {
   }
 
   async function signIn(
-    username: string,
+    email: string,
     password: string
   ) {
-    try {
-      const user = await login(username, password);
-      setUser(user);
-    } catch (error) {
-      clearUser();
-      return;
-    }
+    const user = await login(email, password);
+    setUser(user);
   }
 
 

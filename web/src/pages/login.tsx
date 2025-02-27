@@ -6,20 +6,35 @@ import { getPagePath, redirectPage } from "@nanostores/router"
 import { $router } from "@/lib/router"
 import { useAuth } from "@/hooks/use-auth"
 import { useState } from "react"
+import { toaster } from "@/components/ui/toaster"
 
 const Login = () => {
 
     const { signIn } = useAuth();
-    const [name, setName] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
     const [pass, setPass] = useState<string>("");
 
-    const handleSubmit = async (username: string, password: string) => {
-        await signIn(username, password);
-        redirectPage($router, "home");
+    const handleSubmit = async (email: string, password: string) => {
+        if (!email || !password) {
+            toaster.create({
+                title: 'Please fill in all fields'
+            });
+
+            return;
+        }
+
+        signIn(email, password)
+            .then(() => redirectPage($router, 'home'))
+            .catch(() => {
+                toaster.create({
+                    title: 'Error signing in',
+                    description: 'Please try again later'
+                });
+            });
     }
 
-    const handleSetName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
+    const handleSetEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value);
     }
 
     const handleSetPass = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,14 +62,14 @@ const Login = () => {
 
                 <Stack className="w-[350px] gap-2">
                 
-                    <Field label="Username" required className="py-1">
-                        <Input placeholder="Enter your username" className="border-[1px] p-1" style={{borderColor: "black"}} onChange={(e) => handleSetName(e)}/>
+                    <Field label="Email" required className="py-1">
+                        <Input placeholder="Enter your email" className="border-[1px] p-1" style={{borderColor: "black"}} onChange={(e) => handleSetEmail(e)}/>
                     </Field>
                     <Field label="Password" required className="py-1">
                         <PasswordInput placeholder="Enter your password" className="border-[1px] p-1" style={{borderColor: "black"}} onChange={(e) => handleSetPass(e)}/>
                     </Field>
 
-                    <Button className="bg-black text-white" type="submit" onClick={() => handleSubmit(name, pass)}>
+                    <Button className="bg-black text-white" type="submit" onClick={() => handleSubmit(email, pass)}>
                         Sign-In
                     </Button>
 

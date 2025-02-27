@@ -14,7 +14,7 @@ export const fetchUsers = async (): Promise<UserType[]> => {
 
 
 // login
-export const login = async ( username: string, password: string ): Promise<UserType> => {
+export const login = async ( email: string, password: string ): Promise<UserType> => {
     const res = await fetch(`${API_URL}/login`, {
       method: 'POST',
       credentials: 'include',
@@ -22,7 +22,7 @@ export const login = async ( username: string, password: string ): Promise<UserT
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        email: username,
+        email,
         password,
       })
     });
