@@ -1,25 +1,36 @@
-import { Card, Text, Button } from "@chakra-ui/react";
+import { Card, Button, Image, Text } from "@chakra-ui/react";
+
 
 const RecipeCard = () => {
   return (
-    <Card.Root maxW="sm" overflow="hidden">
-      {/* <Image
-        src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-        alt="Green double couch with wooden legs"
-      /> */}
+    <Card.Root width="320px" maxH="500px" overflow="hidden">
+        <Image 
+        src={"fallback.png"}
+        alt="Default Recipe Image" 
+        borderRadius="md" 
+        maxW="100vw" 
+        height="25vh" 
+        objectFit="cover" 
+        />
       <Card.Body gap="2">
-        <Card.Title>Living room Sofa</Card.Title>
+        <Card.Title>
+            <Text textStyle="xl" fontWeight="medium" letterSpacing="tight"> 
+                Recipe Name
+            </Text>
+        </Card.Title>
         <Card.Description>
-          This sofa is perfect for modern tropical spaces, baroque inspired
-          spaces.
+            @JaneDoe
         </Card.Description>
-        <Text textStyle="2xl" fontWeight="medium" letterSpacing="tight" mt="2">
-          $450
-        </Text>
+        <Card.Description>
+            <Text lineClamp="3">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis
+            </Text>
+        </Card.Description>
       </Card.Body>
       <Card.Footer gap="2">
-        <Button variant="solid">Buy now</Button>
-        <Button variant="ghost">Add to cart</Button>
+        <Button variant="ghost">See More</Button>
       </Card.Footer>
     </Card.Root>
   );
