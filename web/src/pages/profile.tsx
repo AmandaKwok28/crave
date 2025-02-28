@@ -1,3 +1,4 @@
+import NavBar from "@/components/layout/navBar";
 import { useAuth } from "@/hooks/use-auth";
 import { $router } from "@/lib/router";
 import { Box, Button, Spacer } from "@chakra-ui/react";
@@ -14,29 +15,7 @@ const Profile = () => {
     
     return (
         <div className="bg-white w-screen h-screen text-black overflow-hidden">
-            <Box 
-                bgGradient="to-r" gradientFrom="blue.400" gradientTo="cyan.100"
-                h="50px" 
-                display="flex"
-                alignItems="center"
-                className="p-4 text-white"
-                fontWeight="bold"
-                fontSize="2xl"
-            >
-                <Button onClick={() => openPage($router, "home")}> Crave </Button>
-                <Spacer/>
-                <Button 
-                    className="text-sm bg-black p-4" 
-                    style={{fontWeight: "normal"}} 
-                    variant="outline"
-                    bg="white"
-                    color="black"
-                    size="xs"
-                    onClick={handleLogout}
-                >
-                    Sign out
-                </Button>
-            </Box>
+            <NavBar/>
 
             <div className="flex flex-row h-full">
 
