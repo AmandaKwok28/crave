@@ -29,13 +29,20 @@ const NavBar = () => {
             p="4"
             gap="2"
         >
-            <Text fontSize='3xl' fontWeight='bold' color='white'>Crave</Text>
+            <Text 
+                fontSize='3xl' 
+                fontWeight='bold' 
+                color='white' 
+                onClick={() => openPage($router, 'home')}
+                cursor={"pointer"}>
+                    Crave
+                </Text>
             <Spacer />
             <Button variant="outline" bg="white" size="xs">
-                <Plus color='black' />
+                <Plus color='black' onClick={() => openPage($router, 'createRecipe')} />
             </Button>
             <Button variant="outline" bg="white" size="xs">
-                <Search color='black' />
+                <Search color='black' onClick={() => openPage($router, 'search')}/>
             </Button>
 
             <MenuRoot>
