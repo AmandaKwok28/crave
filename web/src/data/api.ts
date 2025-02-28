@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/use-auth";
 import { RecipeType, UserType } from "./types";
 import { API_URL } from "@/env";
 
@@ -14,7 +15,7 @@ export const fetchUsers = async (): Promise<UserType[]> => {
 
 // Fetch all recipies
 export const fetchRecipes = async (): Promise<RecipeType[]> => {
-const response = await fetch(`${API_URL}/recipes`);
+const response = await fetch(`${API_URL}/feed`);
 if (!response.ok) {
   throw new Error(`API request failed! with status: ${response.status}`);
 }
@@ -35,30 +36,32 @@ return true;
 
 // Create a new Recipe
 export const createRecipe = async (
-title: string, 
-description: string, 
-ingredient_list: string[], 
-instructions: string
+  title: string, 
+  description: string, 
+  ingredients: string[], 
+  instructions: string[]
 ): Promise<RecipeType> => {
-const response = await fetch(`${API_URL}/recipes`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    title,
-    ingredient_list,
-    instructions,
-    description,
-    user_id: 23,
-    is_published: true,
-  }),
-});
-console.log(response)
-if (!response.ok) {
-  throw new Error(`API request failed! with status: ${response.status}`);
-}
-
-const data: RecipeType = await response.json();
-return data;
+    // const { user } = useAuth();
+    // console.log(user);
+    const response = await fetch(`${API_URL}/recipe`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title,
+        ingredients,
+        instructions,
+        description,
+        // author: user,
+        authorId: "840adc90-d253-45b0-9a0d-bdeab3bf30b5"
+        // published: true,
+      }),
+    });
+    console.log(response)
+    if (!response.ok) {
+      throw new Error(`API request failed! with status: ${response.status}`);
+    }
+    const data: RecipeType = await response.json();
+    return data;
 };
 
 // login

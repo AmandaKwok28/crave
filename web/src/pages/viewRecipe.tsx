@@ -11,7 +11,7 @@ const ViewRecipie = ({ recipe_id }: {
     const { recipes } = useQueryRecipes();
     const currRecipe: RecipeType | undefined = recipes.find((recipe: RecipeType) => recipe.id === recipe_id);
 
-    if (currRecipe && currRecipe.is_published) {
+    if (currRecipe && currRecipe.published) {
         return (
             <Flex className="flex flex-col">
                 <NavBar/>
@@ -40,7 +40,7 @@ const ViewRecipie = ({ recipe_id }: {
                             Ingredients List:
                         </Text>
                         <Flex  ml="6rem">
-                            <DisplayIngredients ingredient_list={currRecipe.ingredient_list}/>
+                            <DisplayIngredients ingredient_list={currRecipe.ingredients}/>
                         </Flex>
                         <Text
                         color="Black"
@@ -54,7 +54,7 @@ const ViewRecipie = ({ recipe_id }: {
                         fontSize="1rem"
                         ml="4rem">
                             <Blockquote.Content >
-                                {currRecipe.instructions} 
+                                {currRecipe.instructions[0]} 
                             </Blockquote.Content>
                             <Blockquote.Caption>
                                 — Enjoy your tasty meal!

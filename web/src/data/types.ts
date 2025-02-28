@@ -9,9 +9,9 @@ export interface UserType {
 export interface RecipeType {
     id: number;
     title: string;
-    ingredient_list: string[];
-    instructions: string;
+    ingredients: string[];
+    instructions: string[];
     description: string;
-    user_id: number;
-    is_published: boolean;
+    authorId: number;
+    published: boolean;
 }

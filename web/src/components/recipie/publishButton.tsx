@@ -19,7 +19,7 @@ import { $currIngredientsList, resetIngredientsList } from "@/lib/store";
 type PublishRecipeProps = {
     title: string;
     description: string;
-    instructions: string;
+    instructions: string[];
 }
 
 const PublishRecipeButton = ({ title, description, instructions }: PublishRecipeProps ) => {

@@ -14,7 +14,7 @@ const CreateRecipe = () => {
 
     const [recipeTitle, setTitle] = useState<string>("");
     const [recipeDescription, setDescription] = useState<string>("");
-    const [recipeInstructions, setInstructions] = useState<string>("");
+    const [recipeInstructions, setInstructions] = useState<string[]>([""]);
 
     const handleNumIngredientChange = (val: number) => {
         setNumIngredientsCR(val)
@@ -32,7 +32,7 @@ const CreateRecipe = () => {
     };
 
     const handleInstructionsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setInstructions(e.target.value);
+        setInstructions([e.target.value]);
     };
     
     return (
