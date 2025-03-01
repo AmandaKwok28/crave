@@ -52,8 +52,8 @@ export const createRecipe = async (
         ingredients,
         instructions,
         description,
-        // author: user,
-        authorId: "840adc90-d253-45b0-9a0d-bdeab3bf30b5"
+        // author: user, (?)
+        // authorId: "840adc90-d253-45b0-9a0d-bdeab3bf30b5"
         // published: true,
       }),
     });
