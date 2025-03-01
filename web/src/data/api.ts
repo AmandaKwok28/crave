@@ -1,4 +1,3 @@
-import { useAuth } from "@/hooks/use-auth";
 import { RecipeType, UserType } from "./types";
 import { API_URL } from "@/env";
 
@@ -33,6 +32,19 @@ if (!response.ok) {
 }
 return true;
 };
+
+export const publishRecipe = async (id:number): Promise<boolean> => {
+  const response = await fetch(`${API_URL}/recipe/${id}/publish`, {
+    method: "PUT",
+    credentials: "include"
+  })
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  return true;
+}
 
 // Create a new Recipe
 // TODO: Figure out how to get the Author ID of current user

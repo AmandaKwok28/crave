@@ -16,6 +16,8 @@ import { $router } from "@/lib/router";
 import { useStore } from "@nanostores/react";
 import { $currIngredientsList, resetIngredientsList } from "@/lib/store";
 import { useAuth } from "@/hooks/use-auth";
+import { BASE_URL } from "@/env";
+import { publishRecipe } from "@/data/api";
 
 type PublishRecipeProps = {
     title: string;
@@ -30,9 +32,10 @@ const PublishRecipeButton = ({ title, description, instructions }: PublishRecipe
 
     const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        addNewRecipe(title, description, ingredientsList, instructions, user.id);
+        const id = await addNewRecipe(title, description, ingredientsList, instructions, user.id);
         resetIngredientsList()
-        openPage($router, 'home')
+        await publishRecipe(id);
+        window.location.href = `recipe/${id}`;
     };
 
 

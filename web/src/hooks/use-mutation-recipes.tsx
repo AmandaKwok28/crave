@@ -16,6 +16,7 @@ const useMutationRecipe = () => {
             const recipe = await createRecipe(title, description, ingredients, instructions, id);
             // console.log(recipe);
             addRecipe(recipe);
+            return recipe.id;
         } catch (error) {
             throw new Error("Error creating new Recipe")
         }
