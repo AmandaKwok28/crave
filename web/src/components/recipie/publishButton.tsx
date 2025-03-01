@@ -15,6 +15,7 @@ import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
 import { useStore } from "@nanostores/react";
 import { $currIngredientsList, resetIngredientsList } from "@/lib/store";
+import { useAuth } from "@/hooks/use-auth";
 
 type PublishRecipeProps = {
     title: string;
@@ -25,10 +26,11 @@ type PublishRecipeProps = {
 const PublishRecipeButton = ({ title, description, instructions }: PublishRecipeProps ) => {
     const { addNewRecipe } = useMutationRecipes();
     let ingredientsList = useStore($currIngredientsList);
+    const { user } = useAuth();
 
     const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        addNewRecipe(title, description, ingredientsList, instructions);
+        addNewRecipe(title, description, ingredientsList, instructions, user.id);
         resetIngredientsList()
         openPage($router, 'home')
     };

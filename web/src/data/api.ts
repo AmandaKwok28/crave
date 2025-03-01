@@ -40,10 +40,9 @@ export const createRecipe = async (
   title: string, 
   description: string, 
   ingredients: string[], 
-  instructions: string[]
+  instructions: string[],
+  id: string
 ): Promise<RecipeType> => {
-    // const { user } = useAuth();
-    // console.log(user);
     const response = await fetch(`${API_URL}/recipe`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -52,9 +51,7 @@ export const createRecipe = async (
         ingredients,
         instructions,
         description,
-        // author: user, (?)
-        // authorId: "840adc90-d253-45b0-9a0d-bdeab3bf30b5"
-        // published: true,
+        authorId: id
       }),
     });
     console.log(response)

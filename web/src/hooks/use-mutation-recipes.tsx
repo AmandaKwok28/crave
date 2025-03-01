@@ -8,12 +8,12 @@ const useMutationRecipe = () => {
         removeRecipe(recipe_id);
     };
 
-    const addNewRecipe = async (title: string, description: string, ingredients: string[], instructions: string[]) => {
+    const addNewRecipe = async (title: string, description: string, ingredients: string[], instructions: string[], id: string) => {
         try {
             if (!title || !description || !ingredients || !instructions ) {
                 throw new Error("All field must have content to publish!")
             }
-            const recipe = await createRecipe(title, description, ingredients, instructions);
+            const recipe = await createRecipe(title, description, ingredients, instructions, id);
             // console.log(recipe);
             addRecipe(recipe);
         } catch (error) {
