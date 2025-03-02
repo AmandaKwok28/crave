@@ -11,8 +11,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import useMutationRecipes from "@/hooks/use-mutation-recipes";
-import { useStore } from "@nanostores/react";
-import { $currIngredientsList, resetIngredientsList } from "@/lib/store";
 import { useAuth } from "@/hooks/use-auth";
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
@@ -20,27 +18,23 @@ import { $router } from "@/lib/router";
 type PublishRecipeProps = {
     title: string;
     description: string;
+    ingredients: string[];
     instructions: string[];
 }
 
-const DraftButton = ({ title, description, instructions }: PublishRecipeProps ) => {
+const DraftButton = ({ title, description, ingredients, instructions }: PublishRecipeProps ) => {
     const { addNewRecipeDraft } = useMutationRecipes();
-    let ingredientsList = useStore($currIngredientsList);
     const { user } = useAuth();
 
-    const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        await addNewRecipeDraft(title, description, ingredientsList, instructions, user.id);
-        resetIngredientsList()
-
+    const handleSave = async () => {
+        await addNewRecipeDraft(title, description, ingredients, instructions, user.id);
         openPage($router, "profile");
     };
-
 
   return (
     <DialogRoot size="md">
     <DialogTrigger asChild>
-        <Button p="4" size="lg" bg="green.600" color="white">
+        <Button bg="gray.600" color="white">
             Save to Drafts
         </Button>
     </DialogTrigger>

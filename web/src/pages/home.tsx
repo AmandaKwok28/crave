@@ -1,30 +1,10 @@
 import NavBar from "@/components/layout/navBar";
 import {Box, 
-        Button, 
         Flex, 
-        Input, 
-        MenuContent, 
-        MenuItem, 
-        MenuRoot, 
-        MenuTrigger, 
         Spacer, 
-        Stack, 
         Text } from "@chakra-ui/react";
-import RecipeCard from "@/components/layout/recipeCard";
-import {
-    SelectContent,
-    SelectItem,
-    SelectLabel,
-    SelectRoot,
-    SelectTrigger,
-    SelectValueText,
-  } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider";
 import useQueryRecipes from "@/hooks/use-query-recipes";
-import { RecipeType } from "@/data/types";
 import Recipes from "@/components/recipie/recipes";
-
-
 
 const Home = () => {
     const { recipes } = useQueryRecipes();
@@ -51,6 +31,7 @@ const Home = () => {
                     <Text
                         textStyle="7xl"
                         fontWeight="bold"
+                        color='bg'
                     > 
                         Crave. 
                     </Text>

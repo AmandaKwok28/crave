@@ -6,21 +6,15 @@ import Profile from "./pages/profile";
 import Register from "./pages/register";
 import Search from "./pages/search";
 import { redirectPage } from "@nanostores/router";
-import { useEffect } from "react";
 import { useAuth } from "./hooks/use-auth";
-import CreateRecipe from "./pages/createRecipe";
 import ViewRecipe from "./pages/viewRecipe";
 import { Flex } from "@chakra-ui/react";
+import RecipeForm from "./pages/recipeForm";
 
 function App() {
   const page = useStore($router);
 
-  const { user, getUser } = useAuth();
-
-  useEffect(() => {
-    getUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { user } = useAuth();
 
   if (!page) {
     return (
@@ -55,10 +49,13 @@ function App() {
         <Search />
       )}
       {page.route === "createRecipe" && (
-        <CreateRecipe/>
+        <RecipeForm />
       )}
       {page.route === "recipe" && (
         <ViewRecipe recipe_id={Number(page.params.recipe_id)}/>
+      )}
+      {page.route === "editDraft" && (
+        <RecipeForm draft_id={Number(page.params.draft_id)} />
       )}
     </Flex>
   );

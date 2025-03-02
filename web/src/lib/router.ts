@@ -9,4 +9,5 @@ export const $router = createRouter({
   search: `${BASE_URL}search`,
   createRecipe: `${BASE_URL}create`, // create recipe page
   recipe: `${BASE_URL}recipe/:recipe_id`, // recipie page with specific recipie by id
+  editDraft: `${BASE_URL}edit/:draft_id`
 });

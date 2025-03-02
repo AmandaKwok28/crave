@@ -1,14 +1,16 @@
 import NavBar from "@/components/layout/navBar";
 import Recipes from "@/components/recipie/recipes";
 import { useAuth } from "@/hooks/use-auth";
-import useQueryDrafts from "@/hooks/use-query-drafts";
+import useQueryRecipes from "@/hooks/use-query-recipes";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react"
+import { useState } from "react";
 
 const Profile = () => {
     const { user } = useAuth();
-    const { drafts } = useQueryDrafts(user.id);
+    const { recipes, drafts } = useQueryRecipes();
 
+    const [ tab, setTab ] = useState<string>('recipes'); 
     
     return (
         <Flex direction="column">
@@ -44,6 +46,8 @@ const Profile = () => {
                             <Button 
                                 className="w-full" 
                                 bgGradient="to-l" gradientFrom="teal.300" gradientTo="blue.400"
+                                filter={tab === 'recipes' ? 'brightness(70%)' : undefined}
+                                onClick={() => setTab('recipes')}
                             >
                                 My Recipes
                             </Button>
@@ -51,6 +55,8 @@ const Profile = () => {
                             <Button 
                                 className="w-full" 
                                 bgGradient="to-l" gradientFrom="teal.300" gradientTo="blue.400"
+                                filter={tab === 'drafts' ? 'brightness(70%)' : undefined}
+                                onClick={() => setTab('drafts')}
                             >
                                 My Drafts
                             </Button>
@@ -59,12 +65,11 @@ const Profile = () => {
 
                 </Box>
                 
-
                 <Flex direction="row" m="3" wrap="wrap" ml="22vw">
-                    <Recipes recipes={drafts}/>
+                    {tab === 'recipes' && <Recipes recipes={recipes.filter((r) => r.authorId === user.id)} />}
+                    {tab === 'drafts' && <Recipes recipes={drafts} />}
                 </Flex>
             </Flex>
-
         </Flex>
         </Flex>
     )

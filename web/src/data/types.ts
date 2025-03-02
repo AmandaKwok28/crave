@@ -12,7 +12,7 @@ export interface RecipeType {
   ingredients: string[];
   instructions: string[];
   description: string;
-  authorId: number;
+  authorId: string;
   published: boolean;
   author: AuthorType
 }
