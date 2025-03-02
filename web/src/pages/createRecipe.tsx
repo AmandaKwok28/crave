@@ -2,7 +2,7 @@ import CancelCreateRecipeButton from "@/components/recipie/cancelButton";
 import GetIngredients from "@/components/recipie/getIngredients";
 import PublishRecipeButton from "@/components/recipie/publishButton";
 import { $currIngredientsList, $NumIngredientsCR, removeRowsIngredientsList, setNumIngredientsCR } from "@/lib/store";
-import { FormControl, FormLabel, FormErrorMessage } from "@chakra-ui/form-control";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper } from "@chakra-ui/number-input";
 import { Box, Button, ButtonGroup, Flex, Input, Stack, Text, Textarea, } from "@chakra-ui/react";
 import { useStore } from "@nanostores/react";

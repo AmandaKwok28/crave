@@ -1,27 +1,9 @@
 import NavBar from "@/components/layout/navBar";
 import {Box, 
-        Button, 
         Flex, 
-        Input, 
-        MenuContent, 
-        MenuItem, 
-        MenuRoot, 
-        MenuTrigger, 
         Spacer, 
-        Stack, 
         Text } from "@chakra-ui/react";
 import RecipeCard from "@/components/layout/recipeCard";
-import {
-    SelectContent,
-    SelectItem,
-    SelectLabel,
-    SelectRoot,
-    SelectTrigger,
-    SelectValueText,
-  } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider";
-
-
 
 const Home = () => {
     return (
