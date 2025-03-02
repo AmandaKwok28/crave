@@ -10,6 +10,8 @@ import {
     SelectTrigger,
     SelectValueText,
   } from "@/components/ui/select"
+import useQueryRecipes from "@/hooks/use-query-recipes";
+import Recipes from "@/components/recipie/recipes";
 
 // TODO: Create Tag component, store tags in nanostore not local state
 // TODO: Create Dropdown component (?)
@@ -19,6 +21,7 @@ import {
 const Search = () => {
     const [inputValue, setInputValue] = useState("");
     const [tags, setTags] = useState<string[]>([]);
+    const { recipes } = useQueryRecipes();
   
     const handleInputChange = (e: any) => {
       setInputValue(e.target.value);
@@ -54,7 +57,7 @@ const Search = () => {
     return (
     <Flex direction="column" h="100vh">
         <NavBar/>
-        <Flex flex="1">
+        <Flex mt="4vh" flex="1">
             <Box w="400px"
                 //bgGradient='to-r' gradientFrom="cyan.700" gradientTo="cyan.400"
                 bg="gray.700"
@@ -241,7 +244,11 @@ const Search = () => {
                     </Flex>
                 </Flex>
             </Box>
-            <Flex flex="1" bg="white" p="4" direction="row"></Flex>
+
+            {/* the cards... */}
+            <Flex flex="1" bg="white" p="2" direction="row" gap="2" wrap="wrap">
+                <Recipes recipes={recipes} />
+            </Flex>
         </Flex>
     </Flex>
 

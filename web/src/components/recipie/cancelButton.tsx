@@ -12,20 +12,12 @@ import {
 } from "@/components/ui/dialog"
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
-import { resetIngredientsList } from "@/lib/store";
 
 const CancelCreateRecipeButton = () => {
-
-    const handleCancel = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        resetIngredientsList()
-        openPage($router, 'home')
-    };
-
   return (
     <DialogRoot size="md">
     <DialogTrigger asChild>
-        <Button p="4" size="lg" bg="red.600" color="white">
+        <Button bgGradient="to-r" gradientFrom="red.300" gradientTo="orange.300" color="white">
             Cancel
         </Button>
     </DialogTrigger>
@@ -40,11 +32,11 @@ const CancelCreateRecipeButton = () => {
         </DialogBody>
         <DialogFooter>
         <DialogActionTrigger asChild>
-            <Button p="4" size="lg" bg="Black" color="white">
+            <Button p="4" size="lg" bg="gray.400" color="white">
                 No
             </Button>
         </DialogActionTrigger>
-            <Button p="4" size="lg" bg="red.600" color="white" onClick={handleCancel}>
+            <Button p="4" size="lg" bgGradient="to-r" gradientFrom="red.300" gradientTo="orange.300" color="white" onClick={() => openPage($router, 'home')}>
                 Yes
             </Button>
         </DialogFooter>

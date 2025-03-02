@@ -1,7 +1,7 @@
 import { List } from "@chakra-ui/react";
 
 const DisplayIngredients = ({ ingredient_list }: { 
-    ingredient_list: String[]; 
+    ingredient_list: string[]; 
 }) => {
     const ingredients = [];
     for (let i = 0; i < ingredient_list.length; i++) {

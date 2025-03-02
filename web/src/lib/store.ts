@@ -1,6 +1,5 @@
 import { RecipeType, UserType } from "@/data/types";
 import { persistentAtom } from "@nanostores/persistent";
-import { atom } from "nanostores";
 
 export const $user = persistentAtom<UserType>('user', {
   id: '',
@@ -27,7 +26,11 @@ export function setUser(user: UserType) {
   $user.set(user);
 }
 
-export const $recipes = atom<RecipeType[]>([]);
+export const $recipes = persistentAtom<RecipeType[]>('recipes', [], {
+  encode: JSON.stringify,
+  decode: JSON.parse
+});
+
 export function setRecipes(recipes: RecipeType[]) {
     $recipes.set(recipes)
 }
@@ -40,15 +43,15 @@ export function addRecipe(recipe: RecipeType) {
     $recipes.set([...$recipes.get(), recipe]);
 }
 
-export const $NumIngredientsCR = atom(5)
-export function setNumIngredientsCR(numIngredients: number) {
-    $NumIngredientsCR.set(numIngredients)
+export const $drafts = persistentAtom<RecipeType[]>('drafts', [], {
+  encode: JSON.stringify,
+  decode: JSON.parse
+});
+
+export function setDrafts(recipes: RecipeType[]) {
+    $drafts.set(recipes)
 }
 
-export const $currIngredientsList = atom<string[]>([]);
-export function resetIngredientsList() {
-    $currIngredientsList.set([]);
-}
-export function removeRowsIngredientsList(index: number) {
-    $currIngredientsList.set($currIngredientsList.get().slice(0, index));
+export function addDrafts(recipe: RecipeType) {
+    $drafts.set([...$drafts.get(), recipe]);
 }

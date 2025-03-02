@@ -3,9 +3,12 @@ import {Box,
         Flex, 
         Spacer, 
         Text } from "@chakra-ui/react";
-import RecipeCard from "@/components/layout/recipeCard";
+import useQueryRecipes from "@/hooks/use-query-recipes";
+import Recipes from "@/components/recipie/recipes";
 
 const Home = () => {
+    const { recipes } = useQueryRecipes();
+
     return (
         <Flex
             direction="column"
@@ -28,6 +31,7 @@ const Home = () => {
                     <Text
                         textStyle="7xl"
                         fontWeight="bold"
+                        color='bg'
                     > 
                         Crave. 
                     </Text>
@@ -88,13 +92,9 @@ const Home = () => {
                     m="4"> 
                     Trending
                 </Text>
-                <Flex direction="row" m="4" gap="8">
-                    <RecipeCard/>
-                    <RecipeCard/>
-                    <RecipeCard/>
-                    <RecipeCard/>
+                <Flex direction="row" m="4" gap="6" wrap="wrap">
+                    <Recipes recipes={recipes}/>
                 </Flex>
-
             </Box>
         </Flex>
     )

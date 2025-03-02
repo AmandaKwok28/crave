@@ -14,7 +14,7 @@ export const fetchUsers = async (): Promise<UserType[]> => {
 
 // Fetch all recipies
 export const fetchRecipes = async (): Promise<RecipeType[]> => {
-const response = await fetch(`${API_URL}/recipes`);
+const response = await fetch(`${API_URL}/feed`);
 if (!response.ok) {
   throw new Error(`API request failed! with status: ${response.status}`);
 }
@@ -22,9 +22,20 @@ const data: RecipeType[] = await response.json();
 return data;
 };
 
+
+export const fetchDrafts = async (id:string): Promise<RecipeType[]> => {
+  const response = await fetch(`${API_URL}/user/${id}/drafts`, { credentials: 'include' });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const data: RecipeType[] = await response.json();
+  return data;
+  };
+
 // Delete recipe by id
 export const deleteRecipe = async (recipe_id: number) : Promise<boolean> => {
-const response = await fetch(`${API_URL}/recipes/${recipe_id}`, {
+const response = await fetch(`${API_URL}/recipe/${recipe_id}`, {
     method: "DELETE",
 });
 if (!response.ok) {
@@ -33,32 +44,73 @@ if (!response.ok) {
 return true;
 };
 
-// Create a new Recipe
-export const createRecipe = async (
-title: string, 
-description: string, 
-ingredient_list: string[], 
-instructions: string
-): Promise<RecipeType> => {
-const response = await fetch(`${API_URL}/recipes`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    title,
-    ingredient_list,
-    instructions,
-    description,
-    user_id: 23,
-    is_published: true,
-  }),
-});
-console.log(response)
-if (!response.ok) {
-  throw new Error(`API request failed! with status: ${response.status}`);
+export const publishRecipe = async (id:number): Promise<boolean> => {
+  const response = await fetch(`${API_URL}/recipe/${id}/publish`, {
+    method: "PUT",
+    credentials: "include"
+  })
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  return true;
 }
 
-const data: RecipeType = await response.json();
-return data;
+// Create a new Recipe
+// TODO: Figure out how to get the Author ID of current user
+export const createRecipe = async (
+  title: string, 
+  description: string, 
+  ingredients: string[], 
+  instructions: string[],
+  id: string
+): Promise<RecipeType> => {
+    const response = await fetch(`${API_URL}/recipe`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title,
+        ingredients,
+        instructions,
+        description,
+        authorId: id
+      }),
+    });
+    console.log(response)
+    if (!response.ok) {
+      throw new Error(`API request failed! with status: ${response.status}`);
+    }
+    const data: RecipeType = await response.json();
+    return data;
+};
+
+export const patchRecipe = async (
+  id: number,
+  title: string, 
+  description: string, 
+  ingredients: string[], 
+  instructions: string[],
+  published: boolean
+): Promise<RecipeType> => {
+    const response = await fetch(`${API_URL}/recipe/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: 'include',
+      body: JSON.stringify({
+        title,
+        ingredients,
+        instructions,
+        description,
+        published
+      }),
+    });
+    console.log(response)
+    if (!response.ok) {
+      throw new Error(`API request failed! with status: ${response.status}`);
+    }
+    const data: RecipeType = await response.json();
+    return data;
 };
 
 // login
