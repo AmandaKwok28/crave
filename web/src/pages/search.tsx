@@ -12,6 +12,8 @@ import {
     SelectValueText,
   } from "@/components/ui/select"
 import RecipeCard from "@/components/layout/recipeCard";
+import { RecipeType } from "@/data/types";
+import useQueryRecipes from "@/hooks/use-query-recipes";
 
 // TODO: Create Tag component, store tags in nanostore not local state
 // TODO: Create Dropdown component (?)
@@ -21,6 +23,7 @@ import RecipeCard from "@/components/layout/recipeCard";
 const Search = () => {
     const [inputValue, setInputValue] = useState("");
     const [tags, setTags] = useState<string[]>([]);
+    const { recipes } = useQueryRecipes();
   
     const handleInputChange = (e: any) => {
       setInputValue(e.target.value);
@@ -243,7 +246,13 @@ const Search = () => {
                     </Flex>
                 </Flex>
             </Box>
-            <Flex flex="1" bg="white" p="4" direction="row"></Flex>
+
+            {/* the cards... */}
+            <Flex flex="1" bg="white" p="2" direction="row" gap="2" wrap="wrap">
+                {recipes.map((card:RecipeType) => (
+                    <RecipeCard key={card.id} recipe={card} /> 
+                ))}
+            </Flex>
         </Flex>
     </Flex>
 

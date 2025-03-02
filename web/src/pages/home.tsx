@@ -20,10 +20,14 @@ import {
     SelectValueText,
   } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider";
+import useQueryRecipes from "@/hooks/use-query-recipes";
+import { RecipeType } from "@/data/types";
 
 
 
 const Home = () => {
+    const { recipes } = useQueryRecipes();
+
     return (
         <Flex
             direction="column"
@@ -107,12 +111,10 @@ const Home = () => {
                     Trending
                 </Text>
                 <Flex direction="row" m="4" gap="8">
-                    <RecipeCard/>
-                    <RecipeCard/>
-                    <RecipeCard/>
-                    <RecipeCard/>
+                {recipes.map((card:RecipeType) => (
+                    <RecipeCard key={card.id} recipe={card} /> 
+                ))}
                 </Flex>
-
             </Box>
         </Flex>
     )

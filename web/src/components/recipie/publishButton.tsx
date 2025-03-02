@@ -11,12 +11,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import useMutationRecipes from "@/hooks/use-mutation-recipes";
-import { openPage } from "@nanostores/router";
-import { $router } from "@/lib/router";
 import { useStore } from "@nanostores/react";
 import { $currIngredientsList, resetIngredientsList } from "@/lib/store";
 import { useAuth } from "@/hooks/use-auth";
-import { BASE_URL } from "@/env";
 import { publishRecipe } from "@/data/api";
 
 type PublishRecipeProps = {
