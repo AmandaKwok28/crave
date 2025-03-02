@@ -1,7 +1,6 @@
 import NavBar from "@/components/layout/navBar";
 import { Slider } from "@/components/ui/slider";
-import { Box, Button, createListCollection, Flex, Input, Stack, Text} from "@chakra-ui/react";
-import { IoIosSearch } from "react-icons/io";
+import { Box, createListCollection, Flex, Input, Stack, Text} from "@chakra-ui/react";
 import { Tag } from "@chakra-ui/react"
 import { useState } from "react";
 import {
@@ -11,8 +10,6 @@ import {
     SelectTrigger,
     SelectValueText,
   } from "@/components/ui/select"
-import RecipeCard from "@/components/layout/recipeCard";
-import { RecipeType } from "@/data/types";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import Recipes from "@/components/recipie/recipes";
 
