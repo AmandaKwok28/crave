@@ -110,7 +110,7 @@ const Home = () => {
                     m="4"> 
                     Trending
                 </Text>
-                <Flex direction="row" m="4" gap="8">
+                <Flex direction="row" m="4" gap="6" wrap="wrap">
                 {recipes.map((card:RecipeType) => (
                     <RecipeCard key={card.id} recipe={card} /> 
                 ))}

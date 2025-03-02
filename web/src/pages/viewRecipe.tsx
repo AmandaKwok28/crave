@@ -10,7 +10,7 @@ const ViewRecipie = ({ recipe_id }: {
 }) => {
     const { recipes } = useQueryRecipes();
     const currRecipe: RecipeType | undefined = recipes.find((recipe: RecipeType) => recipe.id === recipe_id);
-
+    console.log(currRecipe)
     if (currRecipe && currRecipe.published) {
         return (
             <Flex className="flex flex-col">

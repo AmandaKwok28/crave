@@ -80,7 +80,9 @@ const CreateRecipe = () => {
 
                     <ButtonGroup m="8" position="fixed" bottom="0%" right="0%">
                         <PublishRecipeButton title={recipeTitle} description={recipeDescription} instructions={recipeInstructions}/>
-                        <Button p="4" size="lg" bg="black" color="white">Save to Drafts</Button>
+                        <Button p="4" size="lg" bg="black" color="white">
+                            Save to Drafts
+                        </Button>
                         <CancelCreateRecipeButton/>
                     </ButtonGroup>
                 </Stack>

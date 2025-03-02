@@ -24,7 +24,7 @@ return data;
 
 // Delete recipe by id
 export const deleteRecipe = async (recipe_id: number) : Promise<boolean> => {
-const response = await fetch(`${API_URL}/recipes/${recipe_id}`, {
+const response = await fetch(`${API_URL}/recipe/${recipe_id}`, {
     method: "DELETE",
 });
 if (!response.ok) {

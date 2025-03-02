@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog"
 import useMutationRecipe from "@/hooks/use-mutation-recipes";
 import { RecipeType } from "@/data/types";
+import { openPage } from "@nanostores/router";
+import { $router } from "@/lib/router";
 
 const DeleteRecipe = ({ recipe }: {recipe: RecipeType} ) => {
 
@@ -19,6 +21,7 @@ const DeleteRecipe = ({ recipe }: {recipe: RecipeType} ) => {
 
     const handleDelete = async () => {
         await deleteRecipeById(recipe.id);
+        openPage($router, "home");
     };
 
   return (
