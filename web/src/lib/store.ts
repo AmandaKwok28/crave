@@ -52,3 +52,12 @@ export function resetIngredientsList() {
 export function removeRowsIngredientsList(index: number) {
     $currIngredientsList.set($currIngredientsList.get().slice(0, index));
 }
+
+export const $drafts = atom<RecipeType[]>([]);
+export function setDrafts(recipes: RecipeType[]) {
+    $drafts.set(recipes)
+}
+
+export function addDrafts(recipe: RecipeType) {
+    $drafts.set([...$drafts.get(), recipe]);
+}

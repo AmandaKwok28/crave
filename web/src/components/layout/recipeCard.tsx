@@ -25,7 +25,7 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
             </Text>
         </Card.Title>
         <Card.Description>
-            {recipe.author.name}
+            {recipe.author ? recipe.author.name : "hi"}
         </Card.Description>
         <Card.Description>
             <Text lineClamp="3">

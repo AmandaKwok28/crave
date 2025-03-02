@@ -20,6 +20,10 @@ const NavBar = () => {
             });
     }
 
+    const handleHome = () => {
+        openPage($router, "home");
+    }
+
     return (
         <Flex 
             h="5vh" 
@@ -28,12 +32,15 @@ const NavBar = () => {
             bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400"
             p="4"
             gap="2"
+            position="fixed"
+            w="100%"
+            zIndex="100"
         >
             <Text 
                 fontSize='3xl' 
                 fontWeight='bold' 
                 color='white' 
-                onClick={() => openPage($router, 'home')}
+                onClick={handleHome}
                 cursor={"pointer"}>
                     Crave
                 </Text>

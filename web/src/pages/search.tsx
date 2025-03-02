@@ -14,6 +14,7 @@ import {
 import RecipeCard from "@/components/layout/recipeCard";
 import { RecipeType } from "@/data/types";
 import useQueryRecipes from "@/hooks/use-query-recipes";
+import Recipes from "@/components/recipie/recipes";
 
 // TODO: Create Tag component, store tags in nanostore not local state
 // TODO: Create Dropdown component (?)
@@ -249,9 +250,7 @@ const Search = () => {
 
             {/* the cards... */}
             <Flex flex="1" bg="white" p="2" direction="row" gap="2" wrap="wrap">
-                {recipes.map((card:RecipeType) => (
-                    <RecipeCard key={card.id} recipe={card} /> 
-                ))}
+                <Recipes recipes={recipes} />
             </Flex>
         </Flex>
     </Flex>

@@ -22,6 +22,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import { RecipeType } from "@/data/types";
+import Recipes from "@/components/recipie/recipes";
 
 
 
@@ -111,9 +112,7 @@ const Home = () => {
                     Trending
                 </Text>
                 <Flex direction="row" m="4" gap="6" wrap="wrap">
-                {recipes.map((card:RecipeType) => (
-                    <RecipeCard key={card.id} recipe={card} /> 
-                ))}
+                    <Recipes recipes={recipes}/>
                 </Flex>
             </Box>
         </Flex>

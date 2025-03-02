@@ -1,4 +1,5 @@
 import CancelCreateRecipeButton from "@/components/recipie/cancelButton";
+import DraftButton from "@/components/recipie/draftButton";
 import GetIngredients from "@/components/recipie/getIngredients";
 import PublishRecipeButton from "@/components/recipie/publishButton";
 import { $currIngredientsList, $NumIngredientsCR, removeRowsIngredientsList, setNumIngredientsCR } from "@/lib/store";
@@ -80,9 +81,10 @@ const CreateRecipe = () => {
 
                     <ButtonGroup m="8" position="fixed" bottom="0%" right="0%">
                         <PublishRecipeButton title={recipeTitle} description={recipeDescription} instructions={recipeInstructions}/>
-                        <Button p="4" size="lg" bg="black" color="white">
+                        {/* <Button p="4" size="lg" bg="black" color="white">
                             Save to Drafts
-                        </Button>
+                        </Button> */}
+                        <DraftButton title={recipeTitle} description={recipeDescription} instructions={recipeInstructions}/>
                         <CancelCreateRecipeButton/>
                     </ButtonGroup>
                 </Stack>

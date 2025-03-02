@@ -1,28 +1,29 @@
 import NavBar from "@/components/layout/navBar";
+import Recipes from "@/components/recipie/recipes";
 import { useAuth } from "@/hooks/use-auth";
-import { $router } from "@/lib/router";
-import { Box, Button, Spacer } from "@chakra-ui/react";
+import useQueryDrafts from "@/hooks/use-query-drafts";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react"
-import { openPage, redirectPage } from "@nanostores/router";
 
 const Profile = () => {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
+    const { drafts } = useQueryDrafts(user.id);
 
-    const handleLogout = async () => {
-        await logout();
-        redirectPage($router, "login");
-    }
     
     return (
-        <div className="bg-white w-screen h-screen text-black overflow-hidden">
-            <NavBar/>
-
-            <div className="flex flex-row h-full">
-
-                
+        <Flex direction="column">
+             <NavBar />
+        <Flex bg="white" w="100vw" minH="100vh" mt="5vh" overflowY="auto">
+            
+            <Flex direction="row" minH="100vh" overflowY="auto">                
                 <Box 
-                    className="h-full w-1/4 flex flex-row"
+                    direction="row"
+                    minH="100vh"
+                    w="20vw"
                     bgGradient="to-l" gradientFrom="green.200" gradientTo="blue.300"
+                    overflowY="auto"
+                    position="fixed"
+                    zIndex="100"
                 >
                     <div className="max-h-sm h-auto flex flex-col self-start w-full">
                         <div className="flex items-center flex-row">
@@ -59,12 +60,13 @@ const Profile = () => {
                 </Box>
                 
 
-                <div className="flex items-center justify-center w-full">
-                    Feed
-                </div>
-            </div>
+                <Flex direction="row" m="3" wrap="wrap" ml="22vw">
+                    <Recipes recipes={drafts}/>
+                </Flex>
+            </Flex>
 
-        </div>
+        </Flex>
+        </Flex>
     )
 }
 

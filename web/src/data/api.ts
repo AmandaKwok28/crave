@@ -22,6 +22,16 @@ const data: RecipeType[] = await response.json();
 return data;
 };
 
+
+export const fetchRecipeDrafts = async (id:string): Promise<RecipeType[]> => {
+  const response = await fetch(`${API_URL}/user/${id}/drafts`);
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const data: RecipeType[] = await response.json();
+  return data;
+  };
+
 // Delete recipe by id
 export const deleteRecipe = async (recipe_id: number) : Promise<boolean> => {
 const response = await fetch(`${API_URL}/recipe/${recipe_id}`, {
