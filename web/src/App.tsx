@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { useAuth } from "./hooks/use-auth";
 import CreateRecipe from "./pages/createRecipe";
 import ViewRecipe from "./pages/viewRecipe";
+import { Flex } from "@chakra-ui/react";
 
 function App() {
   const page = useStore($router);
@@ -37,7 +38,7 @@ function App() {
   }
 
   return (
-    <div className="w-screen">
+    <Flex w="100vw">
       {page.route === "home" && (
         <Home/>
       )}
@@ -59,7 +60,7 @@ function App() {
       {page.route === "recipe" && (
         <ViewRecipe recipe_id={Number(page.params.recipe_id)}/>
       )}
-    </div>
+    </Flex>
   );
 }
 
