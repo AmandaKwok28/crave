@@ -48,10 +48,10 @@ Additionally, in the api folder, create a .env file with the following:
 To build a release version of the frontend, run ```pnpm build``` within the `web/` directory.
 
 frontend deployment:
-https://team-05.onrender.com
+https://crave-v3pt.onrender.com
 
 backend deployment:
-https://crave-dcgp.onrender.com/users
+https://team-05-db.onrender.com
 
 ## Contributing
 
