@@ -2,9 +2,14 @@ import { login } from "@/data/api";
 import { API_URL } from "@/env";
 import { $user, clearUser, setUser } from "@/lib/store";
 import { useStore } from "@nanostores/react";
+import { useEffect } from "react";
 
 export function useAuth() {
   const user = useStore($user);
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   async function getUser() {
     const res = await fetch(`${API_URL}/get-user`, {
@@ -65,7 +70,6 @@ export function useAuth() {
     const user = await login(email, password);
     setUser(user);
   }
-
 
   async function logout() {
     const res = await fetch(`${API_URL}/logout`, {

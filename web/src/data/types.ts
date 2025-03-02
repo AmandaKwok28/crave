@@ -7,11 +7,20 @@ export interface UserType {
 }
 
 export interface RecipeType {
-    id: number;
-    title: string;
-    ingredient_list: string[];
-    instructions: string;
-    description: string;
-    user_id: number;
-    is_published: boolean;
+  id: number;
+  title: string;
+  ingredients: string[];
+  instructions: string[];
+  description: string;
+  authorId: string;
+  published: boolean;
+  author: AuthorType
+}
+
+export interface AuthorType {
+  id: string;
+  email: string;
+  name: string;
+  school: string;
+  major: string;
 }

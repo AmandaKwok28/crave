@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { prisma } from '../../prisma/db';
+import { authGuard } from '../middleware/auth';
 const router = Router();
 
 // Create new recipe
@@ -16,7 +17,45 @@ router.post('/', async (req, res) => {
       },
     })
     res.json(recipe)
-  })
+  });
+
+router.patch('/:id/', authGuard, async (req, res) => {
+  const { id } = req.params;
+  const { title, description, ingredients, instructions, published, image } = req.body
+
+  const validate = await prisma.recipe.findFirst({ where: { id: Number(id) } });
+  if (!validate) {
+    res.status(404).json({
+      message: 'Could not find recipe'
+    });
+
+    return;
+  }
+
+  if (validate.authorId !== res.locals.user.id) {
+    res.status(401).json({
+      message: 'Unauthorized'
+    });
+
+    return;
+  }
+
+  const recipe = await prisma.recipe.update({
+    where: {
+      id: Number(id)
+    },
+    data: {
+      title,
+      description,
+      ingredients,
+      instructions,
+      published,
+      image
+    }
+  });
+
+  res.json(recipe);
+});
 
 // Update recipe views
 router.put('/:id/views', async (req, res) => {

@@ -1,6 +1,6 @@
 # OOSE Team Project
 
-Name of the application goes here -- followed by a brief description (elevator pitch) of the application.
+Crave - A recipe sharing app for college students
 
 - [Team Information & Agreement](./docs/team-agreement.md)
 - [Requirements Specification](./docs/requirements-specification.md)
@@ -9,37 +9,44 @@ Name of the application goes here -- followed by a brief description (elevator p
 
 ## Installing / Getting started
 
-1. **Prerequisites**: Make sure you have Node, and PNPM installed. If you don’t have PNPM, you can install it globally with `npm install -g pnpm`. Additionally, in order to clone the project, you will need a Github Account.
-2. **Repository Setup**: Clone the repository and navigate to the root folder in the terminal.
-3. **Dependencies**: Run `pnpm install` to install the dependencies for both the client and server.
-4. **Environment Configuration**:
-   Add a `.env` file in each the `app` and `api` sub-folders. You will need to fill in the required environment variables: DATABASE_URL
-   visit: https://console.prisma.io/cm76k5lgv04fom2dzj2ohv0rm/overview to create your own postgress database and get an api key to add to your .env file as the DATABASE_URL
+### Prerequisites & Setup
 
+Make sure you have [node](https://nodejs.org/en) and [pnpm](https://pnpm.io/) installed. Make sure they are up-to-date as older versions of node may not be supported. You may want to install [PostgreSQL](https://www.postgresql.org/) to run a local database for development.
+
+Next, clone the repository and navigate to the `web/` folder and run `pnpm install` and `pnpm dev` to start the frontend client.
+
+Then, navigate to the `api/` folder and run `pnpm install`
+
+For a database, you can either use a local PostgreSQL instance, or you can create an external one with [prisma](https://console.prisma.io/cm76k5lgv04fom2dzj2ohv0rm/overview). Either way, you'll have a database URL you should save in a `.env` file within the `api/` directory with the following schema:
+
+```json
+DATABASE_URL=<YOUR_URL_HERE>
+```
 
 ## Developing
 
-```
-cd api
+Starting from the root folder, you can run these commands:
+
+```bash
+cd ./api
 pnpm install
+pnpm prisma generate
+pnpm prisma migrate dev
 pnpm run dev
 
-cd web
+cd ../web
 pnpm install
 pnpm run dev
 ```
-in the api folder 
-create a .env file
-add DATABASE_URL = *database api key*
 
-to build and release a new version run:
+Additionally, in the api folder, create a .env file with the following:
 
-```
-cd web
-pnpm build
-```
+```DATABASE_URL=<database_api_url>```
 
 ## Deployment
+
+To build a release version of the frontend, run ```pnpm build``` within the `web/` directory.
+
 frontend deployment:
 https://team-05.onrender.com
 

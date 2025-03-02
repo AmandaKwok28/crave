@@ -1,8 +1,8 @@
 import { useAuth } from "@/hooks/use-auth";
 import { $router } from "@/lib/router";
-import { Button, Flex, Spacer, Text } from "@chakra-ui/react";
+import { ButtonGroup, Flex, IconButton, Text } from "@chakra-ui/react";
 import { openPage, redirectPage } from "@nanostores/router";
-import { Ellipsis, Plus, Search } from "lucide-react";
+import { LogOut, PlusCircleIcon, Search, User } from "lucide-react";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu";
 import { toaster } from "../ui/toaster";
 
@@ -20,41 +20,61 @@ const NavBar = () => {
             });
     }
 
-    return (
-        <Flex 
-            h="5vh" 
-            color="black"
-            className="flex items-center w-screen"
-            bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400"
-            p="4"
-            gap="2"
-        >
-            <Text fontSize='3xl' fontWeight='bold' color='white'>Crave</Text>
-            <Spacer />
-            <Button variant="outline" bg="white" size="xs">
-                <Plus color='black' />
-            </Button>
-            <Button variant="outline" bg="white" size="xs">
-                <Search color='black' />
-            </Button>
+    const handleHome = () => {
+        openPage($router, "home");
+    }
 
-            <MenuRoot>
-                <MenuTrigger asChild>
-                    <Button variant='outline' bg='white' size='xs'>
-                        <Ellipsis color='black' />
-                    </Button>
-                </MenuTrigger>
-                <MenuContent>
-                    <MenuItem value='profile' onClick={() => openPage($router, 'profile')}>
-                        Profile
-                    </MenuItem>
-                    <MenuItem value='logout' color='red.400' onClick={handleLogout}>
-                        Logout
-                    </MenuItem>
-                </MenuContent>
-            </MenuRoot>
+    return (
+        <Flex
+            pos='fixed'
+            top='0'
+            left='0'
+            h='10'
+            w='100vw'
+            bgGradient="to-r"
+            gradientFrom="cyan.300"
+            gradientTo="blue.400"
+            justify='space-between'
+            align='center'
+            px='4'
+            gap='2'
+            zIndex={999}
+        >
+            <Text
+                fontSize='3xl'
+                fontWeight='bold'
+                color='bg'
+                onClick={handleHome}
+            >
+                Crave
+            </Text>
+
+            <ButtonGroup gap='3' variant='subtle' size='xs'>
+                <IconButton onClick={() => openPage($router, 'createRecipe')}>
+                    <PlusCircleIcon />
+                </IconButton>
+                <IconButton onClick={() => openPage($router, 'search')}>
+                    <Search />
+                </IconButton>
+                <MenuRoot>
+                    <MenuTrigger asChild>
+                        <IconButton>
+                            <User />
+                        </IconButton>
+                    </MenuTrigger>
+                    <MenuContent>
+                        <MenuItem value='profile' onClick={() => openPage($router, 'profile')}>
+                            View Profile
+                        </MenuItem>
+                        <MenuItem value='logout' color='red.400' onClick={handleLogout} justifyContent='space-between'>
+                            Logout
+                            <LogOut size='14px' />
+                        </MenuItem>
+                    </MenuContent>
+                </MenuRoot>
+            </ButtonGroup>
         </Flex>
-    )
+    );
 }
 
 export default NavBar;

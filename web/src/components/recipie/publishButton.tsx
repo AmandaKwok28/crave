@@ -11,33 +11,38 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import useMutationRecipes from "@/hooks/use-mutation-recipes";
-import { openPage } from "@nanostores/router";
+import { useAuth } from "@/hooks/use-auth";
+import { publishRecipe } from "@/data/api";
+import { redirectPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
-import { useStore } from "@nanostores/react";
-import { $currIngredientsList, resetIngredientsList } from "@/lib/store";
 
 type PublishRecipeProps = {
     title: string;
     description: string;
-    instructions: string;
+    ingredients: string[];
+    instructions: string[];
+    draft_id?: number;
 }
 
-const PublishRecipeButton = ({ title, description, instructions }: PublishRecipeProps ) => {
-    const { addNewRecipe } = useMutationRecipes();
-    let ingredientsList = useStore($currIngredientsList);
+const PublishRecipeButton = ({ title, description, ingredients, instructions, draft_id }: PublishRecipeProps ) => {
+    const { user } = useAuth();
+    const { addNewRecipe, editRecipe } = useMutationRecipes();
 
-    const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        addNewRecipe(title, description, ingredientsList, instructions);
-        resetIngredientsList()
-        openPage($router, 'home')
+    const handleSave = async () => {
+        if (!draft_id) {
+            const id = await addNewRecipe(title, description, ingredients, instructions, user.id);
+            await publishRecipe(id);    
+            redirectPage($router, `recipe`, { recipe_id: id });
+        } else {
+            await editRecipe(draft_id, title, description, ingredients, instructions, true);
+            redirectPage($router, `recipe`, { recipe_id: draft_id });
+        }
     };
-
 
   return (
     <DialogRoot size="md">
     <DialogTrigger asChild>
-        <Button p="4" size="lg" bg="green.600" color="white">
+        <Button bgGradient="to-r" gradientFrom="teal.300" gradientTo="green.400" color="white">
             Publish
         </Button>
     </DialogTrigger>
@@ -52,11 +57,11 @@ const PublishRecipeButton = ({ title, description, instructions }: PublishRecipe
         </DialogBody>
         <DialogFooter>
         <DialogActionTrigger asChild>
-            <Button p="4" size="lg" bg="Black" color="white">
+            <Button p="4" size="lg" bg="gray.400" color="white">
                 No
             </Button>
         </DialogActionTrigger>
-            <Button p="4" size="lg" bg="green.600" color="white" onClick={handleSave}>
+            <Button p="4" size="lg" bgGradient="to-r" gradientFrom="teal.300" gradientTo="green.400" color="white" onClick={handleSave}>
                 Yes
             </Button>
         </DialogFooter>

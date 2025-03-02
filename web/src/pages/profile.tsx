@@ -1,49 +1,31 @@
+import NavBar from "@/components/layout/navBar";
+import Recipes from "@/components/recipie/recipes";
 import { useAuth } from "@/hooks/use-auth";
-import { $router } from "@/lib/router";
-import { Box, Button, Spacer } from "@chakra-ui/react";
+import useQueryRecipes from "@/hooks/use-query-recipes";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react"
-import { openPage, redirectPage } from "@nanostores/router";
+import { useState } from "react";
 
 const Profile = () => {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
+    const { recipes, drafts } = useQueryRecipes();
 
-    const handleLogout = async () => {
-        await logout();
-        redirectPage($router, "login");
-    }
+    const [ tab, setTab ] = useState<string>('recipes'); 
     
     return (
-        <div className="bg-white w-screen h-screen text-black overflow-hidden">
-            <Box 
-                bgGradient="to-r" gradientFrom="blue.400" gradientTo="cyan.100"
-                h="50px" 
-                display="flex"
-                alignItems="center"
-                className="p-4 text-white"
-                fontWeight="bold"
-                fontSize="2xl"
-            >
-                <Button onClick={() => openPage($router, "home")}> Crave </Button>
-                <Spacer/>
-                <Button 
-                    className="text-sm bg-black p-4" 
-                    style={{fontWeight: "normal"}} 
-                    variant="outline"
-                    bg="white"
-                    color="black"
-                    size="xs"
-                    onClick={handleLogout}
-                >
-                    Sign out
-                </Button>
-            </Box>
-
-            <div className="flex flex-row h-full">
-
-                
+        <Flex direction="column">
+             <NavBar />
+        <Flex bg="white" w="100vw" minH="100vh" mt="5vh" overflowY="auto">
+            
+            <Flex direction="row" minH="100vh" overflowY="auto">                
                 <Box 
-                    className="h-full w-1/4 flex flex-row"
+                    direction="row"
+                    minH="100vh"
+                    w="20vw"
                     bgGradient="to-l" gradientFrom="green.200" gradientTo="blue.300"
+                    overflowY="auto"
+                    position="fixed"
+                    zIndex="100"
                 >
                     <div className="max-h-sm h-auto flex flex-col self-start w-full">
                         <div className="flex items-center flex-row">
@@ -64,6 +46,8 @@ const Profile = () => {
                             <Button 
                                 className="w-full" 
                                 bgGradient="to-l" gradientFrom="teal.300" gradientTo="blue.400"
+                                filter={tab === 'recipes' ? 'brightness(70%)' : undefined}
+                                onClick={() => setTab('recipes')}
                             >
                                 My Recipes
                             </Button>
@@ -71,6 +55,8 @@ const Profile = () => {
                             <Button 
                                 className="w-full" 
                                 bgGradient="to-l" gradientFrom="teal.300" gradientTo="blue.400"
+                                filter={tab === 'drafts' ? 'brightness(70%)' : undefined}
+                                onClick={() => setTab('drafts')}
                             >
                                 My Drafts
                             </Button>
@@ -79,13 +65,13 @@ const Profile = () => {
 
                 </Box>
                 
-
-                <div className="flex items-center justify-center w-full">
-                    Feed
-                </div>
-            </div>
-
-        </div>
+                <Flex direction="row" m="3" wrap="wrap" ml="22vw">
+                    {tab === 'recipes' && <Recipes recipes={recipes.filter((r) => r.authorId === user.id)} />}
+                    {tab === 'drafts' && <Recipes recipes={drafts} />}
+                </Flex>
+            </Flex>
+        </Flex>
+        </Flex>
     )
 }
 
