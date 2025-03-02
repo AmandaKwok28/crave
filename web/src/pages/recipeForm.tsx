@@ -54,7 +54,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
 
   return (
     <Flex gap='4' flexDir='column' minW='100vw' align='center' justify='center'>
-      <Flex pos='absolute' top='0' left='0' w='100vw' h='16' bgColor='cyan.600' align='center' justify='center'>
+      <Flex pos='fixed' zIndex="100" top='0' left='0' w='100vw' h='10' bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400" align='center' justify='center'>
         <Text color='bg' fontWeight='bold' fontSize='3xl'>
           {draft ? 'Edit an Existing Recipe' : 'Create a New Recipe'}
         </Text>
@@ -87,7 +87,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                 endElement={(
                   <IconButton
                     variant='ghost'
-                    color='red'
+                    color='red.400'
                     me='-1'
                     size='xs'
                     onClick={() => handleIngDelete(i)}
@@ -104,7 +104,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
               </InputGroup>
             ))}
             
-            <Button bgColor='green.600' onClick={() => setIngredients((l) => [...l, ''])}>
+            <Button bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400" onClick={() => setIngredients((l) => [...l, ''])}>
               Add Ingredient
             </Button>
           </Flex>

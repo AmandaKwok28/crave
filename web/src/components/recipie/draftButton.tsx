@@ -34,26 +34,26 @@ const DraftButton = ({ title, description, ingredients, instructions }: PublishR
   return (
     <DialogRoot size="md">
     <DialogTrigger asChild>
-        <Button bg="gray.600" color="white">
+        <Button bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400" color="white">
             Save to Drafts
         </Button>
     </DialogTrigger>
     <DialogContent>
         <DialogHeader>
-        <DialogTitle textStyle="2xl" fontWeight="bold">Publish Recipe?</DialogTitle>
+        <DialogTitle textStyle="2xl" fontWeight="bold">Save to Drafts?</DialogTitle>
         </DialogHeader>
         <DialogBody>
         <p>
-            Are you sure you want to publish this recipe? You will not be able to further edit this recipie after doing so.
+            Are you sure you want to save this recipe to Drafts? It will not be viewable to the public yet, but you can continue createing the recipe later.
         </p>
         </DialogBody>
         <DialogFooter>
         <DialogActionTrigger asChild>
-            <Button p="4" size="lg" bg="Black" color="white">
+            <Button p="4" size="lg" bg="gray.400" color="white">
                 No
             </Button>
         </DialogActionTrigger>
-            <Button p="4" size="lg" bg="green.600" color="white" onClick={handleSave}>
+            <Button p="4" size="lg" bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400" color="white" onClick={handleSave}>
                 Yes
             </Button>
         </DialogFooter>

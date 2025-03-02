@@ -57,7 +57,7 @@ const Search = () => {
     return (
     <Flex direction="column" h="100vh">
         <NavBar/>
-        <Flex flex="1">
+        <Flex mt="4vh" flex="1">
             <Box w="400px"
                 //bgGradient='to-r' gradientFrom="cyan.700" gradientTo="cyan.400"
                 bg="gray.700"

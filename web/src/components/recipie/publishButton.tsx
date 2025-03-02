@@ -42,7 +42,7 @@ const PublishRecipeButton = ({ title, description, ingredients, instructions, dr
   return (
     <DialogRoot size="md">
     <DialogTrigger asChild>
-        <Button bgColor="green.600" color="white">
+        <Button bgGradient="to-r" gradientFrom="teal.300" gradientTo="green.400" color="white">
             Publish
         </Button>
     </DialogTrigger>
@@ -57,11 +57,11 @@ const PublishRecipeButton = ({ title, description, ingredients, instructions, dr
         </DialogBody>
         <DialogFooter>
         <DialogActionTrigger asChild>
-            <Button p="4" size="lg" bg="Black" color="white">
+            <Button p="4" size="lg" bg="gray.400" color="white">
                 No
             </Button>
         </DialogActionTrigger>
-            <Button p="4" size="lg" bg="green.600" color="white" onClick={handleSave}>
+            <Button p="4" size="lg" bgGradient="to-r" gradientFrom="teal.300" gradientTo="green.400" color="white" onClick={handleSave}>
                 Yes
             </Button>
         </DialogFooter>

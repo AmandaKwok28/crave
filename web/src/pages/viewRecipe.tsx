@@ -16,9 +16,9 @@ const ViewRecipe = ({ recipe_id }: {
         return (
             <Flex className="flex flex-col">
                 <NavBar/>
-                <Box className="w=25% h-screen">
+                <Center w="100vw" h="100vh">
                     Recipe not Available
-                </Box>
+                </Center>
             </Flex>
         );
     }
@@ -26,7 +26,7 @@ const ViewRecipe = ({ recipe_id }: {
     return (
         <Flex className="flex flex-col">
             <NavBar/>
-            <Stack direction="row" >
+            <Stack mt="10" direction="row" >
                 <Box h="100%" w="60%">
                     <Text
                     color="Black"
@@ -39,44 +39,46 @@ const ViewRecipe = ({ recipe_id }: {
                     </Text>
                     <Text
                     color="gray.600"
-                    fontSize="2rem"
+                    fontSize="xl"
                     ml="3rem"> 
                     
                         {currRecipe.description} 
                     </Text>
                     <Text
                     color="Black"
-                    fontSize="2rem"
+                    fontSize="3xl"
                     ml="4rem">
                         Ingredients List:
                     </Text>
                     <Flex  ml="6rem">
                         <DisplayIngredients ingredient_list={currRecipe.ingredients}/>
                     </Flex>
-                    <Text
+                </Box>
+                <Center bgGradient="to-r" gradientFrom="teal.300" gradientTo="green.400" padding="4" color="white" w="50vw" h="50vh" mt="6rem" ml="6rem" mr="6rem" mb="3rem">
+                    <Text fontSize="2rem">Image Placeholder </Text>
+                </Center>
+            </Stack>
+            <Flex mb="20" ml="10" mr="10"> 
+                <Text
                     color="Black"
                     fontSize="2rem"
                     ml="4rem">
                         Instructions: 
-                    </Text>
-                    <Blockquote.Root 
+                </Text>
+                <Blockquote.Root 
                     variant="solid" 
                     colorPalette="cyan.600" 
                     fontSize="1rem"
-                    ml="4rem">
+                    ml="2rem">
                         <Blockquote.Content >
                             {currRecipe.instructions[0]} 
                         </Blockquote.Content>
                         <Blockquote.Caption>
                             — Enjoy your tasty meal!
                         </Blockquote.Caption>
-                    </Blockquote.Root>
-                </Box>
-                <Center background="green.500" padding="4" color="white" w="30rem" h="30rem" m="6rem">
-                    <Text fontSize="2rem">Image Placeholder </Text>
-                </Center>
-            </Stack>
-            
+                </Blockquote.Root>
+
+            </Flex>
             <ButtonGroup m="8" position="fixed" bottom="0%" right="0%">
                 <DeleteRecipe recipe={currRecipe} />
             </ButtonGroup>
