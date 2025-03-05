@@ -26,7 +26,7 @@ DATABASE_URL=<YOUR_URL_HERE>
 ## Developing
 
 Starting from the root folder, you can run these commands:
-
+ 
 ```bash
 cd ./api
 pnpm install
