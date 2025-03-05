@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node src/index.ts",
+    "test": "vitest"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.0.2",
@@ -22,9 +23,14 @@
     "@types/cors": "^2.8.17",
     "@types/express": "5.0.0",
     "@types/node": "22.13.1",
+    "@types/supertest": "^6.0.2",
     "prisma": "6.3.1",
+    "prisma-mock-vitest": "^0.1.6",
+    "supertest": "^7.0.0",
     "ts-node": "10.9.2",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "vitest": "^3.0.7",
+    "vitest-mock-extended": "^3.0.1"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

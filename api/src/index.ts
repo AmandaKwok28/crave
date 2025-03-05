@@ -7,7 +7,7 @@ import recipeRoutes from './routes/recipe.routes'
 import userRoutes from './routes/user.routes'
 import feedRoutes from './routes/feed.routes'
 
-const app = express();
+export const app = express();
 
 app.use(cors({
   origin: true,
