@@ -29,6 +29,6 @@ app.use('/recipe', recipeRoutes);
 app.use('/user', userRoutes);
 app.use('/feed', feedRoutes);
 
-const server = app.listen(3000, () => {
+app.listen(3000, () => {
   console.log(`Listening @ http://localhost:3000`);
 });
