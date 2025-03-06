@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { prisma } from '../../prisma/db';
 import { authGuard } from '../middleware/auth';
 import { processRecipeSimilarities } from '../services/recipe-similarity';
+import { generateFeatureVector } from '../services/feature-vector';
 const router = Router();
 
 // Create new recipe
@@ -16,11 +17,20 @@ router.post('/', async (req, res) => {
         image,
         author: { connect: { id: authorId } },
       },
-    })
+    });
 
-    processRecipeSimilarities(recipe.id).catch(err => 
-      console.error(`Error processing similarities for recipe ${recipe.id}:`, err)
-    );
+    // Process asynchronously in correct sequence without blocking response
+    (async () => {
+      try {
+        // First generate the feature vector
+        await generateFeatureVector(recipe.id);
+        
+        // Then process similarities (using the newly created vector)
+        await processRecipeSimilarities(recipe.id);
+      } catch (err) {
+        console.error(`Error in background processing for recipe ${recipe.id}:`, err);
+      }
+    })(); // Immediately invoke but don't await
 
     res.json(recipe)
   });

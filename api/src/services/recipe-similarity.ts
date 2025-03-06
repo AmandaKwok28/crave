@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Recipe } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
  * Calculate and store similarity between two recipes in both directions
  */
 export async function storeBidirectionalSimilarity(recipe1Id: number, recipe2Id: number) {
-  // Calculate similarity score once
+  // Get recipe data
   const recipe1 = await prisma.recipe.findUnique({ where: { id: recipe1Id } });
   const recipe2 = await prisma.recipe.findUnique({ where: { id: recipe2Id } });
   
@@ -14,7 +14,8 @@ export async function storeBidirectionalSimilarity(recipe1Id: number, recipe2Id:
     throw new Error(`One or both recipes not found: ${recipe1Id}, ${recipe2Id}`);
   }
   
-  const similarityScore = calculateSimilarity(recipe1, recipe2);
+  // Calculate similarity score once
+  const similarityScore = await calculateSimilarity(recipe1Id, recipe2Id);
   
   // Store both directions in a transaction
   await prisma.$transaction([
@@ -55,23 +56,96 @@ export async function storeBidirectionalSimilarity(recipe1Id: number, recipe2Id:
 /**
  * Calculate similarity between two recipes
  */
-function calculateSimilarity(recipe1: any, recipe2: any): number {
-  // Implement your cosine similarity algorithm here
-  // For example:
+async function calculateSimilarity(recipe1Id: number, recipe2Id: number): Promise<number> {
+  // Get feature vectors for both recipes
+  const vector1 = await prisma.recipeFeatureVector.findUnique({
+    where: { recipeId: recipe1Id }
+  });
   
-  // 1. Convert ingredients to sets for comparison
-  const ingredients1 = new Set(recipe1.ingredients.map((i: string) => i.toLowerCase()));
-  const ingredients2 = new Set(recipe2.ingredients.map((i: string) => i.toLowerCase()));
+  const vector2 = await prisma.recipeFeatureVector.findUnique({
+    where: { recipeId: recipe2Id }
+  });
   
-  // 2. Find common ingredients (intersection)
-  const commonIngredients = Array.from(ingredients1).filter(i => ingredients2.has(i));  
+  // If either recipe doesn't have a vector yet, fall back to basic similarity
+  if (!vector1?.vector || !vector2?.vector) {
+    return calculateBasicSimilarity(recipe1Id, recipe2Id);
+  }
+  
+  // Calculate cosine similarity between the vectors
+  return calculateCosineSimilarity(vector1.vector, vector2.vector);
+}
 
-  // 3. Calculate Jaccard similarity coefficient
-  const similarity = commonIngredients.length / 
-    (ingredients1.size + ingredients2.size - commonIngredients.length);
-    
-  // Return value between 0-1
-  return similarity;
+/**
+ * Basic fallback similarity calculation when feature vectors aren't available
+ */
+async function calculateBasicSimilarity(recipe1Id: number, recipe2Id: number): Promise<number> {
+  // Get recipe data with ingredients
+  const recipe1 = await prisma.recipe.findUnique({
+    where: { id: recipe1Id },
+    select: { ingredients: true, title: true, authorId: true }
+  });
+  
+  const recipe2 = await prisma.recipe.findUnique({
+    where: { id: recipe2Id },
+    select: { ingredients: true, title: true, authorId: true }
+  });
+  
+  if (!recipe1 || !recipe2) {
+    throw new Error(`One or both recipes not found: ${recipe1Id}, ${recipe2Id}`);
+  }
+  
+  // Initialize similarity score
+  let score = 0;
+  
+  // 1. Compare ingredients (most important factor)
+  const ingredients1 = new Set(recipe1.ingredients.map(i => i.toLowerCase()));
+  const ingredients2 = new Set(recipe2.ingredients.map(i => i.toLowerCase()));
+  
+  // Find common ingredients
+  const commonIngredients = Array.from(ingredients1).filter(i => ingredients2.has(i));
+  
+  // Calculate Jaccard similarity for ingredients
+  const totalUniqueIngredients = new Set([...recipe1.ingredients, ...recipe2.ingredients].map(i => i.toLowerCase())).size;
+  if (totalUniqueIngredients > 0) {
+    score += 0.6 * (commonIngredients.length / totalUniqueIngredients);
+  }
+  
+  // 2. Same author bonus
+  if (recipe1.authorId === recipe2.authorId) {
+    score += 0.2;
+  }
+  
+  // 3. Title similarity
+  const title1 = recipe1.title.toLowerCase();
+  const title2 = recipe2.title.toLowerCase();
+  
+  // Simple check for shared words in titles
+  const words1 = new Set(title1.split(/\s+/).filter(w => w.length > 3));
+  const words2 = new Set(title2.split(/\s+/).filter(w => w.length > 3));
+  const commonWords = Array.from(words1).filter(w => words2.has(w));
+  
+  if (words1.size > 0 && words2.size > 0) {
+    score += 0.2 * (commonWords.length / Math.max(words1.size, words2.size));
+  }
+  
+  // sigmoid function to normalize score between 0 and 1
+  return 1 / (1 + Math.exp(-5 * (score - 0.5)));
+}
+
+/**
+ * Calculate cosine similarity between two vectors
+ */
+function calculateCosineSimilarity(v1: number[], v2: number[]): number {
+  // Dot product
+  const dotProduct = v1.reduce((sum, v, i) => sum + v * v2[i], 0);
+  
+  // Magnitudes
+  const mag1 = Math.sqrt(v1.reduce((sum, v) => sum + v * v, 0));
+  const mag2 = Math.sqrt(v2.reduce((sum, v) => sum + v * v, 0));
+  
+  if (mag1 === 0 || mag2 === 0) return 0;
+  
+  return dotProduct / (mag1 * mag2);
 }
 
 /**
@@ -90,4 +164,18 @@ export async function processRecipeSimilarities(recipeId: number) {
   for (const recipe of otherRecipes) {
     await storeBidirectionalSimilarity(recipeId, recipe.id);
   }
+}
+
+/**
+ * Get similar recipes for a given recipe
+ */
+export async function getSimilarRecipes(recipeId: number, limit: number = 3) {
+  const similarities = await prisma.recipeSimilarity.findMany({
+    where: { baseRecipeId: recipeId },
+    orderBy: { similarityScore: 'desc' },
+    take: limit,
+    include: { similarRecipe: true }
+  });
+  
+  return similarities.map(sim => sim.similarRecipe);
 }
