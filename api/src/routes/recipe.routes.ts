@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
       },
     })
     res.json(recipe)
-  });
+});
 
 router.patch('/:id/', authGuard, async (req, res) => {
   const { id } = req.params;
