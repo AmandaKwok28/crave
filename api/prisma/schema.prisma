@@ -25,6 +25,21 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model RecipeSimilarity {
+  id              Int      @id @default(autoincrement())
+  baseRecipeId    Int      // The recipe we're finding similarities for
+  similarRecipeId Int      // A recipe that's similar to the base recipe
+  similarityScore Float    // How similar they are (higher = more similar)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  baseRecipe    Recipe @relation("SimilarToRecipe", fields: [baseRecipeId], references: [id], onDelete: Cascade)
+  similarRecipe Recipe @relation("SimilarRecipe", fields: [similarRecipeId], references: [id], onDelete: Cascade)
+
+  @@unique([baseRecipeId, similarRecipeId])
+  @@index([baseRecipeId, similarityScore(sort: Desc)])
+}
+
 model Recipe {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
@@ -38,4 +53,7 @@ model Recipe {
   viewCount    Int      @default(0)
   authorId     String
   author       User     @relation(fields: [authorId], references: [id])
+  
+  similarRecipes RecipeSimilarity[] @relation("SimilarToRecipe")
+  similarToOtherRecipes RecipeSimilarity[] @relation("SimilarRecipe")
 }
