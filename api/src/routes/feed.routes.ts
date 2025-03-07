@@ -6,13 +6,13 @@ const router = Router();
 
 // Get all published recipes with search
 router.get('/', async (req, res) => {
-  const { searchString, skip, take, orderBy } = req.query
+  const { search, skip, take, orderBy } = req.query
 
-  const or: Prisma.RecipeWhereInput = searchString
+  const or: Prisma.RecipeWhereInput = search
     ? {
         OR: [
-          { title: { contains: searchString as string, mode: 'insensitive' } },
-          { description: { contains: searchString as string, mode: 'insensitive' } },
+          { title: { contains: search as string, mode: 'insensitive' } },
+          { description: { contains: search as string, mode: 'insensitive' } },
         ],
       }
     : {}
