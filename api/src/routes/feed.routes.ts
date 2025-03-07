@@ -11,8 +11,8 @@ router.get('/', async (req, res) => {
   const or: Prisma.RecipeWhereInput = searchString
     ? {
         OR: [
-          { title: { contains: searchString as string } },
-          { description: { contains: searchString as string } },
+          { title: { contains: searchString as string, mode: 'insensitive' } },
+          { description: { contains: searchString as string, mode: 'insensitive' } },
         ],
       }
     : {}
