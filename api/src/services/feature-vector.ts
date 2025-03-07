@@ -1,10 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../../prisma/db';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
 
 const execAsync = promisify(exec);
-const prisma = new PrismaClient();
 
 /**
  * Generate and store a feature vector for a recipe
@@ -41,7 +40,7 @@ export async function generateFeatureVector(recipeId: number): Promise<number[]>
       update: { vector },
       create: { recipeId, vector }
     });
-
+    console.log('vector generated:', vector);
     return vector;
   } catch (error) {
     console.error('Error generating feature vector:', error);

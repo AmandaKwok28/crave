@@ -1,57 +1,5 @@
-import { PrismaClient, Recipe } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-/**
- * Calculate and store similarity between two recipes in both directions
- */
-export async function storeBidirectionalSimilarity(recipe1Id: number, recipe2Id: number) {
-  // Get recipe data
-  const recipe1 = await prisma.recipe.findUnique({ where: { id: recipe1Id } });
-  const recipe2 = await prisma.recipe.findUnique({ where: { id: recipe2Id } });
-  
-  if (!recipe1 || !recipe2) {
-    throw new Error(`One or both recipes not found: ${recipe1Id}, ${recipe2Id}`);
-  }
-  
-  // Calculate similarity score once
-  const similarityScore = await calculateSimilarity(recipe1Id, recipe2Id);
-  
-  // Store both directions in a transaction
-  await prisma.$transaction([
-    // Direction 1: recipe1 -> recipe2
-    prisma.recipeSimilarity.upsert({
-      where: {
-        baseRecipeId_similarRecipeId: {
-          baseRecipeId: recipe1Id,
-          similarRecipeId: recipe2Id
-        }
-      },
-      update: { similarityScore },
-      create: {
-        baseRecipeId: recipe1Id,
-        similarRecipeId: recipe2Id,
-        similarityScore
-      }
-    }),
-    
-    // Direction 2: recipe2 -> recipe1 (same score)
-    prisma.recipeSimilarity.upsert({
-      where: {
-        baseRecipeId_similarRecipeId: {
-          baseRecipeId: recipe2Id,
-          similarRecipeId: recipe1Id
-        }
-      },
-      update: { similarityScore },
-      create: {
-        baseRecipeId: recipe2Id,
-        similarRecipeId: recipe1Id,
-        similarityScore
-      }
-    })
-  ]);
-}
+import { Recipe } from '@prisma/client';
+import { prisma } from '../../prisma/db';
 
 /**
  * Calculate similarity between two recipes
@@ -148,10 +96,7 @@ function calculateCosineSimilarity(v1: number[], v2: number[]): number {
   return dotProduct / (mag1 * mag2);
 }
 
-/**
- * Process a new or updated recipe to calculate its similarities
- */
-export async function processRecipeSimilarities(recipeId: number) {
+export async function processRecipeSimilarities(recipeId: number, maxSimilarities: number = 10) {
   // Get all other published recipes
   const otherRecipes = await prisma.recipe.findMany({
     where: { 
@@ -160,10 +105,105 @@ export async function processRecipeSimilarities(recipeId: number) {
     }
   });
   
-  // Calculate and store bidirectional similarities
+  type SimilarityEntry = {
+    baseRecipeId: number;
+    similarRecipeId: number;
+    similarityScore: number;
+  };
+
+  // Calculate all similarities
+  const similarities: SimilarityEntry[] = [];
   for (const recipe of otherRecipes) {
-    await storeBidirectionalSimilarity(recipeId, recipe.id);
+    const score = await calculateSimilarity(recipeId, recipe.id);
+    similarities.push({
+      baseRecipeId: recipeId,
+      similarRecipeId: recipe.id,
+      similarityScore: score
+    });
   }
+  
+  // Process in a transaction with increased timeout
+  await prisma.$transaction(
+    async (tx) => {
+      // STEP 1: Insert all new similarities (upsert to handle existing relationships)
+      for (const similarity of similarities) {
+        await tx.recipeSimilarity.upsert({
+          where: {
+            baseRecipeId_similarRecipeId: {
+              baseRecipeId: similarity.baseRecipeId,
+              similarRecipeId: similarity.similarRecipeId
+            }
+          },
+          update: { similarityScore: similarity.similarityScore },
+          create: similarity
+        });
+        
+        // Also create/update the reverse relationship
+        await tx.recipeSimilarity.upsert({
+          where: {
+            baseRecipeId_similarRecipeId: {
+              baseRecipeId: similarity.similarRecipeId,
+              similarRecipeId: similarity.baseRecipeId
+            }
+          },
+          update: { similarityScore: similarity.similarityScore },
+          create: {
+            baseRecipeId: similarity.similarRecipeId,
+            similarRecipeId: similarity.baseRecipeId,
+            similarityScore: similarity.similarityScore
+          }
+        });
+      }
+      
+      // STEP 2: Trim excess similarities for the base recipe
+      // Find all similarities for this recipe, ordered by score (thanks to the index)
+      const allBaseSimilarities = await tx.recipeSimilarity.findMany({
+        where: { baseRecipeId: recipeId },
+        orderBy: { similarityScore: 'desc' }
+      });
+      
+      // If we have more than maxSimilarities, delete the excess
+      if (allBaseSimilarities.length > maxSimilarities) {
+        const toRemove = allBaseSimilarities.slice(maxSimilarities);
+        for (const similarity of toRemove) {
+          await tx.recipeSimilarity.delete({
+            where: {
+              baseRecipeId_similarRecipeId: {
+                baseRecipeId: similarity.baseRecipeId,
+                similarRecipeId: similarity.similarRecipeId
+              }
+            }
+          });
+        }
+      }
+      
+      // STEP 3: Trim excess similarities for other recipes
+      for (const otherRecipe of otherRecipes) {
+        const allOtherSimilarities = await tx.recipeSimilarity.findMany({
+          where: { baseRecipeId: otherRecipe.id },
+          orderBy: { similarityScore: 'desc' }
+        });
+        
+        // If this recipe has too many similarities, trim the excess
+        if (allOtherSimilarities.length > maxSimilarities) {
+          const toRemove = allOtherSimilarities.slice(maxSimilarities);
+          for (const similarity of toRemove) {
+            await tx.recipeSimilarity.delete({
+              where: {
+                baseRecipeId_similarRecipeId: {
+                  baseRecipeId: similarity.baseRecipeId,
+                  similarRecipeId: similarity.similarRecipeId
+                }
+              }
+            });
+          }
+        }
+      }
+    },
+    { 
+      timeout: 10000 // 10 second timeout
+    }
+  );
 }
 
 /**

@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
         await generateFeatureVector(recipe.id);
         
         // Then process similarities (using the newly created vector)
-        await processRecipeSimilarities(recipe.id);
+        await processRecipeSimilarities(recipe.id, 10);
       } catch (err) {
         console.error(`Error in background processing for recipe ${recipe.id}:`, err);
       }
