@@ -97,6 +97,18 @@ function calculateCosineSimilarity(v1: number[], v2: number[]): number {
 }
 
 export async function processRecipeSimilarities(recipeId: number, maxSimilarities: number = 10) {
+  const baseRecipe = await prisma.recipe.findUnique({
+    where: { 
+      id: recipeId,
+      published: true  // Ensure we only process published recipes
+    }
+  });
+
+  if (!baseRecipe) {
+    console.log(`Skipping similarity processing: Recipe ${recipeId} not found or not published`);
+    return;
+  }
+  
   // Get all other published recipes
   const otherRecipes = await prisma.recipe.findMany({
     where: { 

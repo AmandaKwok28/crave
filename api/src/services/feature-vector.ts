@@ -25,12 +25,18 @@ export async function generateFeatureVector(recipeId: number): Promise<number[]>
       throw new Error(`Recipe with ID ${recipeId} not found`);
     }
 
-    // Call your Python script to generate the feature vector
-    // This assumes your Python script is set up to accept JSON input and output
     const recipeData = JSON.stringify(recipe);
     const scriptPath = path.join(__dirname, '../../scripts/generate_vector.py');
-    const { stdout } = await execAsync(`python3 ${scriptPath} '${recipeData}'`);
     
+    const { stdout: pythonPath } = await execAsync('which python3'); // testing
+    console.log('Python interpreter path:', pythonPath.trim());
+
+    const { stdout, stderr } = await execAsync(`python3 ${scriptPath} '${recipeData}'`);
+    
+    if (stderr) {
+      console.log(stderr);
+    }
+
     // Parse the vector from the Python script output
     const vector = JSON.parse(stdout.trim());
 
