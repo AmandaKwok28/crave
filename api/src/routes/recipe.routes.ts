@@ -19,18 +19,15 @@ router.post('/', async (req, res) => {
       },
     });
 
-    // Process asynchronously in correct sequence without blocking response
+    // Process asynchronously without blocking response
     (async () => {
       try {
-        // First generate the feature vector
         await generateFeatureVector(recipe.id);
-        
-        // Then process similarities (using the newly created vector)
         await processRecipeSimilarities(recipe.id, 10);
       } catch (err) {
         console.error(`Error in background processing for recipe ${recipe.id}:`, err);
       }
-    })(); // Immediately invoke but don't await
+    })();
 
     res.json(recipe)
   });

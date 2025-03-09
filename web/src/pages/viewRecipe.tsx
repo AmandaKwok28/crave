@@ -85,6 +85,7 @@ const ViewRecipe = ({ recipe_id }: {
 
             </Flex>
 
+            
             {/* Display loading spinner while fetching similar recipes */}
             {loading ? (
                 <Center py={8}>

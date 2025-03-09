@@ -9,17 +9,15 @@ const Slider = lazy(() => import("react-slick"));
 
 interface SimilarRecipesSliderProps {
   recipes: RecipeType[];
-  currentRecipeId: number;
+  currentRecipeId?: number; // Make it optional since it's not being used
 }
 
-const SimilarRecipesSlider = ({ recipes, currentRecipeId }: SimilarRecipesSliderProps) => {
+const SimilarRecipesSlider = ({ recipes }: SimilarRecipesSliderProps) => {
   const sliderRef = useRef<any>(null);
   
-  // Filter out current recipe and get similar recipes (max 10)
-  const similarRecipes = recipes
-    .filter(recipe => recipe.id !== currentRecipeId)
-    .slice(0, 10);
-  
+  // recipes is a list of similar recipes
+  const similarRecipes = recipes;
+
   // Don't show anything if no similar recipes
   if (similarRecipes.length === 0) return null;
   
@@ -77,7 +75,7 @@ const SimilarRecipesSlider = ({ recipes, currentRecipeId }: SimilarRecipesSlider
         position="relative"
         maxWidth="100%"
         mx="auto"
-        px={10} // Add padding to make room for the buttons
+        px={10}
         css={{
           ".slick-slider": {
             width: "100%",
@@ -95,10 +93,10 @@ const SimilarRecipesSlider = ({ recipes, currentRecipeId }: SimilarRecipesSlider
           },
           ".slick-dots li button:before": {
             fontSize: "10px",
-            color: "#319795" // teal.500 equivalent
+            color: "#319795"
           },
           ".slick-dots li.slick-active button:before": {
-            color: "#2C7A7B" // teal.600 equivalent
+            color: "#2C7A7B"
           },
           ".slick-track": {
             display: "flex",

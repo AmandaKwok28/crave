@@ -12,19 +12,17 @@ try:
     # print(f"DEBUG - Recipe text: {recipe_text}", file=sys.stderr)
 
     from sentence_transformers import SentenceTransformer
-    cache_dir = os.path.join(os.path.dirname(__file__), 'model_cache') # Cache model locally to improve speed
+    cache_dir = os.path.join(os.path.dirname(__file__), 'model_cache') # Cache model locally to avoid downloading every time
     os.makedirs(cache_dir, exist_ok=True)
     print(f"Using model cache at: {cache_dir}", file=sys.stderr)
 
     model = SentenceTransformer('all-MiniLM-L6-v2', cache_folder=cache_dir) 
-    # model = SentenceTransformers('all-mpnet-base-v2')  # More accurate
+    # model = SentenceTransformers('all-mpnet-base-v2')  # More accurate, slower
 
-    # Generate embeddings
     embeddings = model.encode(recipe_text) # 384-dimension embeddings
 
-    # Maybe PCA to reduce dimensionality if calcualtion is too slow
+    # May use PCA to reduce dimensionality if calcualtion is too slow
 
-    # Output the vector as JSON
     print(json.dumps(embeddings.tolist()))
 except IndexError:
     print("Usage: generate_vector.py <recipe_json>", file=sys.stderr)

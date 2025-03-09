@@ -10,7 +10,6 @@ const execAsync = promisify(exec);
  */
 export async function generateFeatureVector(recipeId: number): Promise<number[]> {
   try {
-    // Get the recipe data
     const recipe = await prisma.recipe.findUnique({
       where: { id: recipeId },
       select: {
@@ -31,13 +30,12 @@ export async function generateFeatureVector(recipeId: number): Promise<number[]>
     const { stdout: pythonPath } = await execAsync('which python3'); // testing
     console.log('Python interpreter path:', pythonPath.trim());
 
-    const { stdout, stderr } = await execAsync(`python3 ${scriptPath} '${recipeData}'`);
+    const { stdout, stderr } = await execAsync(`python3 ${scriptPath} '${recipeData}'`); // run the python script
     
     if (stderr) {
       console.log(stderr);
     }
 
-    // Parse the vector from the Python script output
     const vector = JSON.parse(stdout.trim());
 
     // Store the vector in the database
