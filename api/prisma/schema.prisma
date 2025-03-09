@@ -74,11 +74,11 @@ model Recipe {
   viewCount    Int      @default(0)
   authorId     String
   author       User     @relation(fields: [authorId], references: [id])
-  mealTypes    String[]
-  price        Price
-  cuisine      Cuisine
-  allergens    String[]
-  difficulty   Difficulty
-  sources      String[]
-  prepTime     Int
+  mealTypes    String[]?
+  price        Price?
+  cuisine      Cuisine?
+  allergens    String[]?
+  difficulty   Difficulty?
+  sources      String[]?
+  prepTime     Int?
 }
