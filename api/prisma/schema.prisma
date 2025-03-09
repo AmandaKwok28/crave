@@ -7,11 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Like {
+  id          Int        @id @default(autoincrement())
+  recipeId    Int
+  userId      String
+  recipe      Recipe     @relation(fields: [recipeId], references: [id])
+  user        User       @relation(fields: [userId], references: [id])
+  date        DateTime   @default(now())
+}
+
 model User {
   id           String       @id @default(uuid())
   email        String    @unique
   name         String
   passwordHash String
+  bookmarks    Int[]
+  likes        Like[]  
   school       String
   major        String
   recipes      Recipe[]
@@ -58,6 +69,7 @@ model Recipe {
   description  String?
   ingredients  String[]
   instructions String[]
+  likes        Like[] 
   published    Boolean  @default(false)
   viewCount    Int      @default(0)
   authorId     String
