@@ -1,5 +1,6 @@
 import { RecipeType, UserType } from "@/data/types";
 import { persistentAtom } from "@nanostores/persistent";
+import { atom } from "nanostores";
 
 export const $user = persistentAtom<UserType>('user', {
   id: '',
@@ -54,4 +55,19 @@ export function setDrafts(recipes: RecipeType[]) {
 
 export function addDrafts(recipe: RecipeType) {
     $drafts.set([...$drafts.get(), recipe]);
+}
+
+
+export const $searchTags = atom<string[]>([]);
+export function addSearchTags(tag: string) {
+  $searchTags.set([...$searchTags.get(), tag]);
+}
+
+export function removeSearchTags(tag: string) {
+  $searchTags.set($searchTags.get().filter((tags) => tags !== tag));
+}
+
+export const $deletedSearchTag = atom<string>("");
+export function setDeletedSearchTag(tag: string) {
+  $deletedSearchTag.set(tag);
 }
