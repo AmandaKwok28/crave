@@ -1,4 +1,4 @@
-import { $deletedSearchTag, $searchTags, addSearchTags, removeSearchTags } from "@/lib/store";
+import { $deletedSearchTag, addSearchTags, removeSearchTags } from "@/lib/store";
 import { Flex, Input, Text } from "@chakra-ui/react"
 import { Tag } from "@chakra-ui/react";
 import { useStore } from "@nanostores/react";
@@ -15,7 +15,6 @@ const TagInput = ({
     // set the state for tag input values and tags created
     const [inputValue, setInputValue] = useState("");
     const [tags, setTags] = useState<string[]>([]);
-    const searchTags = useStore($searchTags);
     const deletedSearchTag = useStore($deletedSearchTag);
 
     const handleInputChange = (e: any) => {
@@ -59,7 +58,7 @@ const TagInput = ({
                 onKeyDown={handleKeyDown}>
             </Input>
 
-            <Flex wrap="wrap" gap="2" mt="2">
+            <Flex wrap="wrap" gap="4" mt="2">
                 {tags.map((tag, index) => (
                 <Tag.Root key={index} variant="subtle" size="lg" w="fit-content">
                     <Tag.Label>{tag}</Tag.Label>
