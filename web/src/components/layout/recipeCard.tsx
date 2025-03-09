@@ -36,9 +36,7 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
         </Card.Description>
         <Card.Description>
             <Text lineClamp="3">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-            Ut enim ad minim veniam, quis
+            {recipe.description}
             </Text>
         </Card.Description>
       </Card.Body>
