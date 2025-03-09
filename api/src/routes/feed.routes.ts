@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Prisma } from '@prisma/client';
+import { Cuisine, Difficulty, Price, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/db';
 
 const router = Router();
@@ -11,8 +11,8 @@ router.get('/', async (req, res) => {
     skip, 
     take, 
     orderBy,
+    mealTypes,
     difficulty,
-    mealType,
     price,
     cuisine,
     allergens,
@@ -31,38 +31,43 @@ router.get('/', async (req, res) => {
     : {}
 
   // Meal Type
-  const mealTypeFilter: Prisma.RecipeWhereInput = mealType
-    ? { mealType: { hasSome: Array.isArray(mealType) ? mealType : [mealType] } }
+  const mealTypesArray = (mealTypes as string)?.split(',');
+  const mealTypeFilter: Prisma.RecipeWhereInput = mealTypesArray && mealTypesArray.length > 0
+    ? { mealTypes: { hasSome: mealTypesArray } }
     : {};
+
 
   // Price
   const priceFilter: Prisma.RecipeWhereInput = price
-    ? { price: price as string }
+    ? { price: price as Price }
     : {};
 
   // Cuisine
   const cuisineFilter: Prisma.RecipeWhereInput = cuisine
-    ? { cuisine: cuisine as string }
+    ? { cuisine: cuisine as Cuisine }
     : {};
 
   // Allergens
-  const allergensFilter: Prisma.RecipeWhereInput = allergens
-    ? { allergens: { hasSome: Array.isArray(allergens) ? allergens : [allergens] } }
+  const allergensArray = (allergens as string)?.split(',');
+  const allergensFilter: Prisma.RecipeWhereInput = allergensArray && allergensArray.length > 0
+    ? { allergens: { hasSome: allergensArray} }
     : {};
 
   // Difficulty
   const difficultyFilter: Prisma.RecipeWhereInput = difficulty
-    ? { difficulty: difficulty as string }
+    ? { difficulty: difficulty as Difficulty }
     : {};
 
   // Sources
-  const sourcesFilter: Prisma.RecipeWhereInput = sources
-    ? { sources: { hasSome: Array.isArray(sources) ? sources : [sources] } }
+  const sourcesArray = (sources as string)?.split(',');
+  const sourcesFilter: Prisma.RecipeWhereInput = sourcesArray && sourcesArray.length > 0
+    ? { allergens: { hasSome: sourcesArray} }
     : {};
+
 
   // Prep Time (Minutes)
   const prepTimeFilter: Prisma.RecipeWhereInput = prepTime
-    ? {}
+    ? { prepTime: { equals: Number(prepTime) } }
     : {};
 
   const recipes = await prisma.recipe.findMany({
@@ -72,7 +77,10 @@ router.get('/', async (req, res) => {
       ...difficultyFilter,
       ...mealTypeFilter,
       ...cuisineFilter,
+      ...allergensFilter,
+      ...priceFilter,
       ...sourcesFilter,
+      ...prepTimeFilter,
     },
     include: { author: true },
     take: Number(take) || undefined,
