@@ -12,6 +12,7 @@ router.get('/', async (req, res) => {
       skip, 
       take, 
       orderBy,
+      ingredients,
       mealTypes,
       difficulty,
       price,
@@ -50,6 +51,12 @@ router.get('/', async (req, res) => {
           ],
         }
       : {}
+
+    // Ingredients - Tag-Input
+    const ingredientsArray = (ingredients as string)?.split(',');
+    const ingredientsFilter: Prisma.RecipeWhereInput = ingredientsArray && ingredientsArray.length > 0
+        ? {ingredients: {hasSome: ingredientsArray}}
+        : {};
   
     // Meal Type - Multi-Select
     const mealTypesArray = (mealTypes as string)?.split(',');
@@ -57,7 +64,7 @@ router.get('/', async (req, res) => {
       ? { mealTypes: { hasSome: mealTypesArray } }
       : {};
   
-    // Price - Single-Select
+    // Price Level - Single-Select
     const priceFilter: Prisma.RecipeWhereInput = price
       ? { price: (price as string).toUpperCase() as Price }
       : {};
@@ -67,7 +74,7 @@ router.get('/', async (req, res) => {
       ? { cuisine: { in: cuisineArray.map(c => c.toUpperCase() as Cuisine) } }
       : {};
   
-    // Allergens - Multi-Select
+    // Allergens - Tag-Input
     const allergensArray = (allergens as string)?.split(',');
     const allergensFilter: Prisma.RecipeWhereInput = allergensArray && allergensArray.length > 0
       ? { allergens: { hasSome: allergensArray} }
@@ -78,7 +85,7 @@ router.get('/', async (req, res) => {
       ? { difficulty: (difficulty as string).toUpperCase() as Difficulty }
       : {};
   
-    // Ingredient Sources - Multi-Select
+    // Ingredient Sources - Tag-Input
     const sourcesArray = (sources as string)?.split(',');
     const sourcesFilter: Prisma.RecipeWhereInput = sourcesArray && sourcesArray.length > 0
       ? { allergens: { hasSome: sourcesArray} }
@@ -96,6 +103,7 @@ router.get('/', async (req, res) => {
       where: {
         published: true,
         ...or,
+        ...ingredientsFilter,
         ...difficultyFilter,
         ...mealTypeFilter,
         ...cuisineFilter,
