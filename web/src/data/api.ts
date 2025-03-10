@@ -58,7 +58,6 @@ export const publishRecipe = async (id:number): Promise<boolean> => {
 }
 
 // Create a new Recipe
-// TODO: Figure out how to get the Author ID of current user
 export const createRecipe = async (
   title: string, 
   description: string, 
