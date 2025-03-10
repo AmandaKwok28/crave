@@ -47,9 +47,24 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Update a recipe
 router.patch('/:id/', authGuard, async (req, res) => {
   const { id } = req.params;
-  const { title, description, ingredients, instructions, published, image } = req.body
+  const { 
+    title, 
+    description, 
+    ingredients, 
+    instructions, 
+    published,
+    image,
+    mealTypes,
+    difficulty,
+    price,
+    cuisine,
+    allergens,
+    sources,
+    prepTime
+  } = req.body;
 
   const validate = await prisma.recipe.findFirst({ where: { id: Number(id) } });
   if (!validate) {
@@ -73,12 +88,19 @@ router.patch('/:id/', authGuard, async (req, res) => {
       id: Number(id)
     },
     data: {
-      title,
-      description,
-      ingredients,
-      instructions,
+      title, 
+      description, 
+      ingredients, 
+      instructions, 
       published,
-      image
+      image,
+      mealTypes,
+      difficulty,
+      price,
+      cuisine,
+      allergens,
+      sources,
+      prepTime
     }
   });
 
