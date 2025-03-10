@@ -12,17 +12,17 @@ export const fetchUsers = async (): Promise<UserType[]> => {
   return data;
 };
 
-// Fetch all recipies
+// Fetch all recipes
 export const fetchRecipes = async (): Promise<RecipeType[]> => {
-const response = await fetch(`${API_URL}/feed`);
-if (!response.ok) {
-  throw new Error(`API request failed! with status: ${response.status}`);
-}
-const data: RecipeType[] = await response.json();
-return data;
+  const response = await fetch(`${API_URL}/feed`);
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const data: RecipeType[] = await response.json();
+  return data;
 };
 
-
+// Fetch all drafts
 export const fetchDrafts = async (id:string): Promise<RecipeType[]> => {
   const response = await fetch(`${API_URL}/user/${id}/drafts`, { credentials: 'include' });
 
@@ -44,6 +44,7 @@ if (!response.ok) {
 return true;
 };
 
+// Publish a recipe
 export const publishRecipe = async (id:number): Promise<boolean> => {
   const response = await fetch(`${API_URL}/recipe/${id}/publish`, {
     method: "PUT",
@@ -57,7 +58,7 @@ export const publishRecipe = async (id:number): Promise<boolean> => {
   return true;
 }
 
-// Create a new Recipe
+// Create a new recipe
 export const createRecipe = async (
   title: string, 
   description: string, 
@@ -84,6 +85,7 @@ export const createRecipe = async (
     return data;
 };
 
+// Update a recipe
 export const patchRecipe = async (
   id: number,
   title: string, 
@@ -112,7 +114,7 @@ export const patchRecipe = async (
     return data;
 };
 
-// login
+// Login
 export const login = async ( email: string, password: string ): Promise<UserType> => {
   const res = await fetch(`${API_URL}/login`, {
     method: 'POST',
