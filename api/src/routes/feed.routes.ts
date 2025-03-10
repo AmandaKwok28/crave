@@ -18,7 +18,8 @@ router.get('/', async (req, res) => {
       cuisine,
       allergens,
       sources,
-      prepTime
+      prepTimeMin,
+      prepTimeMax
     } = req.query
 
     // Validate enum parameters (difficulty, price, cuisine)
@@ -77,17 +78,19 @@ router.get('/', async (req, res) => {
       ? { difficulty: (difficulty as string).toUpperCase() as Difficulty }
       : {};
   
-    // Sources - Multi-Select
+    // Ingredient Sources - Multi-Select
     const sourcesArray = (sources as string)?.split(',');
     const sourcesFilter: Prisma.RecipeWhereInput = sourcesArray && sourcesArray.length > 0
       ? { allergens: { hasSome: sourcesArray} }
       : {};
   
-  
-    // Prep Time (Minutes) // TODO: should be range?
-    const prepTimeFilter: Prisma.RecipeWhereInput = prepTime
-      ? { prepTime: { equals: Number(prepTime) } }
-      : {};
+    // Prep Time (Minutes) - Range Slider
+    const prepTimeFilter: Prisma.RecipeWhereInput = {
+      prepTime: {
+        ...(prepTimeMin ? { gte: Number(prepTimeMin) } : {}),
+        ...(prepTimeMax ? { lte: Number(prepTimeMax) } : {}),
+      },
+    };
   
     const recipes = await prisma.recipe.findMany({
       where: {
