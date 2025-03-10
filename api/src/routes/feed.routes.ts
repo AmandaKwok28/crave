@@ -77,7 +77,7 @@ router.get('/', async (req, res) => {
     // Allergens - Tag-Input
     const allergensArray = (allergens as string)?.split(',');
     const allergensFilter: Prisma.RecipeWhereInput = allergensArray && allergensArray.length > 0
-      ? { allergens: { hasSome: allergensArray} }
+      ? { NOT: { allergens: { hasSome: allergensArray} }}
       : {};
   
     // Difficulty - Single-Select // TODO: Make return <= instead of = ?
