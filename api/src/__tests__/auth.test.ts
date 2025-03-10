@@ -132,3 +132,89 @@ describe('Session validation', async () => {
     expect(response.status).toBe(401);  
   });
 });
+
+describe('Logout', async () => {
+  test('Successful logout', async () => {
+    prisma.session.findUnique.mockResolvedValue({
+      id: '01',
+      userId: '1',
+      expiresAt: new Date(Date.now() + 1_000_000),
+      //@ts-ignore
+      user: {
+        ...exampleUser,
+        passwordHash: 'test'
+      }
+    });
+
+    const response = await request(app)
+      .post('/logout')
+      .set('Cookie', [
+        'session=01'
+      ]);
+
+    expect(response.body).toStrictEqual({
+      message: 'Successfully logged out'
+    });
+  
+    expect(response.status).toBe(200);  
+  });
+
+  test('Unsuccessful logout', async () => {
+    prisma.session.findUnique.mockResolvedValue(null);
+
+    const response = await request(app)
+      .post('/logout')
+      .set('Cookie', [
+        'session=01'
+      ]);
+
+    expect(response.body).toStrictEqual({
+      message: 'Unauthorized'
+    });
+  
+    expect(response.status).toBe(401);  
+  })
+});
+
+describe('Get user', async () => {
+  test('Successful get', async () => {
+    prisma.session.findUnique.mockResolvedValue({
+      id: '01',
+      userId: '1',
+      expiresAt: new Date(Date.now() + 1_000_000),
+      //@ts-ignore
+      user: {
+        ...exampleUser,
+        passwordHash: 'test'
+      }
+    });
+
+    const response = await request(app)
+      .get('/get-user')
+      .set('Cookie', [
+        'session=01'
+      ]);
+
+    expect(response.body).toStrictEqual({
+      data: exampleUser
+    });
+  
+    expect(response.status).toBe(200);  
+  });
+
+  test('Unsuccessful get', async () => {
+    prisma.session.findUnique.mockResolvedValue(null);
+
+    const response = await request(app)
+      .get('/get-user')
+      .set('Cookie', [
+        'session=01'
+      ]);
+
+    expect(response.body).toStrictEqual({
+      message: 'Unauthorized'
+    });
+
+    expect(response.status).toBe(401);  
+  });
+});
