@@ -81,14 +81,14 @@ export function setSessionTokenCookie(response: Response, token: string, expires
 	if (process.env.NODE_ENV === 'production') {
 		response.cookie('session', token, {
 			httpOnly: true,
-			sameSite: 'none',
+			sameSite: 'lax',
 			expires: expiresAt,
 			secure: true
 		});
 	} else {
 		response.cookie('session', token, {
 			httpOnly: true,
-			sameSite: 'none',
+			sameSite: 'lax',
 			expires: expiresAt
 		});
 	}
@@ -98,14 +98,14 @@ export function deleteSessionTokenCookie(response: Response): void {
 	if (process.env.NODE_ENV === 'production') {
 		response.cookie('session', '', {
 			httpOnly: true,
-			sameSite: 'none',
+			sameSite: 'lax',
 			maxAge: 0,
 			secure: true
 		});
 	} else {
 		response.cookie('session', '', {
 			httpOnly: true,
-			sameSite: 'none',
+			sameSite: 'lax',
 			maxAge: 0
 		});
 	}

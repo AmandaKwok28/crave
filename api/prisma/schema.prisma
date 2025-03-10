@@ -8,12 +8,14 @@ datasource db {
 }
 
 model Like {
-  id          Int        @id @default(autoincrement())
-  recipeId    Int
-  userId      String
-  recipe      Recipe     @relation(fields: [recipeId], references: [id])
-  user        User       @relation(fields: [userId], references: [id])
-  date        DateTime   @default(now())
+  id           Int      @id @default(autoincrement())
+  recipeId     Int
+  userId       String
+  recipe       Recipe     @relation(fields: [recipeId], references: [id])
+  user         User       @relation(fields: [userId], references: [id])
+  date         DateTime   @default(now())
+
+  @@unique([recipeId, userId], name: "likeId")
 }
 
 model User {
