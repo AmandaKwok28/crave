@@ -1,4 +1,4 @@
-import { RecipeType, UserType } from "./types";
+import { Cuisine, Difficulty, Price, RecipeType, UserType } from "./types";
 import { API_URL } from "@/env";
 
 // Fetch all users
@@ -64,7 +64,14 @@ export const createRecipe = async (
   description: string, 
   ingredients: string[], 
   instructions: string[],
-  id: string
+  id: string,
+  mealTypes: string[],
+  price: Price,
+  cuisine: Cuisine,
+  allergens: string[],
+  difficulty: Difficulty,
+  sources: string[],
+  prepTime: number
 ): Promise<RecipeType> => {
     const response = await fetch(`${API_URL}/recipe`, {
       method: "POST",
@@ -74,7 +81,14 @@ export const createRecipe = async (
         ingredients,
         instructions,
         description,
-        authorId: id
+        authorId: id,
+        mealTypes,
+        price,
+        cuisine,
+        allergens,
+        difficulty,
+        sources,
+        prepTime,
       }),
     });
     console.log(response)
@@ -92,7 +106,14 @@ export const patchRecipe = async (
   description: string, 
   ingredients: string[], 
   instructions: string[],
-  published: boolean
+  published: boolean,
+  mealTypes: string[],
+  price: Price,
+  cuisine: Cuisine,
+  allergens: string[],
+  difficulty: Difficulty,
+  sources: string[],
+  prepTime: number
 ): Promise<RecipeType> => {
     const response = await fetch(`${API_URL}/recipe/${id}`, {
       method: "PATCH",
@@ -103,7 +124,14 @@ export const patchRecipe = async (
         ingredients,
         instructions,
         description,
-        published
+        published,
+        mealTypes,
+        price,
+        cuisine,
+        allergens,
+        difficulty,
+        sources,
+        prepTime,
       }),
     });
     console.log(response)
