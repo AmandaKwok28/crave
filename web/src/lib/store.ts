@@ -1,6 +1,7 @@
 import { RecipeType, UserType } from "@/data/types";
 import { persistentAtom } from "@nanostores/persistent";
 
+// User store
 export const $user = persistentAtom<UserType>('user', {
   id: '',
   email: '',
@@ -26,6 +27,7 @@ export function setUser(user: UserType) {
   $user.set(user);
 }
 
+// Recipes store
 export const $recipes = persistentAtom<RecipeType[]>('recipes', [], {
   encode: JSON.stringify,
   decode: JSON.parse
@@ -43,6 +45,7 @@ export function addRecipe(recipe: RecipeType) {
     $recipes.set([...$recipes.get(), recipe]);
 }
 
+// Drafts store
 export const $drafts = persistentAtom<RecipeType[]>('drafts', [], {
   encode: JSON.stringify,
   decode: JSON.parse
@@ -54,4 +57,41 @@ export function setDrafts(recipes: RecipeType[]) {
 
 export function addDrafts(recipe: RecipeType) {
     $drafts.set([...$drafts.get(), recipe]);
+}
+
+// Filters store 
+// TODO: Add filters type?
+export const $filters = persistentAtom('filters', {
+  mealTypes: [],
+  price: null,
+  difficulty: null,
+  cuisine: [],
+  prepTimeMin: null,
+  prepTimeMax: null,
+  ingredients: [],
+  allergens: [],
+  sources: [],
+  major: null
+}, {
+  encode: JSON.stringify,
+  decode: JSON.parse
+});
+
+export function setFilters(updatedFilters: any) { 
+  $filters.set({ ...$filters.get(), ...updatedFilters });
+}
+
+export function clearFilters() {
+  $filters.set({
+    mealTypes: [],
+    price: null,
+    difficulty: null,
+    cuisine: [],
+    prepTimeMin: null,
+    prepTimeMax: null,
+    ingredients: [],
+    allergens: [],
+    sources: [],
+    major: null
+  });
 }

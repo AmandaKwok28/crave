@@ -12,12 +12,48 @@ export const fetchUsers = async (): Promise<UserType[]> => {
   return data;
 };
 
-// Fetch all recipes
-export const fetchRecipes = async (): Promise<RecipeType[]> => {
-  const response = await fetch(`${API_URL}/feed`);
+// Fetch all recipes with query
+export const fetchRecipes = async (filters: any): Promise<RecipeType[]> => {
+  const filterParams: string[] = [];
+
+  if (filters.mealTypes?.length > 0) {
+    filterParams.push(`mealTypes=${filters.mealTypes.join(",")}`);
+  }
+  if (filters.price) {
+    filterParams.push(`price=${filters.price}`);
+  }
+  if (filters.difficulty) {
+    filterParams.push(`difficulty=${filters.difficulty}`);
+  }
+  if (filters.cuisine?.length > 0) {
+    filterParams.push(`cuisine=${filters.cuisine.join(",")}`);
+  }
+  if (filters.prepTimeMin) {
+    filterParams.push(`prepTimeMin=${filters.prepTimeMin}`);
+  }
+  if (filters.prepTimeMax) {
+    filterParams.push(`prepTimeMax=${filters.prepTimeMax}`);
+  }
+  if (filters.ingredients?.length > 0) {
+    filterParams.push(`ingredients=${filters.ingredients.join(",")}`);
+  }
+  if (filters.allergens?.length > 0) {
+    filterParams.push(`allergens=${filters.allergens.join(",")}`);
+  }
+  if (filters.sources?.length > 0) {
+    filterParams.push(`sources=${filters.sources.join(",")}`);
+  }
+  if (filters.major) {
+    filterParams.push(`major=${filters.major}`);
+  }
+
+  const queryString = filterParams.length > 0 ? `?${filterParams.join("&")}` : '';
+  const response = await fetch(`${API_URL}/feed${queryString}`);
+  
   if (!response.ok) {
     throw new Error(`API request failed! with status: ${response.status}`);
   }
+
   const data: RecipeType[] = await response.json();
   return data;
 };
