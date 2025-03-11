@@ -34,7 +34,13 @@ const DraftButton = ({ title, description, ingredients, instructions }: PublishR
   return (
     <DialogRoot size="md">
     <DialogTrigger asChild>
-        <Button bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400" color="white">
+    <Button 
+        variant="outline" 
+        bgImage="linear-gradient({colors.blue.500}, {colors.cyan.200})"
+        color="white" 
+        borderRadius="15px" 
+        border="non"
+    >
             Save to Drafts
         </Button>
     </DialogTrigger>

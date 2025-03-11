@@ -17,7 +17,13 @@ const CancelCreateRecipeButton = () => {
   return (
     <DialogRoot size="md">
     <DialogTrigger asChild>
-        <Button bgGradient="to-r" gradientFrom="red.300" gradientTo="orange.300" color="white">
+    <Button 
+        variant="outline" 
+        bgImage="linear-gradient({colors.blue.500}, {colors.cyan.200})"
+        color="white" 
+        borderRadius="15px" 
+        border="non"
+    >
             Cancel
         </Button>
     </DialogTrigger>

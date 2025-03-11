@@ -42,7 +42,13 @@ const PublishRecipeButton = ({ title, description, ingredients, instructions, dr
   return (
     <DialogRoot size="md">
     <DialogTrigger asChild>
-        <Button bgGradient="to-r" gradientFrom="teal.300" gradientTo="green.400" color="white">
+    <Button 
+        variant="outline" 
+        bgImage="linear-gradient({colors.blue.500}, {colors.cyan.200})"
+        color="white" 
+        borderRadius="15px" 
+        border="non"
+    >
             Publish
         </Button>
     </DialogTrigger>

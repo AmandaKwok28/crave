@@ -6,10 +6,18 @@ import { Field } from "@/components/ui/field";
 import { InputGroup } from "@/components/ui/input-group";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import { $router } from "@/lib/router";
-import { Button, ButtonGroup, Flex, IconButton, Input, Text, Textarea } from "@chakra-ui/react";
+import { Button, ButtonGroup, Flex, IconButton, Input, Text, Textarea, Image } from "@chakra-ui/react";
+import {
+  FileUploadList,
+  FileUploadRoot,
+  FileUploadTrigger,
+} from "@/components/ui/file-upload"
 import { redirectPage } from "@nanostores/router";
 import { Trash } from "lucide-react";
 import { useEffect, useState } from "react";
+import { HiUpload } from "react-icons/hi";
+import { FileAcceptDetails } from "node_modules/@chakra-ui/react/dist/types/components/file-upload/namespace";
+import VerticalCheckBoxes from "@/components/search/verticalCheckBoxes";
 
 // If draft_id is set, this will be autopopulated on page load
 // Also, "publishing" simply edits the draft and sets published = true
@@ -21,6 +29,9 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
   const [ description, setDescription ] = useState<string>('');
   const [ instructions, setInstructions ] = useState<string[]>(['']);
   const [ ingredients, setIngredients ] = useState<string[]>(['']);
+  const [ currIndex, setCurrindex ] = useState<number>(0);
+  const [ empty, setEmpty ] = useState<boolean>(false);
+  const [ img, setImage ] = useState<string>("img_placeholder.jpg");
 
   useEffect(() => {
     if (!draft) {
@@ -49,8 +60,33 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
   const handleIngDelete = (index: number) => {
     const list = [ ...ingredients ];
     list.splice(index, 1);
+    setCurrindex(currIndex - 1);
     setIngredients(() => list);
+    setEmpty(false);
   };
+
+  const handleAddIngredient = () => {
+    if (ingredients[currIndex].trim() === "") {
+      console.log('Cannot add empty ingredient')
+      setEmpty(true);
+    } else {
+      setCurrindex(currIndex + 1);
+      setIngredients((l) => [...l, ''])
+      setEmpty(false);
+    }
+  }
+
+  const handleImageFile = (e: FileAcceptDetails) => {
+    if (e.files.length > 0) {
+      const file = e.files[0];
+      const imageUrl = URL.createObjectURL(file); // Generate temporary URL
+      setImage(imageUrl); // Store the image URL in state
+    }
+  }
+
+  const cuisines = ['Chinese', 'Indian' , 'Mediterranean', 'American'];
+  const mealType = ['Breakfast', 'Lunch', 'Dinner'];
+  const difficulty = ['Beginner', 'Intermediate', 'Expert'];
 
   return (
     <Flex gap='4' flexDir='column' minW='100vw' align='center' justify='center'>
@@ -61,63 +97,145 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
       </Flex>
 
       <Flex my='24' gap='4' flexDir='column' px='4' align='center'>
-        <Field label='Title' required w='50rem' maxW='80%'>
-          <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder='Enter a recipe title...'
-          />
-        </Field>
 
-        <Field label='Description' required w='50rem' maxW='80%'>
-          <Textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder='Enter a recipe description...'
-            h='10lh'
-          />
-        </Field>
+        <Flex direction="row" gap="8">
 
-        <Field label='Ingredients' required w='50rem' maxW='80%'>
-          <Flex gap='3' justify='flex-end' flexWrap='wrap' w='100%'>
-            {ingredients.map((ingredient, i) => (
-              <InputGroup
-                key={i}
-                w='100%'
-                endElement={(
-                  <IconButton
-                    variant='ghost'
-                    color='red.400'
-                    me='-1'
-                    size='xs'
-                    onClick={() => handleIngDelete(i)}
-                  >
-                    <Trash />
-                  </IconButton>
-                )}
-              >
-                <Input
-                  placeholder='Enter an ingredient...'
-                  value={ingredient}
-                  onChange={(e) => handleIngInput(i, e)}
+          {/* Column 1: image, cooking instructions, preferences */}
+          <Flex direction="column" gap="4">
+            {/* Add an image upload option... */}
+            <Image rounded="md" src={img} w="30vw"/>
+
+            <FileUploadRoot accept={["image/png"]} onFileAccept={handleImageFile}>
+              <FileUploadTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <HiUpload /> Upload file
+                </Button>
+              </FileUploadTrigger>
+              <FileUploadList />
+            </FileUploadRoot>
+
+            <Field label='Instructions' required >
+              <Textarea
+                value={instructions[0]}
+                onChange={(e) => setInstructions([ e.target.value ])}
+                placeholder='Enter recipe instructions...'
+                h='12lh'
+              />
+            </Field>
+
+            {/* Tags */}
+            Additional Information (optional)
+            <Flex direction="row" w="full" gap="2" alignItems="center" justifyContent="space-between">
+              {/* Price */}
+              <Field label='Price' required >
+                <Flex direction="row" gap="2">
+                    <Button size="sm" borderRadius="10px" bg="white" color="black" variant="outline">
+                        $
+                    </Button>
+                    <Button size="sm" borderRadius="10px" bg="white" color="black" variant="outline">
+                        $$
+                    </Button>
+                    <Button size="sm" borderRadius="10px" bg="white" color="black" variant="outline">
+                        $$$
+                    </Button>
+                </Flex>
+              </Field>
+            </Flex>
+
+            {/* Cook time */}
+            <Field label='Cook Time' required >
+              <Input placeholder="Enter time in minutes"/>
+            </Field>
+
+            <Flex direction="row" gap="20" mt="2">      
+                <VerticalCheckBoxes 
+                    title={"Cuisine"} 
+                    options={cuisines} 
+                    color="black"
                 />
-              </InputGroup>
-            ))}
-            
-            <Button bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400" onClick={() => setIngredients((l) => [...l, ''])}>
-              Add Ingredient
-            </Button>
-          </Flex>
-        </Field>
+                
+                {/* Difficulty: Dropdown */}
+                <VerticalCheckBoxes 
+                    title={"Difficulty"} 
+                    options={difficulty} 
+                    color="black"
+                />
 
-        <Field label='Instructions' required w='50rem' maxW='80%'>
-          <Textarea
-            value={instructions[0]}
-            onChange={(e) => setInstructions([ e.target.value ])}
-            placeholder='Enter recipe instructions...'
-            h='12lh'
-          />
-        </Field>
+                {/* Meal Type: Checkbox */}
+                <VerticalCheckBoxes 
+                    title={"Meal Type"} 
+                    options={mealType} 
+                    color="black"
+                />
+
+            </Flex>
+
+          </Flex>
+          
+
+          {/* Title, description, ingredients */}
+          <Flex direction="column" gap="4">
+
+            <Field label='Title' required w='50rem' maxW='80%'>
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder='Enter a recipe title...'
+              />
+            </Field>
+
+            <Field label='Description' required w='50rem' maxW='80%'>
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder='Enter a recipe description...'
+                h='10lh'
+              />
+            </Field>
+
+            <Field label='Ingredients' required w='50rem' maxW='80%'>
+              <Flex gap='3' justify='flex-end' flexWrap='wrap' w='100%'>
+                {ingredients.map((ingredient, i) => (
+                  <InputGroup
+                    key={i}
+                    w='100%'
+                    endElement={(
+                      <IconButton
+                        variant='ghost'
+                        color='red.400'
+                        me='-1'
+                        size='xs'
+                        onClick={() => handleIngDelete(i)}
+                      >
+                        <Trash />
+                      </IconButton>
+                    )}
+                  >
+                    <Input
+                      placeholder='Enter an ingredient...'
+                      value={ingredient}
+                      onChange={(e) => handleIngInput(i, e)}
+                    />
+                  </InputGroup>
+                ))}
+                
+                <Flex justifyContent={empty ? 'space-between' : 'end'} w="full" alignContent="center">
+                  {empty && (
+                    <Text color="red" fontSize="sm">
+                      Cannot add an empty ingredient!
+                    </Text>
+                  )}
+                  <Button bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400" onClick={handleAddIngredient}>
+                    Add Ingredient
+                  </Button>
+                </Flex>
+              </Flex>
+            </Field>
+
+          </Flex>
+          
+        </Flex>
+       
 
         <ButtonGroup>
           <CancelCreateRecipeButton />

@@ -7,17 +7,19 @@ import {
 
 const VerticalCheckBoxes = ({
     title,
-    options
+    options,
+    color
 }:{
     title:string,
-    options:string[]
+    options:string[],
+    color: string
 }) => {
     return(
         <Flex flexDirection="column" gap={2}> 
         <Text
             fontSize="sm"
             mb="5px"
-            color="white"
+            color={color}
             fontWeight="bold"
         >
             {title}
@@ -29,7 +31,7 @@ const VerticalCheckBoxes = ({
                     <Checkbox.Control>
                     <Checkbox.Indicator />
                     </Checkbox.Control>
-                    <Checkbox.Label color="white">{option}</Checkbox.Label>
+                    <Checkbox.Label color={color}>{option}</Checkbox.Label>
                 </Checkbox.Root>
                 </Stack>
             ))}

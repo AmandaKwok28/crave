@@ -58,7 +58,7 @@ const TagInput = ({
                 onKeyDown={handleKeyDown}>
             </Input>
 
-            <Flex wrap="wrap" gap="4" mt="2">
+            <Flex wrap="wrap" gap="2" mt="2">
                 {tags.map((tag, index) => (
                 <Tag.Root key={index} variant="subtle" size="lg" w="fit-content">
                     <Tag.Label>{tag}</Tag.Label>

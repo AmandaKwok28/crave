@@ -55,10 +55,11 @@ const Search = () => {
                     <Flex direction="row" alignItems="center">
                         <SearchIcon color="white" />
                         <Input
-                            placeholder=" Find the recipes you crave..."
+                            placeholder="Find the recipes you crave..."
                             variant="flushed"
                             color="white"
                             _placeholder={{ color: 'white' }}
+                            p="2"
                         >
                         </Input>
                     </Flex>
@@ -103,12 +104,14 @@ const Search = () => {
                         <VerticalCheckBoxes 
                             title={"Difficulty"} 
                             options={difficulty} 
+                            color="white"
                         />
 
                         {/* Meal Type: Checkbox */}
                         <VerticalCheckBoxes 
                             title={"Meal Type"} 
                             options={mealType} 
+                            color="white"
                         />
 
                     </Flex>
@@ -133,8 +136,8 @@ const Search = () => {
 
                     {/* Year */}
                     <TagInput
-                        title={"Year"}
-                        placeholder={"2025"}
+                        title={"Class Year"}
+                        placeholder={"Seniors"}
                     />
 
                     {/* Allergies */}
@@ -148,6 +151,7 @@ const Search = () => {
                     <VerticalCheckBoxes 
                             title={"Cuisine"} 
                             options={cuisines} 
+                            color="white"
                     />
                    
                     <Box mb="12">
@@ -162,7 +166,7 @@ const Search = () => {
             {/* the cards... */}
             <Flex flex="1" bg="white" p="2" direction="column" gap="2" wrap="wrap" w="full">
                 <Box
-                    h="2vw"
+                    h="3vh"
                     w="75vw"
                     overflowX="auto"
                     alignContent="center"
