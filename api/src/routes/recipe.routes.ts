@@ -19,16 +19,6 @@ router.post('/', async (req, res) => {
       },
     });
 
-    // Process asynchronously without blocking response
-    (async () => {
-      try {
-        await generateFeatureVector(recipe.id);
-        await processRecipeSimilarities(recipe.id, 10);
-      } catch (err) {
-        console.error(`Error in background processing for recipe ${recipe.id}:`, err);
-      }
-    })();
-
     res.json(recipe)
   });
 
@@ -80,7 +70,13 @@ router.get('/:id/similar', async (req, res) => {
       where: { baseRecipeId: Number(id) },
       orderBy: { similarityScore: 'desc' },
       take: limit,
-      include: { similarRecipe: true }
+      include: { 
+        similarRecipe: {
+          include: {
+            author: true
+          }
+        } 
+      }
     })
     
     // Map to just the similar recipes

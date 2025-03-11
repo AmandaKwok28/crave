@@ -95,6 +95,10 @@ const ViewRecipe = ({ recipe_id }: {
                 <Center py={8}>
                     <Text color="red.500">Failed to load similar recipes</Text>
                 </Center>
+            ) : similarRecipes.length === 0 ? (
+                <Center py={8}>
+                    <Text color="gray.500">Similar recipes not available yet</Text>
+                </Center>
             ) : (
                 <SimilarRecipesSlider recipes={similarRecipes} currentRecipeId={recipe_id} />
             )}

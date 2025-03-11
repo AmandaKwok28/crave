@@ -93,121 +93,143 @@ function calculateCosineSimilarity(v1: number[], v2: number[]): number {
 /**
  * Update recipe similarities tables when creating or updating a recipe
  */
-export async function processRecipeSimilarities(recipeId: number, maxSimilarities: number = 10) {
-  const baseRecipe = await prisma.recipe.findUnique({
-    where: { 
-      id: recipeId,
+export async function batchProcessRecipeSimilarities(recipeIds: number[], maxSimilarities: number = 10): Promise<void> {
+  console.log(`Batch processing similarities for ${recipeIds.length} recipes`);
+  
+  // 1. Get all base recipes that are published
+  const baseRecipes = await prisma.recipe.findMany({
+    where: {
+      id: { in: recipeIds },
       published: true
-    }
+    },
+    select: { id: true }
   });
 
-  if (!baseRecipe) {
-    console.log(`Skipping similarity processing: Recipe ${recipeId} not found or not published`);
+  const baseRecipeIds = baseRecipes.map(r => r.id);
+
+  if (baseRecipeIds.length === 0) {
+    console.log('No published recipes found in the batch');
     return;
   }
-  
-  // Get all other published recipes
+
+  // 2. Get all other published recipes
   const otherRecipes = await prisma.recipe.findMany({
-    where: { 
-      id: { not: recipeId },
+    where: {
+      id: { notIn: baseRecipeIds },
       published: true
-    }
+    },
+    select: { id: true }
   });
   
-  type SimilarityEntry = {
+  // 3. Pre-fetch all feature vectors in one go
+  const allRecipeIds = [...baseRecipeIds, ...otherRecipes.map(r => r.id)];
+  const featureVectors = await prisma.recipeFeatureVector.findMany({
+    where: { recipeId: { in: allRecipeIds } }
+  });
+  
+  const vectorMap = new Map(featureVectors.map(v => [v.recipeId, v.vector]));
+
+  // 4. Calculate all pairwise similarities
+  const similarityEntries: Array<{
     baseRecipeId: number;
     similarRecipeId: number;
     similarityScore: number;
-  };
+  }> = [];
 
-  // Calculate all similarities
-  const similarities: SimilarityEntry[] = [];
-  for (const recipe of otherRecipes) {
-    const score = await calculateSimilarity(recipeId, recipe.id);
-    similarities.push({
-      baseRecipeId: recipeId,
-      similarRecipeId: recipe.id,
-      similarityScore: score
-    });
-  }
+  // For each base recipe
+  for (const baseId of baseRecipeIds) {
+    const baseVector = vectorMap.get(baseId);
+    
+    // Skip if no vector available
+    if (!baseVector) {
+      console.log(`No feature vector for recipe ${baseId}, skipping...`);
+      continue;
+    }
   
-  await prisma.$transaction(
-    async (tx) => {
-      // Insert all new similarities
-      for (const similarity of similarities) {
-        await tx.recipeSimilarity.upsert({
-          where: {
-            baseRecipeId_similarRecipeId: {
-              baseRecipeId: similarity.baseRecipeId,
-              similarRecipeId: similarity.similarRecipeId
-            }
-          },
-          update: { similarityScore: similarity.similarityScore },
-          create: similarity
-        });
-        
-        // Create/update the reverse relationship
-        await tx.recipeSimilarity.upsert({
-          where: {
-            baseRecipeId_similarRecipeId: {
-              baseRecipeId: similarity.similarRecipeId,
-              similarRecipeId: similarity.baseRecipeId
-            }
-          },
-          update: { similarityScore: similarity.similarityScore },
-          create: {
-            baseRecipeId: similarity.similarRecipeId,
-            similarRecipeId: similarity.baseRecipeId,
-            similarityScore: similarity.similarityScore
-          }
-        });
-      }
+    // Calculate similarity with all other recipes
+    for (const otherId of allRecipeIds) {
+      // Skip self-comparison
+      if (baseId === otherId) continue;
       
-      // Trim excess similarities for the base recipe
-      // Find all similarities for this recipe, ordered by score (using composite index defined in the schema)
-      const allBaseSimilarities = await tx.recipeSimilarity.findMany({
+      const otherVector = vectorMap.get(otherId);
+      if (!otherVector) continue;
+      
+      const score = calculateCosineSimilarity(baseVector, otherVector);
+      
+      // Add both directions for symmetry
+      similarityEntries.push({
+        baseRecipeId: baseId,
+        similarRecipeId: otherId,
+        similarityScore: score
+      });
+      
+      // Always add the reverse relationship too
+      similarityEntries.push({
+        baseRecipeId: otherId,
+        similarRecipeId: baseId,
+        similarityScore: score
+      });
+    }
+  }
+
+  await prisma.$transaction(async (tx) => {
+    // 5. Delete existing similarities for all base recipes
+    await tx.recipeSimilarity.deleteMany({
+      where: {
+        OR: [
+          { baseRecipeId: { in: baseRecipeIds } },
+          { similarRecipeId: { in: baseRecipeIds } }
+        ]
+      }
+    });
+
+    // 6. Insert all calculated similarities
+    // Use chunks to avoid hitting statement size limits
+    const chunkSize = 500;
+    for (let i = 0; i < similarityEntries.length; i += chunkSize) {
+      const chunk = similarityEntries.slice(i, i + chunkSize);
+      await tx.recipeSimilarity.createMany({
+        data: chunk,
+        skipDuplicates: true
+      });
+    }
+
+    // 7. Get ALL affected recipes since changes to any recipe can affect similarity rankings for all recipes
+    const affectedRecipeIds = Array.from(new Set(allRecipeIds));
+    console.log(`Processing similarity trimming for ${affectedRecipeIds.length} total affected recipes`);
+
+    // 8. Trim excess similarities for all affected recipes
+    for (const recipeId of affectedRecipeIds) {
+      const allSimilarities = await tx.recipeSimilarity.findMany({
         where: { baseRecipeId: recipeId },
         orderBy: { similarityScore: 'desc' }
       });
       
-      if (allBaseSimilarities.length > maxSimilarities) {
-        const toRemove = allBaseSimilarities.slice(maxSimilarities);
-        for (const similarity of toRemove) {
-          await tx.recipeSimilarity.delete({
-            where: {
-              baseRecipeId_similarRecipeId: {
-                baseRecipeId: similarity.baseRecipeId,
-                similarRecipeId: similarity.similarRecipeId
-              }
-            }
-          });
-        }
-      }
-      
-      // Trim excess similarities for other recipes
-      for (const otherRecipe of otherRecipes) {
-        const allOtherSimilarities = await tx.recipeSimilarity.findMany({
-          where: { baseRecipeId: otherRecipe.id },
-          orderBy: { similarityScore: 'desc' }
+      if (allSimilarities.length > maxSimilarities) {
+        const toRemove = allSimilarities.slice(maxSimilarities);
+        
+        // Delete excess similarities in bulk
+        await tx.recipeSimilarity.deleteMany({
+          where: {
+            OR: toRemove.map(sim => ({
+              AND: [
+                { baseRecipeId: sim.baseRecipeId },
+                { similarRecipeId: sim.similarRecipeId }
+              ]
+            }))
+          }
         });
         
-        if (allOtherSimilarities.length > maxSimilarities) {
-          const toRemove = allOtherSimilarities.slice(maxSimilarities);
-          for (const similarity of toRemove) {
-            await tx.recipeSimilarity.delete({
-              where: {
-                baseRecipeId_similarRecipeId: {
-                  baseRecipeId: similarity.baseRecipeId,
-                  similarRecipeId: similarity.similarRecipeId
-                }
-              }
-            });
-          }
-        }
       }
-    },
-    { 
-      timeout: 10000 // 10 second timeout
     }
-  );
+  }, {
+    timeout: 15000 // Extended timeout for larger batches
+  });
+
+  console.log(`Successfully processed similarities for ${baseRecipeIds.length} recipes`);
+}
+
+// Maintain backward compatibility
+export async function processRecipeSimilarities(recipeId: number, maxSimilarities: number = 10): Promise<void> {
+  return batchProcessRecipeSimilarities([recipeId], maxSimilarities);
 }
