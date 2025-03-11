@@ -17,7 +17,8 @@ import { Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { HiUpload } from "react-icons/hi";
 import { FileAcceptDetails } from "node_modules/@chakra-ui/react/dist/types/components/file-upload/namespace";
-import VerticalCheckBoxes from "@/components/search/verticalCheckBoxes";
+import VerticalCheckBoxes from "@/components/search/DifficultyButtons";
+import { Cuisine, Difficulty } from "@/data/types";
 
 // If draft_id is set, this will be autopopulated on page load
 // Also, "publishing" simply edits the draft and sets published = true
@@ -84,9 +85,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
     }
   }
 
-  const cuisines = ['Chinese', 'Indian' , 'Mediterranean', 'American'];
   const mealType = ['Breakfast', 'Lunch', 'Dinner'];
-  const difficulty = ['Beginner', 'Intermediate', 'Expert'];
 
   return (
     <Flex gap='4' flexDir='column' minW='100vw' align='center' justify='center'>
@@ -138,6 +137,9 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                     <Button size="sm" borderRadius="10px" bg="white" color="black" variant="outline">
                         $$$
                     </Button>
+                    <Button size="sm" borderRadius="10px" bg="white" color="black" variant="outline">
+                        $$$$
+                    </Button>
                 </Flex>
               </Field>
             </Flex>
@@ -150,14 +152,14 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
             <Flex direction="row" gap="20" mt="2">      
                 <VerticalCheckBoxes 
                     title={"Cuisine"} 
-                    options={cuisines} 
+                    options={Object.values(Cuisine)} 
                     color="black"
                 />
                 
                 {/* Difficulty: Dropdown */}
                 <VerticalCheckBoxes 
                     title={"Difficulty"} 
-                    options={difficulty} 
+                    options={Object.values(Difficulty)} 
                     color="black"
                 />
 

@@ -1,4 +1,4 @@
-import { $deletedSearchTag, addSearchTags, removeSearchTags } from "@/lib/store";
+import { $deletedSearchTag, $filters, addSearchTags, removeSearchTags, setFilters } from "@/lib/store";
 import { Flex, Input, Text } from "@chakra-ui/react"
 import { Tag } from "@chakra-ui/react";
 import { useStore } from "@nanostores/react";
@@ -16,23 +16,60 @@ const TagInput = ({
     const [inputValue, setInputValue] = useState("");
     const [tags, setTags] = useState<string[]>([]);
     const deletedSearchTag = useStore($deletedSearchTag);
+    const filters = useStore($filters);
 
     const handleInputChange = (e: any) => {
         setInputValue(e.target.value);
     };
 
+    useEffect(() => {
+        console.log(filters);
+    }, [filters]);
+
+    // adding tags
     const handleKeyDown = (e: any) => {
-        if (e.key === "Enter" && inputValue.trim() !== "") {
-            setTags([...tags, inputValue.trim()]);
-            addSearchTags(inputValue.trim())
+        const value = inputValue.trim();
+        if (e.key === "Enter" && value !== "") {
+            setTags([...tags, value]);
+            addSearchTags(value)
             setInputValue("");
+
+            let change;
+            if (title === "Grocery Stores") { // sources
+                change = {
+                    "sources": [...filters.sources, value]
+                }
+            } else if (title === "Ingredients") {
+                change = {
+                    "ingredients": [...filters.ingredients, value]
+                }
+            } else if (title === "Major") {
+                change = {
+                    "major": value
+                }
+            }
+
+            setFilters(change);
+            
         }
     };
 
     const removeTag = (tagToRemove: string) => {
         setTags(tags.filter(tag => tag !== tagToRemove));
         removeSearchTags(tagToRemove)
+
+        let change;
+        if (title === "Grocery Stores") { // sources
+            change = {
+                "sources": [...filters.sources.filter((item) => {return item !== tagToRemove})]
+            }
+        }
+        
+        setFilters(change);
     };
+
+
+    
 
     // delete the tag from the sidebar if a new deleted tag is set
     useEffect(() => {

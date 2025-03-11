@@ -1,6 +1,6 @@
 import { RecipeType } from "@/data/types";
 import { $router } from "@/lib/router";
-import { Card, Button, Image, Text } from "@chakra-ui/react";
+import { Card, Button, Image, Text, Tag, Box } from "@chakra-ui/react";
 import { redirectPage } from "@nanostores/router";
 
 
@@ -36,9 +36,7 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
         </Card.Description>
         <Card.Description>
             <Text lineClamp="3">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-            Ut enim ad minim veniam, quis
+            {recipe.description}
             </Text>
         </Card.Description>
       </Card.Body>
@@ -46,6 +44,26 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
         <Button variant="ghost" onClick={handleSeeMore}>
           See More
         </Button>
+
+        <Box flexWrap="true">
+          <Tag.Root variant="subtle" size="lg" w="fit-content">
+              <Tag.Label>{recipe.cuisine}</Tag.Label>
+          </Tag.Root>
+          <Tag.Root variant="subtle" size="lg" w="fit-content">
+              <Tag.Label>{recipe.difficulty}</Tag.Label>
+          </Tag.Root>
+          {recipe.sources.map((tag, index) => (
+                <Tag.Root key={index} variant="subtle" size="lg" w="fit-content">
+                    <Tag.Label>{tag}</Tag.Label>
+                </Tag.Root>
+          ))}
+          {recipe.ingredients.map((tag, index) => (
+                <Tag.Root key={index} variant="subtle" size="lg" w="fit-content">
+                    <Tag.Label>{tag}</Tag.Label>
+                </Tag.Root>
+          ))}
+        </Box>
+        
       </Card.Footer>
     </Card.Root>
   );

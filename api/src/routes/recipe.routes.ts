@@ -3,9 +3,25 @@ import { prisma } from '../../prisma/db';
 import { authGuard } from '../middleware/auth';
 const router = Router();
 
-// Create new recipe
+// Create a recipe
 router.post('/', async (req, res) => {
-    const { title, description, ingredients, instructions, authorId, image } = req.body
+  const { 
+    title, 
+    description, 
+    ingredients, 
+    instructions, 
+    authorId, 
+    image, 
+    mealTypes, 
+    difficulty, 
+    price, 
+    cuisine, 
+    allergens, 
+    sources, 
+    prepTime 
+  } = req.body;
+
+  try {
     const recipe = await prisma.recipe.create({
       data: {
         title,
@@ -14,14 +30,41 @@ router.post('/', async (req, res) => {
         instructions,
         image,
         author: { connect: { id: authorId } },
+        mealTypes: mealTypes || [],
+        difficulty: difficulty ? difficulty.toUpperCase() : null,
+        price: price ? price.toUpperCase() : null,
+        cuisine: cuisine ? cuisine.toUpperCase() : null,
+        allergens: allergens || [],
+        sources: sources || [],
+        prepTime: prepTime || null,
       },
-    })
-    res.json(recipe)
-  });
+    });
+    
+    res.json(recipe);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error creating recipe", error });
+  }
+});
 
+// Update a recipe
 router.patch('/:id/', authGuard, async (req, res) => {
   const { id } = req.params;
-  const { title, description, ingredients, instructions, published, image } = req.body
+  const { 
+    title, 
+    description, 
+    ingredients, 
+    instructions, 
+    published,
+    image,
+    mealTypes,
+    difficulty,
+    price,
+    cuisine,
+    allergens,
+    sources,
+    prepTime
+  } = req.body;
 
   const validate = await prisma.recipe.findFirst({ where: { id: Number(id) } });
   if (!validate) {
@@ -45,12 +88,19 @@ router.patch('/:id/', authGuard, async (req, res) => {
       id: Number(id)
     },
     data: {
-      title,
-      description,
-      ingredients,
-      instructions,
+      title, 
+      description, 
+      ingredients, 
+      instructions, 
       published,
-      image
+      image,
+      mealTypes,
+      difficulty,
+      price,
+      cuisine,
+      allergens,
+      sources,
+      prepTime
     }
   });
 

@@ -6,6 +6,30 @@ export interface UserType {
   major: string;
 }
 
+export enum Price {
+  CHEAP = "CHEAP",
+  MODERATE = "MODERATE",
+  PRICEY = "PRICEY",
+  EXPENSIVE = "EXPENSIVE",
+}
+
+export enum Difficulty {
+  EASY = "EASY",
+  MEDIUM = "MEDIUM",
+  HARD = "HARD",
+}
+
+export enum Cuisine {
+  ITALIAN = "ITALIAN",
+  MEXICAN = "MEXICAN",
+  CHINESE = "CHINESE",
+  INDIAN = "INDIAN",
+  JAPANESE = "JAPANESE",
+  FRENCH = "FRENCH",
+  MEDITERRANEAN = "MEDITERRANEAN",
+  AMERICAN = "AMERICAN",
+}
+
 export interface RecipeType {
   id: number;
   title: string;
@@ -15,6 +39,13 @@ export interface RecipeType {
   authorId: string;
   published: boolean;
   author: AuthorType
+  mealTypes: string[];
+  price: Price;
+  cuisine: Cuisine;
+  allergens: string[];
+  difficulty: Difficulty;
+  sources: string[];
+  prepTime: number;
 }
 
 export interface AuthorType {

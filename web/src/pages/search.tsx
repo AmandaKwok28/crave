@@ -4,10 +4,12 @@ import { Box, Button, Flex, Input, Text, Tag} from "@chakra-ui/react";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import Recipes from "@/components/recipie/recipes";
 import TagInput from "@/components/search/tagInput";
-import VerticalCheckBoxes from "@/components/search/verticalCheckBoxes";
+import VerticalCheckBoxes from "@/components/search/DifficultyButtons";
 import { Search as SearchIcon } from "lucide-react";
 import { useStore } from "@nanostores/react";
 import { $searchTags, removeSearchTags, setDeletedSearchTag } from "@/lib/store";
+import { Cuisine, Difficulty } from "@/data/types";
+import CuisineCheckBoxes from "@/components/search/cuisineCheckBoxes";
 // TODO: Create Tag component, store tags in nanostore not local state
 // TODO: Create Dropdown component (?)
 // TODO: Fix color schemes 
@@ -16,9 +18,7 @@ import { $searchTags, removeSearchTags, setDeletedSearchTag } from "@/lib/store"
 const Search = () => {
     const { recipes } = useQueryRecipes();
 
-    const cuisines = ['Chinese', 'Indian' , 'Mediterranean', 'American'];
     const mealType = ['Breakfast', 'Lunch', 'Dinner'];
-    const difficulty = ['Beginner', 'Intermediate', 'Expert'];
 
     const searchTags = useStore($searchTags);
     const handleRemove = (tag:string) => {
@@ -77,6 +77,9 @@ const Search = () => {
                             <Button size="sm" borderRadius="10px" bg="white" color="black">
                                 $$$
                             </Button>
+                            <Button size="sm" borderRadius="10px" bg="white" color="black">
+                                $$$$
+                            </Button>
                         </Flex>
                     </Flex>
                     
@@ -98,22 +101,22 @@ const Search = () => {
                     >
                     </Slider>
 
-                    <Flex direction="row" gap="20">
+                    <Flex direction="row" gap="6">
                         
+                        <CuisineCheckBoxes 
+                            title={"cuisine"} 
+                            options={Object.values(Cuisine)} 
+                            color={"white"} 
+                        />
+
+
                         {/* Difficulty: Dropdown */}
                         <VerticalCheckBoxes 
-                            title={"Difficulty"} 
-                            options={difficulty} 
+                            title={"difficulty"} 
+                            options={Object.values(Difficulty)} 
                             color="white"
                         />
-
-                        {/* Meal Type: Checkbox */}
-                        <VerticalCheckBoxes 
-                            title={"Meal Type"} 
-                            options={mealType} 
-                            color="white"
-                        />
-
+                        
                     </Flex>
 
                     {/* Grocery Stores */}
@@ -146,13 +149,18 @@ const Search = () => {
                         placeholder={"Peanuts"}
                     />
                     
-
-                    {/* Cuisine: Dropdown? */}
-                    <VerticalCheckBoxes 
-                            title={"Cuisine"} 
-                            options={cuisines} 
-                            color="white"
+                    {/* Meal Type: Checkbox */}
+                    <TagInput 
+                        title={"Meal Type"}
+                        placeholder={"snack, dinner, brunch, etc..."}
                     />
+                    {/* <VerticalCheckBoxes 
+                        title={"Meal Type"} 
+                        options={mealType} 
+                        color="white"
+                    /> */}
+
+        
                    
                     <Box mb="12">
 
