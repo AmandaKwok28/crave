@@ -16,10 +16,10 @@ const useMutationRecipe = () => {
             instructions: string[], 
             id: string,
             mealTypes: string[],
-            price: string,
+            price: Price,
             cuisine: Cuisine,
             allergens: string[],
-            difficulty: string,
+            difficulty: Difficulty,
             sources: string[],
             prepTime: number
         ) => {

@@ -6,7 +6,7 @@ import { Field } from "@/components/ui/field";
 import { InputGroup } from "@/components/ui/input-group";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import { $router } from "@/lib/router";
-import { Button, ButtonGroup, Flex, IconButton, Input, Text, Textarea, Image, VStack, RadioGroup, Tag } from "@chakra-ui/react";
+import { Button, ButtonGroup, Flex, IconButton, Input, Text, Textarea, Image, VStack, RadioGroup } from "@chakra-ui/react";
 import {
   FileUploadList,
   FileUploadRoot,
@@ -346,7 +346,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
             ingredients={ingredients}
             instructions={instructions}
           />
-          
+
           <PublishRecipeButton
             title={title}
             description={description}

@@ -103,10 +103,10 @@ export const createRecipe = async (
   instructions: string[],
   id: string,
   mealTypes: string[],
-  price: string,
+  price: Price,
   cuisine: Cuisine,
   allergens: string[],
-  difficulty: string,
+  difficulty: Difficulty,
   sources: string[],
   prepTime: number
 ): Promise<RecipeType> => {
@@ -147,9 +147,9 @@ export const patchRecipe = async (
   published: boolean,
   mealTypes: string[],
   price: Price,
-  cuisine: string | null,
+  cuisine: Cuisine,
   allergens: string[],
-  difficulty: string,
+  difficulty: Difficulty,
   sources: string[],
   prepTime: number
 ): Promise<RecipeType> => {
