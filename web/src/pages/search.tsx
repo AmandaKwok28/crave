@@ -1,6 +1,6 @@
 import NavBar from "@/components/layout/navBar";
 import { Slider } from "@/components/ui/slider";
-import { Box, Button, Flex, Input, Text, Tag} from "@chakra-ui/react";
+import { Box, Flex, Input, Text, Tag} from "@chakra-ui/react";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import Recipes from "@/components/recipie/recipes";
 import TagInput from "@/components/search/tagInput";
@@ -150,12 +150,6 @@ const Search = () => {
                         title={"Meal Type"}
                         placeholder={"snack, dinner, brunch, etc..."}
                     />
-                    {/* <VerticalCheckBoxes 
-                        title={"Meal Type"} 
-                        options={mealType} 
-                        color="white"
-                    /> */}
-
         
                    
                     <Box mb="12">

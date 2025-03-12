@@ -57,7 +57,7 @@ const DifficultyButtons = ({
         </VStack>
         </RadioGroup.Root>
 
-        <Button variant="outline" size="sm" borderRadius="12px" color="white" onClick={() => handleClear()}>
+        <Button variant="outline" size="sm" borderRadius="12px" color={color} onClick={() => handleClear()}>
             Clear
         </Button>
 

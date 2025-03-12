@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
         mealTypes: mealTypes || [],
         difficulty: difficulty ? difficulty.toUpperCase() : null,
         price: price ? price.toUpperCase() : null,
-        cuisine: cuisine ? cuisine.toUpperCase() : null,
+        cuisine: cuisine ? cuisine.toUpperCase() : null,  // need to change the schema
         allergens: allergens || [],
         sources: sources || [],
         prepTime: prepTime || null,

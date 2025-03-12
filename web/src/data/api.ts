@@ -103,13 +103,14 @@ export const createRecipe = async (
   instructions: string[],
   id: string,
   mealTypes: string[],
-  price: Price,
+  price: string,
   cuisine: Cuisine,
   allergens: string[],
-  difficulty: Difficulty,
+  difficulty: string,
   sources: string[],
   prepTime: number
 ): Promise<RecipeType> => {
+
     const response = await fetch(`${API_URL}/recipe`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -146,9 +147,9 @@ export const patchRecipe = async (
   published: boolean,
   mealTypes: string[],
   price: Price,
-  cuisine: Cuisine,
+  cuisine: string | null,
   allergens: string[],
-  difficulty: Difficulty,
+  difficulty: string,
   sources: string[],
   prepTime: number
 ): Promise<RecipeType> => {

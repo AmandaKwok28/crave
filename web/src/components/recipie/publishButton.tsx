@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { publishRecipe } from "@/data/api";
 import { redirectPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
+import { Cuisine, Difficulty, Price } from "@/data/types";
 
 type PublishRecipeProps = {
     title: string;
@@ -22,19 +23,67 @@ type PublishRecipeProps = {
     ingredients: string[];
     instructions: string[];
     draft_id?: number;
+    mealTypes?: string[];
+    price: Price,
+    cuisine: Cuisine,
+    allergens: string[],
+    difficulty: Difficulty,
+    sources?: string[],
+    prepTime: number,
 }
 
-const PublishRecipeButton = ({ title, description, ingredients, instructions, draft_id }: PublishRecipeProps ) => {
+const PublishRecipeButton = ({ 
+    title, 
+    description, 
+    ingredients, 
+    instructions, 
+    draft_id, 
+    mealTypes, 
+    price,
+    cuisine,
+    allergens,
+    difficulty,
+    sources,
+    prepTime 
+}: PublishRecipeProps ) => {
     const { user } = useAuth();
     const { addNewRecipe, editRecipe } = useMutationRecipes();
 
     const handleSave = async () => {
+
         if (!draft_id) {
-            const id = await addNewRecipe(title, description, ingredients, instructions, user.id);
+            const id = await addNewRecipe(
+                title, 
+                description, 
+                ingredients, 
+                instructions, 
+                user.id, 
+                mealTypes ? mealTypes : [], 
+                price,
+                cuisine,
+                allergens,
+                difficulty,
+                sources ? sources : [],
+                prepTime
+            );
             await publishRecipe(id);    
             redirectPage($router, `recipe`, { recipe_id: id });
         } else {
-            await editRecipe(draft_id, title, description, ingredients, instructions, true);
+            await editRecipe(
+                draft_id, 
+                title, 
+                description, 
+                ingredients, 
+                instructions, 
+                true,
+                mealTypes ? mealTypes : [], 
+                price,
+                cuisine,
+                allergens ? allergens : [],
+                difficulty,
+                sources ? sources : [],
+                prepTime
+            );
             redirectPage($router, `recipe`, { recipe_id: draft_id });
         }
     };
