@@ -16,6 +16,8 @@ import { publishRecipe } from "@/data/api";
 import { redirectPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
 import { Cuisine, Difficulty, Price } from "@/data/types";
+import { toaster } from "../ui/toaster";
+import { useState } from "react";
 
 type PublishRecipeProps = {
     title: string;
@@ -48,10 +50,30 @@ const PublishRecipeButton = ({
 }: PublishRecipeProps ) => {
     const { user } = useAuth();
     const { addNewRecipe, editRecipe } = useMutationRecipes();
+    const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const handleSave = async () => {
 
         if (!draft_id) {
+
+            // only need to throw an error for incompletion iff they're trying to publish
+            if (!title || !description || !ingredients || !instructions) {
+                toaster.create({
+                    title: 'Please fill out all required fields',
+                    type: "error"
+                });
+                setIsOpen(false);
+                return;
+            }
+
+            if (!price || !cuisine || !allergens || !difficulty || !prepTime) {
+                toaster.create({
+                    title: 'Please fill out the necessary additional information'
+                })
+                setIsOpen(false);
+                return;
+            }
+
             const id = await addNewRecipe(
                 title, 
                 description, 
@@ -89,7 +111,7 @@ const PublishRecipeButton = ({
     };
 
   return (
-    <DialogRoot size="md">
+    <DialogRoot size="md" open={isOpen} onOpenChange={(e) => setIsOpen(e.open)}>
     <DialogTrigger asChild>
     <Button 
         variant="outline" 
