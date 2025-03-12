@@ -7,7 +7,7 @@ import TagInput from "@/components/search/tagInput";
 import VerticalCheckBoxes from "@/components/search/DifficultyButtons";
 import { Search as SearchIcon } from "lucide-react";
 import { useStore } from "@nanostores/react";
-import { $searchTags, removeSearchTags, setDeletedSearchTag, setFilters } from "@/lib/store";
+import { $searchTags, removeSearchTags, setDeletedSearchTag, setFilters, setSearchTerm } from "@/lib/store";
 import { Cuisine, Difficulty } from "@/data/types";
 import CuisineCheckBoxes from "@/components/search/cuisineCheckBoxes";
 import Prices from "@/components/search/prices";
@@ -22,6 +22,7 @@ const Search = () => {
 
     const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
     const searchTags = useStore($searchTags);
+
     const handleRemove = (tag:string) => {
         setDeletedSearchTag(tag);
         removeSearchTags(tag);
@@ -35,6 +36,8 @@ const Search = () => {
         }
         setFilters(change);
     }
+
+
 
     return (
     <Flex direction="column" h="100vh" overflowX="hidden">
@@ -69,6 +72,7 @@ const Search = () => {
                             variant="flushed"
                             color="white"
                             _placeholder={{ color: 'white' }}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             p="2"
                         >
                         </Input>

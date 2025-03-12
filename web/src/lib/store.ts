@@ -109,3 +109,10 @@ export const $deletedSearchTag = atom<string>("");
 export function setDeletedSearchTag(tag: string) {
   $deletedSearchTag.set(tag);
 }
+
+
+// search terms on search page
+export const $searchTerm = atom<string>("");
+export function setSearchTerm(term: string) {
+  $searchTerm.set(term);
+}

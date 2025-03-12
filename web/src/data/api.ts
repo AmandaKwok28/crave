@@ -13,7 +13,10 @@ export const fetchUsers = async (): Promise<UserType[]> => {
 };
 
 // Fetch all recipes with query
-export const fetchRecipes = async (filters: any): Promise<RecipeType[]> => {
+export const fetchRecipes = async (
+  filters: any,
+  search?: string
+): Promise<RecipeType[]> => {
   const filterParams: string[] = [];
 
   if (filters.mealTypes?.length > 0) {
@@ -47,6 +50,9 @@ export const fetchRecipes = async (filters: any): Promise<RecipeType[]> => {
     filterParams.push(`major=${filters.major}`);
   }
 
+  if (search) {
+    filterParams.push(`search=${search}`)
+  }
 
   const queryString = filterParams.length > 0 ? `?${filterParams.join("&")}` : '';
   const response = await fetch(`${API_URL}/feed${queryString}`);
