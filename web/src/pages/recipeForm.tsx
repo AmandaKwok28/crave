@@ -212,7 +212,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                     mb="5px"
                     fontWeight="bold"
                 >
-                    {title}
+                    {"Cuisine"}
                 </Text>
 
                 <RadioGroup.Root value={cuisine} onValueChange={(e) => handleCuisine(e.value)} flexWrap="nowrap">
@@ -240,7 +240,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                     mb="5px"
                     fontWeight="bold"
                 >
-                    {title}
+                    {"Difficulty"}
                 </Text>
 
                 <RadioGroup.Root value={diff} onValueChange={(e) => handleDiff(e.value)} flexWrap="nowrap">

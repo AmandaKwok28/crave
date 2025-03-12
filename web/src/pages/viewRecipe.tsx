@@ -3,7 +3,7 @@ import DeleteRecipe from "@/components/recipie/deleteRecipe";
 import DisplayIngredients from "@/components/recipie/displayIngredients";
 import { RecipeType } from "@/data/types";
 import useQueryRecipes from "@/hooks/use-query-recipes";
-import { Blockquote, Box, ButtonGroup, Center, Flex, Stack, Text } from "@chakra-ui/react";
+import { Box, ButtonGroup, Center, Flex, Image, Text } from "@chakra-ui/react";
 
 const ViewRecipe = ({ recipe_id }: { 
     recipe_id: number; 
@@ -22,63 +22,226 @@ const ViewRecipe = ({ recipe_id }: {
             </Flex>
         );
     }
+
+    let priceVal;
+    if (currRecipe.price === "CHEAP") {
+        priceVal = "$";
+    } else if (currRecipe.price === "MODERATE") {
+        priceVal = "$$";
+    } else if (currRecipe.price === "PRICEY") {
+        priceVal = "$$$";
+    } else {
+        priceVal = "$$$$"
+    }
     
     return (
-        <Flex className="flex flex-col">
+        <Flex direction="row" alignContent="flex-start">
             <NavBar/>
-            <Stack mt="10" direction="row" >
-                <Box h="100%" w="60%">
-                    <Text
-                    color="Black"
+
+            <Flex direction="column" alignItems="flex-start" p="4" ml="2vw" gap="4">
+                <Text
                     textStyle="5xl"
-                    ml="2rem"
                     textAlign="left"
                     fontWeight="bold"
-                    mt="1rem">
-                        {currRecipe.title}
-                    </Text>
+                    mt="5vh"
+                >
+                    {currRecipe.title}
+                </Text>
+
+                 {/* Adding image here */}
+                 <Image rounded="md" src='/img_placeholder.jpg' w="30vw"/>
+
+                 <Text
+                    fontSize="2xl"
+                    fontWeight="bold"
+                 >
+                    Recipe Description:
                     <Text
-                    color="gray.600"
-                    fontSize="xl"
-                    ml="3rem"> 
-                    
-                        {currRecipe.description} 
+                        fontSize='md'
+                        fontWeight='normal'
+                    >
+                        {currRecipe.description}
                     </Text>
-                    <Text
-                    color="Black"
-                    fontSize="3xl"
+                 </Text>
+                 
+            </Flex>
+
+            <Flex direction="column" alignItems="flex-start" p="4" gap="4" mt="28">
+                <Text
+                    fontSize="2xl"
+                    fontWeight="bold"
                     ml="4rem">
                         Ingredients List:
-                    </Text>
-                    <Flex  ml="6rem">
-                        <DisplayIngredients ingredient_list={currRecipe.ingredients}/>
-                    </Flex>
-                </Box>
-                <Center bgGradient="to-r" gradientFrom="teal.300" gradientTo="green.400" padding="4" color="white" w="50vw" h="50vh" mt="6rem" ml="6rem" mr="6rem" mb="3rem">
-                    <Text fontSize="2rem">Image Placeholder </Text>
-                </Center>
-            </Stack>
-            <Flex mb="20" ml="10" mr="10"> 
-                <Text
-                    color="Black"
-                    fontSize="2rem"
-                    ml="4rem">
-                        Instructions: 
                 </Text>
-                <Blockquote.Root 
-                    variant="solid" 
-                    colorPalette="cyan.600" 
-                    fontSize="1rem"
-                    ml="2rem">
-                        <Blockquote.Content >
-                            {currRecipe.instructions[0]} 
-                        </Blockquote.Content>
-                        <Blockquote.Caption>
-                            — Enjoy your tasty meal!
-                        </Blockquote.Caption>
-                </Blockquote.Root>
+                <Flex  ml="6rem">
+                    <DisplayIngredients ingredient_list={currRecipe.ingredients}/>
+                </Flex>
+
+                {/* Instructions */}
+                <Text
+                    ml="4rem"
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    mt="12"
+                > 
+                    Instructions:
+                    <Text
+                        fontSize='md'
+                        fontWeight='normal'
+                    >
+                        {currRecipe.instructions}
+                    </Text>
+                </Text>
+
+                {/* Add tags info */}
+                <Text
+                    ml="4rem"
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    mt="12"
+                > 
+                    All Tags: 
+                </Text>
+                <Flex 
+                    direction="row"
+                    ml="4rem"
+                    fontSize="md"
+                    fontWeight='normal'
+                    gap="2"
+                    wrap="wrap"
+                    w="40vw"
+                >
+                    <Box 
+                        borderRadius="10px"
+                        borderWidth="1px"
+                        p="1"
+                        px="4"
+                        display="flex" // Enables flexbox
+                        alignItems="center" // Centers content vertically
+                        justifyContent="center" // Centers content horizontally
+                        w="fit-content"
+                        mt="2"
+                        bgGradient="to-r"
+                        gradientFrom="blue.300"
+                        gradientTo="blue.500"
+                        color="white"
+                    > 
+                        Price: {priceVal}
+                    </Box>
+
+                    <Box 
+                        borderRadius="10px"
+                        borderWidth="1px"
+                        p="1"
+                        px="2"
+                        alignItems="center" 
+                        justifyContent="center" 
+                        w="fit-content"
+                        mt="2"
+                        bgGradient="to-r"
+                        gradientFrom="cyan.300"
+                        gradientTo="blue.400"
+                        color="white"
+                    > 
+                        Cuisine: {currRecipe.cuisine.toLowerCase()}
+                    </Box>
+
+                    {currRecipe.allergens.map((a) => {
+                        return (
+                            <Box 
+                                key={a}
+                                borderRadius="10px"
+                                borderWidth="1px"
+                                p="1"
+                                px="2"
+                                display="flex" // Enables flexbox
+                                alignItems="center" // Centers content vertically
+                                justifyContent="center" // Centers content horizontally
+                                mt="2"
+                                bgGradient="to-r"
+                                gradientFrom="red.500"
+                                gradientTo="red.700"
+                                color="white"
+                            > 
+                                Allergens: {a}
+                            </Box>
+                        )
+                    })}
+
+                    <Box 
+                        borderRadius="10px"
+                        borderWidth="1px"
+                        p="1"
+                        px="2"
+                        display="flex" 
+                        alignItems="center" 
+                        justifyContent="center"
+                        mt="2"
+                        bgGradient="to-r"
+                        gradientFrom="cyan.400"
+                        gradientTo="purple.700"
+                        color="white"
+                    > 
+                        Difficulty: {currRecipe.difficulty.toLowerCase()}
+                    </Box>
+
+                    {currRecipe.mealTypes && (
+                        <Flex direction="row" gap="4" mt="2">
+                            {currRecipe.mealTypes.map((type) => {
+                                return (
+                                    <Box 
+                                        key={type}
+                                        borderRadius="10px"
+                                        borderWidth="1px"
+                                        p="1"
+                                        px="2"
+                                        display="flex" // Enables flexbox
+                                        alignItems="center" // Centers content vertically
+                                        justifyContent="center" // Centers content horizontally
+                                        bgGradient="to-r"
+                                        gradientFrom="teal.300"
+                                        gradientTo="green.400"
+                                        color="white"
+                                    > 
+                                        Meal Types: {type}
+                                    </Box>
+                                )
+                            })}
+                            
+                        </Flex>
+                    )}
+
+                    {currRecipe.sources && (
+                        <Flex direction="row" gap="4" mt="2">
+                            {currRecipe.sources.map((source) => {
+                                return (
+                                    <Box 
+                                        key={source}
+                                        borderRadius="10px"
+                                        borderWidth="1px"
+                                        p="1"
+                                        px="2"
+                                        display="flex" 
+                                        alignItems="center" 
+                                        justifyContent="center" 
+                                        bgGradient="to-r"
+                                        gradientFrom="purple.300"
+                                        gradientTo="purple.500"
+                                        color="white"
+                                    > 
+                                        {source}
+                                    </Box>
+                                )
+                            })}
+                            
+                        </Flex>
+                    )}      
+
+                </Flex>
 
             </Flex>
+
+            
             <ButtonGroup m="8" position="fixed" bottom="0%" right="0%">
                 <DeleteRecipe recipe={currRecipe} />
             </ButtonGroup>

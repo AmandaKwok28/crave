@@ -15,7 +15,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
 import { Cuisine, Difficulty, Price } from "@/data/types";
-import { toaster } from "@/components/ui/toaster";
 
 type PublishRecipeProps = {
     title: string;
@@ -50,15 +49,6 @@ const DraftButton = ({
     const { user } = useAuth();
 
     const handleSave = async () => {
-
-        if (!title || !description || !ingredients || !instructions) {
-            console.log('here')
-            toaster.create({
-                title: 'Please fill out all required fields'
-            });
-            
-            return;
-        }
 
         await addNewRecipeDraft(
             title, 
