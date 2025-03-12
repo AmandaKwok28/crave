@@ -345,6 +345,12 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
             description={description}
             ingredients={ingredients}
             instructions={instructions}
+            price={Price[priceValue as keyof typeof Price]}
+            prepTime={Number(cookTime)}
+            cuisine={Cuisine[cuisine as keyof typeof Cuisine]}
+            difficulty={Difficulty[diff as keyof typeof Difficulty]}
+            allergens={allergens}
+            sources={sources}
           />
 
           <PublishRecipeButton

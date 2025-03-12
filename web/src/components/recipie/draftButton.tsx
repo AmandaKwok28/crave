@@ -14,20 +14,55 @@ import useMutationRecipes from "@/hooks/use-mutation-recipes";
 import { useAuth } from "@/hooks/use-auth";
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
+import { Cuisine, Difficulty, Price } from "@/data/types";
 
 type PublishRecipeProps = {
     title: string;
     description: string;
     ingredients: string[];
     instructions: string[];
+    mealTypes?: string[];
+    price: Price,
+    cuisine: Cuisine,
+    allergens: string[],
+    difficulty: Difficulty,
+    sources?: string[],
+    prepTime: number,
 }
 
-const DraftButton = ({ title, description, ingredients, instructions }: PublishRecipeProps ) => {
+
+const DraftButton = ({ 
+    title, 
+    description, 
+    ingredients, 
+    instructions,  
+    mealTypes, 
+    price,
+    cuisine,
+    allergens,
+    difficulty,
+    sources,
+    prepTime 
+
+}: PublishRecipeProps ) => {
     const { addNewRecipeDraft } = useMutationRecipes();
     const { user } = useAuth();
 
     const handleSave = async () => {
-        await addNewRecipeDraft(title, description, ingredients, instructions, user.id);
+        await addNewRecipeDraft(
+            title, 
+            description, 
+            ingredients, 
+            instructions, 
+            user.id,
+            mealTypes ? mealTypes : [],
+            price,
+            cuisine,
+            allergens,
+            difficulty,
+            sources ? sources : [],
+            prepTime
+        );
         openPage($router, "profile");
     };
 

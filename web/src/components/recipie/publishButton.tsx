@@ -79,7 +79,7 @@ const PublishRecipeButton = ({
                 mealTypes ? mealTypes : [], 
                 price,
                 cuisine,
-                allergens ? allergens : [],
+                allergens,
                 difficulty,
                 sources ? sources : [],
                 prepTime
