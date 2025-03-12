@@ -4,7 +4,7 @@ import { useStore } from "@nanostores/react";
 import { useAuth } from "./use-auth";
 import { useEffect } from "react";
 
-const useQueryRecipes = () => {
+const useQueryRecipes = (ignoreFilters: boolean = false) => {
     const { user } = useAuth();
     const recipes = useStore($recipes);
     const drafts = useStore($drafts);
@@ -12,7 +12,7 @@ const useQueryRecipes = () => {
     const searchTerm = useStore($searchTerm);
 
     const loadRecipes = () => {
-      fetchRecipes(filters, searchTerm)
+      fetchRecipes(ignoreFilters ? {} : filters, searchTerm)
         .then((recipes) => setRecipes(recipes))
         .catch(() => setRecipes([]));
       

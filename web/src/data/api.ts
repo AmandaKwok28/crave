@@ -14,7 +14,7 @@ export const fetchUsers = async (): Promise<UserType[]> => {
 
 // Fetch all recipes with query
 export const fetchRecipes = async (
-  filters: any,
+  filters?: any,
   search?: string
 ): Promise<RecipeType[]> => {
   const filterParams: string[] = [];

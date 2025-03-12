@@ -7,23 +7,22 @@ import TagInput from "@/components/search/tagInput";
 import VerticalCheckBoxes from "@/components/search/DifficultyButtons";
 import { Search as SearchIcon } from "lucide-react";
 import { useStore } from "@nanostores/react";
-import { $filters, $searchTags, removeSearchTags, setDeletedSearchTag, setFilters, setSearchTerm } from "@/lib/store";
+import { $filters, $searchTags, $searchTerm, removeSearchTags, setDeletedSearchTag, setFilters, setSearchTerm } from "@/lib/store";
 import { Cuisine, Difficulty } from "@/data/types";
 import CuisineCheckBoxes from "@/components/search/cuisineCheckBoxes";
 import Prices from "@/components/search/prices";
 import { useState } from "react";
-// TODO: Create Tag component, store tags in nanostore not local state
-// TODO: Create Dropdown component (?)
-// TODO: Fix color schemes 
-// TODO: Get recipes from store!
+import DifficultyButtons from "@/components/search/DifficultyButtons";
 
 const Search = () => {
     const { recipes } = useQueryRecipes();
-
-    const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
-    const searchTags = useStore($searchTags);
     const filters = useStore($filters);
-    console.log(filters)
+    const [cookTime, setCookTime] = useState<[number, number]>([
+        filters.prepTimeMin ?? 10, 
+        filters.prepTimeMax ?? 20
+      ]);
+    const searchTags = useStore($searchTags);
+    const searchTerm = useStore($searchTerm);
 
     const handleRemove = (tag:string) => {
         setDeletedSearchTag(tag);
@@ -72,6 +71,7 @@ const Search = () => {
                             placeholder="Find the recipes you crave..."
                             variant="flushed"
                             color="white"
+                            value={searchTerm}
                             _placeholder={{ color: 'white' }}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             p="2"
@@ -79,7 +79,7 @@ const Search = () => {
                         </Input>
                     </Flex>
 
-                    <Prices defaultPrice={filters.price}/>
+                    <Prices />
                     
                     {/* Cook Time */}
                     <Slider 
@@ -109,12 +109,11 @@ const Search = () => {
                             color={"white"} 
                         />
 
-
-                        {/* Difficulty: Dropdown */}
-                        <VerticalCheckBoxes 
-                            title={"difficulty"} 
+                        <DifficultyButtons 
+                            title="Difficulty" 
                             options={Object.values(Difficulty)} 
                             color="white"
+                            home={false}
                         />
                         
                     </Flex>

@@ -76,22 +76,6 @@ export const $filters = atom({
   major: null         
 })
 
-// export const $filters = persistentAtom('filters', {
-//   mealTypes: [],
-//   price: null,
-//   difficulty: null,
-//   cuisine: [],
-//   prepTimeMin: null,
-//   prepTimeMax: null,
-//   ingredients: [],
-//   allergens: [],
-//   sources: [],
-//   major: null
-// }, {
-//   encode: JSON.stringify, // Custom encoding
-//   decode: JSON.parse // Custom decoding
-// });
-
 
 export function setFilters(updatedFilters: any) { 
   $filters.set({ ...$filters.get(), ...updatedFilters });
@@ -126,7 +110,6 @@ export const $deletedSearchTag = atom<string>("");
 export function setDeletedSearchTag(tag: string) {
   $deletedSearchTag.set(tag);
 }
-
 
 // search terms on search page
 export const $searchTerm = atom<string>("");

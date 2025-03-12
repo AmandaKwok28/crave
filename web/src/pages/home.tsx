@@ -18,7 +18,8 @@ import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
 
 const Home = () => {
-    const { recipes } = useQueryRecipes();
+    const { recipes } = useQueryRecipes(true);
+    
     const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
     const handleCookTimeChange = (details: { value: [number, number] }) => {
         setCookTime(details.value);
@@ -101,10 +102,15 @@ const Home = () => {
                         </Input>
                     </Flex>
 
-                    {/* Add prices, difficulty, and cook time slider */}
                     <Prices />
+
                     <Box >
-                        <DifficultyButtons title="Difficulty" options={Object.values(Difficulty)} color="white" direction="row"/>
+                        <DifficultyButtons 
+                            title="Difficulty" 
+                            options={Object.values(Difficulty)} 
+                            color="white" 
+                            home={true}
+                        />
                     </Box>
                     <Slider 
                         min={0}

@@ -1,24 +1,38 @@
 import { useEffect, useState } from "react";
 import { Button, Flex, Text } from "@chakra-ui/react";
-import { setFilters } from "@/lib/store";
+import { $filters, setFilters } from "@/lib/store";
+import { useStore } from "@nanostores/react";
 
-const Prices = ({ defaultPrice }: { defaultPrice?: string | null }) => {
-    const [selectedPrice, setSelectedPrice] = useState<string | null>(defaultPrice ?? null);
+const Prices = () => {
+    const filters = useStore($filters);
+    
+    const priceMap: Record<string, string> = {
+        "CHEAP": "$",
+        "MODERATE": "$$",
+        "PRICEY": "$$$",
+        "EXPENSIVE": "$$$$"
+    };
 
-    // Update filters when selectedPrice changes
+    const [selectedPrice, setSelectedPrice] = useState<string | null>(
+        filters.price ? priceMap[filters.price] || null : null
+    );
+
     useEffect(() => {
-        const priceMap: Record<string, string | null> = {
+        setSelectedPrice(filters.price ? priceMap[filters.price] || null : null);
+    }, [filters.price]);
+
+    const handleSelect = (price: string) => {
+        const newPrice = selectedPrice === price ? null : price;
+        setSelectedPrice(newPrice);
+
+        const reversePriceMap: Record<string, string | null> = {
             "$": "CHEAP",
             "$$": "MODERATE",
             "$$$": "PRICEY",
             "$$$$": "EXPENSIVE"
         };
 
-        setFilters({ price: priceMap[selectedPrice ?? ""] ?? null });
-    }, [selectedPrice]);
-
-    const handleSelect = (price: string) => {
-        setSelectedPrice(prev => (prev === price ? null : price)); // Toggle selection
+        setFilters({ price: reversePriceMap[newPrice ?? ""] ?? null });
     };
 
     return (
