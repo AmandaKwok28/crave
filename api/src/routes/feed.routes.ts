@@ -22,14 +22,22 @@ router.get('/', async (req, res) => {
       published: true,
       ...or,
     },
-    include: { author: true },
+    include: { 
+      _count: {
+        select: {
+          likes: true
+        }
+      },
+      author: true 
+    },
     take: Number(take) || undefined,
     skip: Number(skip) || undefined,
     orderBy: {
       updatedAt: orderBy as Prisma.SortOrder,
     },
   })
-  res.json(recipes)
+
+  res.json(recipes);
 })
 
 export default router;

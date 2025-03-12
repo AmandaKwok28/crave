@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../../prisma/db';
 import { authGuard } from '../middleware/auth';
+
 const router = Router();
 
 // Create new recipe
@@ -103,9 +104,25 @@ router.get(`/:id`, async (req, res) => {
   const { id } = req.params
   const recipe = await prisma.recipe.findUnique({
     where: { id: Number(id) },
-    include: { author: true }
-  })
-  res.json(recipe)
+    include: {
+      _count: {
+        select: {
+          likes: true
+        }
+      },
+      author: true
+    }
+  });
+
+  if (!recipe) {
+    res.status(404).json({
+      message: 'Recipe not found'
+    });
+
+    return;
+  }
+
+  res.json(recipe);
 })
 
 export default router;

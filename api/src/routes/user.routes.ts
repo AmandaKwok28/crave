@@ -13,7 +13,16 @@ router.get('/:id/recipes', authGuard, async (req, res) => {
       where: { id: id },
     })
     .recipes({
-      where: { published: true },
+      where: {
+        published: true
+      },
+      include: {
+        _count: {
+          select: {
+            likes: true
+          }
+        }
+      }
     });
   
   res.json(recipes);
@@ -28,7 +37,16 @@ router.get('/:id/drafts', authGuard, async (req, res) => {
       where: { id: id },
     })
     .recipes({
-      where: { published: false },
+      where: {
+        published: true
+      },
+      include: {
+        _count: {
+          select: {
+            likes: true
+          }
+        }
+      }
     })
   
   res.json(drafts);
