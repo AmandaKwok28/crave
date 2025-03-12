@@ -7,7 +7,7 @@ import TagInput from "@/components/search/tagInput";
 import VerticalCheckBoxes from "@/components/search/DifficultyButtons";
 import { Search as SearchIcon } from "lucide-react";
 import { useStore } from "@nanostores/react";
-import { $searchTags, removeSearchTags, setDeletedSearchTag, setFilters, setSearchTerm } from "@/lib/store";
+import { $filters, $searchTags, removeSearchTags, setDeletedSearchTag, setFilters, setSearchTerm } from "@/lib/store";
 import { Cuisine, Difficulty } from "@/data/types";
 import CuisineCheckBoxes from "@/components/search/cuisineCheckBoxes";
 import Prices from "@/components/search/prices";
@@ -22,6 +22,8 @@ const Search = () => {
 
     const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
     const searchTags = useStore($searchTags);
+    const filters = useStore($filters);
+    console.log(filters)
 
     const handleRemove = (tag:string) => {
         setDeletedSearchTag(tag);
@@ -36,7 +38,6 @@ const Search = () => {
         }
         setFilters(change);
     }
-
 
 
     return (
@@ -78,8 +79,7 @@ const Search = () => {
                         </Input>
                     </Flex>
 
-                    {/* Prices $, $$, $$$, $$$$  //TODO: change btn color when selected */}
-                    <Prices />
+                    <Prices defaultPrice={filters.price}/>
                     
                     {/* Cook Time */}
                     <Slider 

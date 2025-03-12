@@ -12,7 +12,6 @@ const useQueryRecipes = () => {
     const searchTerm = useStore($searchTerm);
 
     const loadRecipes = () => {
-      console.log(searchTerm)
       fetchRecipes(filters, searchTerm)
         .then((recipes) => setRecipes(recipes))
         .catch(() => setRecipes([]));

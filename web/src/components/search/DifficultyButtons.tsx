@@ -4,18 +4,22 @@ import {
     Text, 
     RadioGroup,
     VStack,
-    Button
+    Button,
+    HStack,
+    Spacer
 } from "@chakra-ui/react";
 import { useState } from "react";
 
 const DifficultyButtons = ({
     title,
     options,
-    color
+    color,
+    direction
 }:{
     title:string,
     options:string[],
     color: string
+    direction?: string
 }) => {
 
     const [value, setValue] = useState("1")
@@ -35,7 +39,7 @@ const DifficultyButtons = ({
     }
 
     return(
-        <Flex flexDirection="column" gap={2}> 
+        <Flex flexDirection={`${direction ? direction : 'column'}`} gap={2}> 
         <Text
             fontSize="sm"
             mb="5px"
@@ -45,8 +49,12 @@ const DifficultyButtons = ({
             {title}
         </Text>
 
+        {direction && (
+            <Spacer />
+        )}
+
         <RadioGroup.Root value={value} onValueChange={(e) => handleClick(e.value)} flexWrap="nowrap">
-        <VStack align="start">
+        {!direction && <VStack align="start">
             {options.map((item) => (
             <RadioGroup.Item key={item} value={item}>
                 <RadioGroup.ItemHiddenInput />
@@ -54,12 +62,23 @@ const DifficultyButtons = ({
                 <RadioGroup.ItemText color={color}>{item}</RadioGroup.ItemText>
             </RadioGroup.Item>
             ))}
-        </VStack>
+        </VStack>}
+
+        {direction && <HStack align="start">
+            {options.map((item) => (
+            <RadioGroup.Item key={item} value={item}>
+                <RadioGroup.ItemHiddenInput />
+                <RadioGroup.ItemIndicator />
+                <RadioGroup.ItemText color={color}>{item}</RadioGroup.ItemText>
+            </RadioGroup.Item>
+            ))}
+        </HStack>}
+
         </RadioGroup.Root>
 
-        <Button variant="outline" size="sm" borderRadius="12px" color={color} onClick={() => handleClear()}>
+        {!direction && (<Button variant="outline" size="sm" borderRadius="12px" color={color} onClick={() => handleClear()}>
             Clear
-        </Button>
+        </Button>)}
 
         </Flex>
     )

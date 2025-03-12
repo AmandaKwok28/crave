@@ -64,17 +64,34 @@ export function addDrafts(recipe: RecipeType) {
 // TODO: Add filters type?
 
 export const $filters = atom({
-  mealTypes: [],      // done
-  price: null,        // done
-  difficulty: null,   // done
-  cuisine: [],        // done
-  prepTimeMin: null,  // done
-  prepTimeMax: null,  // done
-  ingredients: [],    // done
-  allergens: [],      // done
-  sources: [],        // done
-  major: null         // done
+  mealTypes: [],      // optional
+  price: null,        
+  difficulty: null,   
+  cuisine: [],        
+  prepTimeMin: null,  
+  prepTimeMax: null,  
+  ingredients: [],    
+  allergens: [],      
+  sources: [],       // optional
+  major: null         
 })
+
+// export const $filters = persistentAtom('filters', {
+//   mealTypes: [],
+//   price: null,
+//   difficulty: null,
+//   cuisine: [],
+//   prepTimeMin: null,
+//   prepTimeMax: null,
+//   ingredients: [],
+//   allergens: [],
+//   sources: [],
+//   major: null
+// }, {
+//   encode: JSON.stringify, // Custom encoding
+//   decode: JSON.parse // Custom decoding
+// });
+
 
 export function setFilters(updatedFilters: any) { 
   $filters.set({ ...$filters.get(), ...updatedFilters });

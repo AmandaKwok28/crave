@@ -28,7 +28,7 @@ const CuisineCheckBoxes = ({
             }
         } else {
             change = {
-                [title]: filters.cuisine.filter((item) => { return item !== option})
+                [title]: filters.cuisine.filter((item: string) => { return item !== option})
             }
         }
         
