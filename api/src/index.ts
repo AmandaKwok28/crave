@@ -8,7 +8,7 @@ import userRoutes from './routes/user.routes'
 import feedRoutes from './routes/feed.routes'
 import likeRoutes from './routes/like.routes';
 
-const app = express();
+export const app = express();
 
 app.use(cors({
   origin: true,
@@ -31,6 +31,6 @@ app.use('/user', userRoutes);
 app.use('/feed', feedRoutes);
 app.use('/like', likeRoutes);
 
-const server = app.listen(3000, () => {
+app.listen(3000, () => {
   console.log(`Listening @ http://localhost:3000`);
 });
