@@ -38,6 +38,22 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
             <Text lineClamp="3">
             {recipe.description}
             </Text>
+
+            {/* For the recipe card: let's only display popular tags like price, allergens, and preptime */}
+            <Box flexWrap="true" spaceX="2" mt="4">
+            {recipe.allergens.map((tag, index) => (
+                  <Tag.Root key={index} variant="outline" size="lg" w="fit-content" borderRadius="10px">
+                      <Tag.Label>{tag}</Tag.Label>
+                  </Tag.Root>
+            ))}
+             <Tag.Root variant="outline" size="lg" w="fit-content" borderRadius="10px">
+                <Tag.Label>{recipe.price}</Tag.Label>
+            </Tag.Root>
+            <Tag.Root variant="outline" size="lg" w="fit-content" borderRadius="10px">
+                <Tag.Label>{recipe.prepTime}</Tag.Label>
+            </Tag.Root>
+            </Box>
+        
         </Card.Description>
       </Card.Body>
       <Card.Footer gap="2">
@@ -45,25 +61,6 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
           See More
         </Button>
 
-        <Box flexWrap="true">
-          <Tag.Root variant="subtle" size="lg" w="fit-content">
-              <Tag.Label>{recipe.cuisine}</Tag.Label>
-          </Tag.Root>
-          <Tag.Root variant="subtle" size="lg" w="fit-content">
-              <Tag.Label>{recipe.difficulty}</Tag.Label>
-          </Tag.Root>
-          {recipe.sources.map((tag, index) => (
-                <Tag.Root key={index} variant="subtle" size="lg" w="fit-content">
-                    <Tag.Label>{tag}</Tag.Label>
-                </Tag.Root>
-          ))}
-          {recipe.ingredients.map((tag, index) => (
-                <Tag.Root key={index} variant="subtle" size="lg" w="fit-content">
-                    <Tag.Label>{tag}</Tag.Label>
-                </Tag.Root>
-          ))}
-        </Box>
-        
       </Card.Footer>
     </Card.Root>
   );

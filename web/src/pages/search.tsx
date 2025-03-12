@@ -7,9 +7,11 @@ import TagInput from "@/components/search/tagInput";
 import VerticalCheckBoxes from "@/components/search/DifficultyButtons";
 import { Search as SearchIcon } from "lucide-react";
 import { useStore } from "@nanostores/react";
-import { $searchTags, removeSearchTags, setDeletedSearchTag } from "@/lib/store";
+import { $searchTags, removeSearchTags, setDeletedSearchTag, setFilters } from "@/lib/store";
 import { Cuisine, Difficulty } from "@/data/types";
 import CuisineCheckBoxes from "@/components/search/cuisineCheckBoxes";
+import Prices from "@/components/search/prices";
+import { useState } from "react";
 // TODO: Create Tag component, store tags in nanostore not local state
 // TODO: Create Dropdown component (?)
 // TODO: Fix color schemes 
@@ -18,12 +20,20 @@ import CuisineCheckBoxes from "@/components/search/cuisineCheckBoxes";
 const Search = () => {
     const { recipes } = useQueryRecipes();
 
-    const mealType = ['Breakfast', 'Lunch', 'Dinner'];
-
+    const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
     const searchTags = useStore($searchTags);
     const handleRemove = (tag:string) => {
         setDeletedSearchTag(tag);
         removeSearchTags(tag);
+    }
+
+    const handleCookTimeChange = (details: { value: [number, number] }) => {
+        setCookTime(details.value);
+        const change = {
+            prepTimeMin: details.value[0],
+            prepTimeMax: details.value[1],
+        }
+        setFilters(change);
     }
 
     return (
@@ -65,23 +75,7 @@ const Search = () => {
                     </Flex>
 
                     {/* Prices $, $$, $$$, $$$$  //TODO: change btn color when selected */}
-                    <Flex direction="row" w="full" gap="2" alignItems="center" justifyContent="space-between">
-                        <Text color="white"> Price </Text>
-                        <Flex direction="row" gap="2">
-                            <Button size="sm" borderRadius="10px" bg="white" color="black">
-                                $
-                            </Button>
-                            <Button size="sm" borderRadius="10px" bg="white" color="black">
-                                $$
-                            </Button>
-                            <Button size="sm" borderRadius="10px" bg="white" color="black">
-                                $$$
-                            </Button>
-                            <Button size="sm" borderRadius="10px" bg="white" color="black">
-                                $$$$
-                            </Button>
-                        </Flex>
-                    </Flex>
+                    <Prices />
                     
                     {/* Cook Time */}
                     <Slider 
@@ -89,7 +83,8 @@ const Search = () => {
                         max={120}
                         size="sm"
                         variant="solid"
-                        defaultValue={[10, 20]}
+                        defaultValue={cookTime}
+                        value={cookTime}
                         label="Cook Time"
                         marks={[
                             { value: 0, label: "0" },
@@ -98,6 +93,7 @@ const Search = () => {
                         ]}
                         color="white"
                         colorPalette="purple"
+                        onValueChange={handleCookTimeChange}
                     >
                     </Slider>
 

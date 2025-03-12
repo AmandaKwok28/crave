@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
       sources,
       prepTimeMin,
       prepTimeMax,
-      majors
+      major
     } = req.query
 
     // Validate enum parameters (difficulty, price, cuisine)
@@ -101,7 +101,7 @@ router.get('/', async (req, res) => {
     };
 
     // Majors - Tag-Input
-    const majorsArray = (majors as string)?.split(',');
+    const majorsArray = (major as string)?.split(',');
     const majorsFilter: Prisma.RecipeWhereInput = majorsArray && majorsArray.length > 0
       ? { author: { major: { in: majorsArray } } } 
       : {};

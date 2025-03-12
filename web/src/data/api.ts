@@ -47,7 +47,6 @@ export const fetchRecipes = async (filters: any): Promise<RecipeType[]> => {
     filterParams.push(`major=${filters.major}`);
   }
 
-  console.log(filterParams)
 
   const queryString = filterParams.length > 0 ? `?${filterParams.join("&")}` : '';
   const response = await fetch(`${API_URL}/feed${queryString}`);

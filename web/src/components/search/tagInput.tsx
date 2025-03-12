@@ -22,11 +22,7 @@ const TagInput = ({
         setInputValue(e.target.value);
     };
 
-    useEffect(() => {
-        console.log(filters);
-    }, [filters]);
-
-    // adding tags
+    // adding tags: 
     const handleKeyDown = (e: any) => {
         const value = inputValue.trim();
         if (e.key === "Enter" && value !== "") {
@@ -43,9 +39,17 @@ const TagInput = ({
                 change = {
                     "ingredients": [...filters.ingredients, value]
                 }
+            } else if (title === "Allergies") {
+                change = {
+                    "allergens": [...filters.allergens, value]
+                }
             } else if (title === "Major") {
                 change = {
                     "major": value
+                }
+            } else if (title === "Meal Type") {
+                change = {
+                    "mealTypes": [...filters.mealTypes, value]
                 }
             }
 
@@ -63,8 +67,24 @@ const TagInput = ({
             change = {
                 "sources": [...filters.sources.filter((item) => {return item !== tagToRemove})]
             }
+        } else if (title === "Ingredients") {
+            change = {
+                "ingredients": [...filters.ingredients.filter((item) => {return item !== tagToRemove})]
+            }
+        } else if (title === "Allergies") {
+            change = {
+                "ingredients": [...filters.allergens.filter((item) => {return item !== tagToRemove})]
+            }
+        } else if (title === "Major") {
+            change = {
+                "major": null
+            }
+        } else if (title === "Meal Type") {
+            change = {
+                "mealTypes": [...filters.mealTypes.filter((item) => {return item !== tagToRemove})]
+            }
         }
-        
+
         setFilters(change);
     };
 

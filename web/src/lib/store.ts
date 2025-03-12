@@ -64,16 +64,16 @@ export function addDrafts(recipe: RecipeType) {
 // TODO: Add filters type?
 
 export const $filters = atom({
-  mealTypes: [],
-  price: null,
-  difficulty: null,
-  cuisine: [],
-  prepTimeMin: null,
-  prepTimeMax: null,
-  ingredients: [],
-  allergens: [],
-  sources: [],
-  major: null
+  mealTypes: [],      // done
+  price: null,        // done
+  difficulty: null,   // done
+  cuisine: [],        // done
+  prepTimeMin: null,  // done
+  prepTimeMax: null,  // done
+  ingredients: [],    // done
+  allergens: [],      // done
+  sources: [],        // done
+  major: null         // done
 })
 
 export function setFilters(updatedFilters: any) { 
