@@ -6,7 +6,7 @@ import { Field } from "@/components/ui/field";
 import { InputGroup } from "@/components/ui/input-group";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import { $router } from "@/lib/router";
-import { Button, ButtonGroup, Flex, IconButton, Input, Text, Textarea, Image, VStack, RadioGroup } from "@chakra-ui/react";
+import { Button, ButtonGroup, Flex, IconButton, Input, Text, Textarea, Image, VStack, RadioGroup, Spinner } from "@chakra-ui/react";
 import {
   FileUploadList,
   FileUploadRoot,
@@ -20,6 +20,7 @@ import { FileAcceptDetails } from "node_modules/@chakra-ui/react/dist/types/comp
 import { Cuisine, Difficulty, Price } from "@/data/types";
 import TagInput from "@/components/recipie/tagInput";
 import { Separator } from '@chakra-ui/react'
+import { fetchTags } from "@/data/api";
 
 // If draft_id is set, this will be autopopulated on page load
 // Also, "publishing" simply edits the draft and sets published = true
@@ -31,9 +32,37 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
   const [ description, setDescription ] = useState<string>('');
   const [ instructions, setInstructions ] = useState<string[]>(['']);
   const [ ingredients, setIngredients ] = useState<string[]>(['']);
+  const [ selectedPrice, setSelectedPrice ] = useState<string>("$");
+  const [ cookTime, setCookTime ] = useState<string>("");
+  const [ cuisine, setCuisine ] = useState("1")
+  const [ diff, setDiff ] = useState("1")
+  const [ allergens, setAllergens ] = useState<string[]>([]);  
+  const [ sources, setSources ] = useState<string[]>([]);
   const [ currIndex, setCurrindex ] = useState<number>(0);
   const [ empty, setEmpty ] = useState<boolean>(false);
   const [ img, setImage ] = useState<string>("img_placeholder.jpg");
+  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleGenerateTags = async () => {
+    setLoading(true);
+    try {
+      const response = await fetchTags(title, description, instructions);
+      console.log(response)
+      response.response.cuisine && setCuisine(response.response.cuisine);
+      response.response.difficulty && setDiff(response.response.difficulty);
+      response.response.prepTime && setCookTime(response.response.prepTime.toString());
+      response.response.price && setSelectedPrice(response.response.price);
+      setTimeout(() => {
+      }, 2000);
+      setShowAdditionalInfo(true);
+    } catch (error) {
+      console.error("Error generating tags", error);
+    } finally {
+      setLoading(false);
+      setShowAdditionalInfo(true);
+    }
+  };
 
   useEffect(() => {
     if (!draft) {
@@ -88,7 +117,6 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
 
   // tag input logic
   let priceValue = "CHEAP";
-  const [selectedPrice, setSelectedPrice] = useState<string>("$");
   const handleSelect = (price: string) => {
     setSelectedPrice(prev => (prev === price ? "$" : price)); // Toggle selection
     if (price === "$") {
@@ -102,15 +130,13 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
     }
   };
 
-  const [cookTime, setCookTime] = useState<string>("");
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCookTime(e.target.value); // Update state with new value
   };
 
 
   // for the cuisine
-  const [cuisine, setCuisine] = useState("1")
-
   const handleCuisine = (option: string) => {
     setCuisine(option);
   }
@@ -118,8 +144,6 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
   const handleClear = () => {
     setCuisine("1");
   }
-
-  const [diff, setDiff] = useState("1")
 
   const handleDiff = (option: string) => {
     setDiff(option);
@@ -131,8 +155,6 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
 
 
   // handle the tags for allergens
-  const [allergens, setAllergens] = useState<string[]>([]);  
-  const [sources, setSources] = useState<string[]>([]);
 
   return (
     <Flex gap='4' flexDir='column' minW='100vw' align='center' justify='center'>
@@ -235,115 +257,129 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
 
             <Separator w='50rem' maxW='80%' size="sm" mt="2"/>
 
+            {!showAdditionalInfo && (
+              <Button 
+                w='50rem' 
+                maxW="80%"
+                bg="cyan.500"
+                onClick={handleGenerateTags}
+                > 
+                {loading ? <Spinner size="lg" color="white" /> : "Auto Generate Tags"}
+              </Button>
+            )}
+
             {/* Additional Information Section */}
-            <Text fontWeight="bold" fontSize="sm">Additional Information</Text>
-            
-            {/* Price */}
-            <Flex direction="row" gap='23.5rem' maxW="80%">
-              <Text color="black" fontWeight="bold" fontSize="sm"> Price </Text>
-              <Flex direction="row" gap="2">
-                  {["$", "$$", "$$$", "$$$$"].map((price) => (
-                      <Button
-                          key={price}
-                          size="sm"
-                          borderRadius="10px"
-                          bg={selectedPrice === price ? "purple.400" : ""}
-                          color={selectedPrice === price ? 'white' : 'black'}
-                          onClick={() => handleSelect(price)}
-                          variant="outline"
-                      >
-                          {price}
-                      </Button>
-                  ))}
-              </Flex>
-            </Flex>
-            <Flex direction="row" justify="space-between" w="41rem">  
-
-              {/* Tag Inputs */}
-              <Flex direction="column">
-              {/* Cook time */}
-                <Field label='Cook Time' required w='20rem' >
-                  <Input
-                        placeholder="Enter time in minutes"
-                        value={cookTime} // Bind input value to state
-                        onChange={handleChange} // Track changes in input
-                    />
-                </Field>
-
-                {/* Allergens */}
-                <TagInput 
-                  title="Allergens" 
-                  placeholder="Peanuts"
-                  width="20rem"
-                  tags={allergens} 
-                  setTags={setAllergens}/>
-
-                {/* Sources */}
-                <TagInput 
-                  title="Sources" 
-                  placeholder="CharMar" 
-                  width="20rem"
-                  tags={sources} 
-                  setTags={setSources}/>
-              </Flex>
+            {showAdditionalInfo && <Flex direction="column" gap="4">
+              <Text fontWeight="bold" fontSize="sm">Additional Information</Text>
               
-              {/* Ingredients & Cuisine */}
-              <Flex direction="row" mt="2">      
-                  <Flex flexDirection="column" gap={2}> 
-                  <Text
-                      fontSize="sm"
-                      mb="5px"
-                      fontWeight="bold"
-                  >
-                      {"Cuisine"}
-                  </Text>
-
-                  <RadioGroup.Root value={cuisine} onValueChange={(e) => handleCuisine(e.value)} flexWrap="nowrap">
-                  <VStack align="start">
-                      {Object.values(Cuisine).map((item) => (
-                      <RadioGroup.Item key={item} value={item}>
-                          <RadioGroup.ItemHiddenInput />
-                          <RadioGroup.ItemIndicator />
-                          <RadioGroup.ItemText>{item}</RadioGroup.ItemText>
-                      </RadioGroup.Item>
-                      ))}
-                  </VStack>
-                  </RadioGroup.Root>
-
-                  <Button variant="outline" size="sm" borderRadius="12px" onClick={() => handleClear()}>
-                      Clear
-                  </Button>
-
-                  </Flex>
-                  
-                  {/* Difficulty: Dropdown */}
-                  <Flex flexDirection="column" gap={2}> 
-                  <Text
-                      fontSize="sm"
-                      mb="5px"
-                      fontWeight="bold"
-                  >
-                      {"Difficulty"}
-                  </Text>
-
-                  <RadioGroup.Root value={diff} onValueChange={(e) => handleDiff(e.value)} flexWrap="nowrap">
-                  <VStack align="start">
-                      {Object.values(Difficulty).map((item) => (
-                      <RadioGroup.Item key={item} value={item}>
-                          <RadioGroup.ItemHiddenInput />
-                          <RadioGroup.ItemIndicator />
-                          <RadioGroup.ItemText>{item}</RadioGroup.ItemText>
-                      </RadioGroup.Item>
-                      ))}
-                  </VStack>
-                  </RadioGroup.Root>
-
-                  <Button variant="outline" size="sm" borderRadius="12px" onClick={() => handleClearDiff()}>
-                      Clear
-                  </Button>
-                  </Flex>
+              {/* Price */}
+              <Flex direction="row" gap='23.5rem' maxW="80%">
+                <Text color="black" fontWeight="bold" fontSize="sm"> Price </Text>
+                <Flex direction="row" gap="2">
+                    {["$", "$$", "$$$", "$$$$"].map((price) => (
+                        <Button
+                            key={price}
+                            size="sm"
+                            borderRadius="10px"
+                            bg={selectedPrice === price ? "purple.400" : ""}
+                            color={selectedPrice === price ? 'white' : 'black'}
+                            onClick={() => handleSelect(price)}
+                            variant="outline"
+                        >
+                            {price}
+                        </Button>
+                    ))}
+                </Flex>
               </Flex>
-            </Flex>
+              <Flex direction="row" justify="space-between" w="41rem">  
+
+                {/* Tag Inputs */}
+                <Flex direction="column">
+                {/* Cook time */}
+                  <Field label='Cook Time' required w='20rem' >
+                    <Input
+                          placeholder="Enter time in minutes"
+                          value={cookTime} // Bind input value to state
+                          onChange={handleChange} // Track changes in input
+                      />
+                  </Field>
+
+                  {/* Allergens */}
+                  <TagInput 
+                    title="Allergens" 
+                    placeholder="Peanuts"
+                    width="20rem"
+                    tags={allergens} 
+                    setTags={setAllergens}/>
+
+                  {/* Sources */}
+                  <TagInput 
+                    title="Sources" 
+                    placeholder="CharMar" 
+                    width="20rem"
+                    tags={sources} 
+                    setTags={setSources}/>
+                </Flex>
+                
+                {/* Ingredients & Cuisine */}
+                <Flex direction="row" mt="2">      
+                    <Flex flexDirection="column" gap={2}> 
+                    <Text
+                        fontSize="sm"
+                        mb="5px"
+                        fontWeight="bold"
+                    >
+                        {"Cuisine"}
+                    </Text>
+
+                    <RadioGroup.Root value={cuisine} onValueChange={(e) => handleCuisine(e.value)} flexWrap="nowrap">
+                    <VStack align="start">
+                        {Object.values(Cuisine).map((item) => (
+                        <RadioGroup.Item key={item} value={item}>
+                            <RadioGroup.ItemHiddenInput />
+                            <RadioGroup.ItemIndicator />
+                            <RadioGroup.ItemText>{item}</RadioGroup.ItemText>
+                        </RadioGroup.Item>
+                        ))}
+                    </VStack>
+                    </RadioGroup.Root>
+
+                    <Button variant="outline" size="sm" borderRadius="12px" onClick={() => handleClear()}>
+                        Clear
+                    </Button>
+
+                    </Flex>
+                    
+                    {/* Difficulty: Dropdown */}
+                    <Flex flexDirection="column" gap={2}> 
+                    <Text
+                        fontSize="sm"
+                        mb="5px"
+                        fontWeight="bold"
+                    >
+                        {"Difficulty"}
+                    </Text>
+
+                    <RadioGroup.Root value={diff} onValueChange={(e) => handleDiff(e.value)} flexWrap="nowrap">
+                    <VStack align="start">
+                        {Object.values(Difficulty).map((item) => (
+                        <RadioGroup.Item key={item} value={item}>
+                            <RadioGroup.ItemHiddenInput />
+                            <RadioGroup.ItemIndicator />
+                            <RadioGroup.ItemText>{item}</RadioGroup.ItemText>
+                        </RadioGroup.Item>
+                        ))}
+                    </VStack>
+                    </RadioGroup.Root>
+
+                    <Button variant="outline" size="sm" borderRadius="12px" onClick={() => handleClearDiff()}>
+                        Clear
+                    </Button>
+                    </Flex>
+                </Flex>
+              </Flex>
+            </Flex>}
+
           </Flex>
         </Flex>
        

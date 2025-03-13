@@ -15,16 +15,16 @@ router.post('/', async (req, res) => {
         **Instructions:** ${instructions}  
 
         ### **Your Task:**  
-        1. **Price Category**: Determine if the recipe is **cheap**, **moderate**, **pricey**, **expensive**, based on the cost of ingredients and preparation effort.  
+        1. **Price Category**: Determine if the recipe is **$**, **$$**, **$$$**, **$$$$**, based on the cost of ingredients and preparation effort.  
         2. **Cuisine Type**: Identify the most relevant cuisine type from the following list: **ITALIAN, MEXICAN, CHINESE, INDIAN, JAPANESE, FRENCH, MEDITERRANEAN, AMERICAN**.  
         3. **Difficulty Level**: Categorize the difficulty as **EASY, MEDIUM, or HARD** based on the complexity of preparation and number of steps.  
-        4. **Cook Time**: Estimate the expected cooktime for the recipe in minutes. Be relatively generous.
+        4. **Prep Time**: Provide an estimated preparation time in minutes. Please give a slightly overestimated value to ensure there is enough time for preparation and cooking
         5. **General Tags**: Provide 5 relevant tags (CSV format) that describe the dish (e.g., **spicy, vegetarian, one-pot, gluten-free**).  
 
         ### **Example Response Format (JSON)**  
         Provide the results in JSON format. Do not include introductory or closing remarks. Here is an example.
         {
-        "price": "MODERATE",
+        "price": "$$",
         "cuisine": "THAI",
         "difficulty": "MEDIUM",
         "prepTime": 60

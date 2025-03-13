@@ -215,7 +215,7 @@ export const login = async ( email: string, password: string ): Promise<UserType
 }
 
 // Fetch auto-generated tags
-export const fetchTags = async (title: string, description: string, instructions: string): Promise<TagsResponse> => {
+export const fetchTags = async (title: string, description: string, instructions: string[]): Promise<TagsResponse> => {
   const response = await fetch(`${API_URL}/gpt`, {
     method: "POST",
     headers: {
