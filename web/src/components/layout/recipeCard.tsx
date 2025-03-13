@@ -45,11 +45,11 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
         <Card.Description>
           <AvatarGroup>
             <Avatar.Root size="xs" variant="subtle">
-              <Avatar.Fallback name={`${recipe.author.name}`} />
+              <Avatar.Fallback name={`${recipe.author ? recipe.author.name : 'You'}`} />
               <Avatar.Image />
             </Avatar.Root>
           </AvatarGroup>
-            {recipe.author ? `${recipe.author.name}` : "Guest"}
+            {recipe.author ? `${recipe.author.name}` : "You"}
         </Card.Description>
         <Card.Description>
             <Text lineClamp="3">
