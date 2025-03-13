@@ -144,7 +144,6 @@ const Home = () => {
             <Flex 
                 bg="white" 
                 w="100vw"
-                justifyContent="center"
                 direction="column"
             >
                 <Text 
@@ -158,9 +157,11 @@ const Home = () => {
                     direction="row" 
                     w="full"
                     gap="6" 
+                    align="center"
+                    ml="14"
                     wrap="wrap" 
+                    justify="center"
                     justifyContent="center"
-                    ml="14" // for some reason I can't get the recipes to center
                 >
                     <Recipes recipes={recipes}/>
                 </Flex>
