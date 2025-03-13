@@ -44,9 +44,10 @@ const Prices = () => {
                         key={price}
                         size="sm"
                         borderRadius="10px"
-                        bg={selectedPrice === price ? "purple.400" : "white"}
-                        color={selectedPrice === price ? "white" : "black"}
+                        bg={selectedPrice === price ? "purple.700" : ""}
+                        color={selectedPrice === price ? "white" : "white"}
                         onClick={() => handleSelect(price)}
+                        variant="outline"
                     >
                         {price}
                     </Button>

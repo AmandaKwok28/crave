@@ -82,11 +82,11 @@ const Home = () => {
                     p="12"
                 >
                     {/* Search Bar */}
-                    <Flex direction="row" alignItems="center">
-                        <SearchIcon color="white" />
+                    <Flex direction="row" alignItems="center" gap="2">
+                        <SearchIcon color="white"/>
                         <Input
                             placeholder="Find the recipes you crave..."
-                            fontSize="large"
+                            fontSize="sm"
                             variant="flushed"
                             color="white"
                             _placeholder={{ color: 'white' }}
