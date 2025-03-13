@@ -256,17 +256,27 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
             </Field>
 
             <Separator w='50rem' maxW='80%' size="sm" mt="2"/>
+            
+            <Flex direction="column" gap="4" alignContent={"center"}>
+              {!showAdditionalInfo && (
+                <Text fontSize="sm" w='50rem' maxW="80%">
+                  Enter the title, description, and instructions for your recipe
+                  to auto-generate suggestions for your ingredients list, price range, and more!
+                </Text>
+              )}
 
-            {!showAdditionalInfo && (
-              <Button 
-                w='50rem' 
-                maxW="80%"
-                bg="cyan.500"
-                onClick={handleGenerateTags}
-                > 
-                {loading ? <Spinner size="lg" color="white" /> : "Auto Generate Tags"}
-              </Button>
-            )}
+              {!showAdditionalInfo && (
+                <Button 
+                  w='50rem' 
+                  maxW="80%"
+                  bg="cyan.500"
+                  onClick={handleGenerateTags}
+                  disabled={!(title && description && instructions[0])}
+                  > 
+                  {loading ? <Spinner size="lg" color="white" /> : "Auto-Generate Suggestions"}
+                </Button>
+              )}
+            </Flex>
 
             {/* Additional Information Section */}
             {showAdditionalInfo && <Flex direction="column" gap="4">
