@@ -71,10 +71,11 @@ const DraftButton = ({
     <DialogRoot size="md">
     <DialogTrigger asChild>
     <Button 
-        variant="outline" 
-        bgImage="linear-gradient({colors.blue.500}, {colors.cyan.200})"
+        variant="subtle" 
+        //bgImage="linear-gradient({colors.blue.500}, {colors.cyan.200})"
+        bg="cyan.500"
         color="white" 
-        borderRadius="15px" 
+        //borderRadius="15px" 
         border="non"
     >
             Save to Drafts

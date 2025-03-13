@@ -1,4 +1,4 @@
-import { Cuisine, Difficulty, Price, RecipeType, UserType } from "./types";
+import { Cuisine, Difficulty, Price, RecipeType, TagsResponse, UserType } from "./types";
 import { API_URL } from "@/env";
 
 // Fetch all users
@@ -223,3 +223,26 @@ export const fetchAllergen = async () => {
   const data = await res.json();
   return data;
 }
+
+// Fetch auto-generated tags
+export const fetchTags = async (title: string, description: string, instructions: string[]): Promise<TagsResponse> => {
+  const response = await fetch(`${API_URL}/gpt`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      title: title,
+      description: description,
+      instructions: instructions,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch tags: ${response.statusText}`);
+  }
+
+  const data: TagsResponse = await response.json();
+  return data;
+};
+

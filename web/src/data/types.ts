@@ -60,3 +60,14 @@ export interface AllergenType {
   id: number;
   name: string;
 }
+
+export interface TagsResponse {
+  response: {
+    price: string;
+    cuisine: string;
+    difficulty: string;
+    prepTime: number;
+    ingredients: string[];
+    tags: string[];
+  }
+}
