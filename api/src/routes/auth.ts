@@ -50,7 +50,8 @@ auth_route.post('/login', async (req, res) => {
         const validPassword = await verifyPassword(data.password, user.passwordHash)
 
         if (!validPassword) {
-            res.status(401).json({ message: 'Incorrect Password' });
+            res.status(401).json({ message: 'Incorrect Login' });
+            return;
         }
 
         const token = generateSessionToken();

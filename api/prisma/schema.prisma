@@ -36,6 +36,15 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model RecipeFeatureVector {
+  id           Int      @id @default(autoincrement())
+  recipeId     Int      @unique
+  recipe       Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  vector       Float[]  // Store the calculated feature vector 
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
 enum Price {
   CHEAP
   MODERATE
@@ -81,10 +90,31 @@ model Recipe {
   difficulty   Difficulty?
   sources      String[] @default([])
   prepTime     Int?
+  
+  similarRecipes RecipeSimilarity[] @relation("SimilarToRecipe")
+  similarToOtherRecipes RecipeSimilarity[] @relation("SimilarRecipe")
+ 
+  // New relation to feature vector
+  featureVector RecipeFeatureVector?
 }
 
 model Allergen {
   id        Int    @id @default(autoincrement()) 
   name      String @unique
   createdAt DateTime @default(now()) 
+}
+
+model RecipeSimilarity {
+  id              Int      @id @default(autoincrement())
+  baseRecipeId    Int      // The recipe we're finding similarities for
+  similarRecipeId Int      // A recipe that's similar to the base recipe
+  similarityScore Float    // How similar they are (higher = more similar)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  baseRecipe    Recipe @relation("SimilarToRecipe", fields: [baseRecipeId], references: [id], onDelete: Cascade)
+  similarRecipe Recipe @relation("SimilarRecipe", fields: [similarRecipeId], references: [id], onDelete: Cascade)
+
+  @@unique([baseRecipeId, similarRecipeId])
+  @@index([baseRecipeId, similarityScore(sort: Desc)])
 }

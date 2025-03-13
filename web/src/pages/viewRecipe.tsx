@@ -1,9 +1,11 @@
 import NavBar from "@/components/layout/navBar";
 import DeleteRecipe from "@/components/recipie/deleteRecipe";
 import DisplayIngredients from "@/components/recipie/displayIngredients";
+import SimilarRecipesSlider from "@/components/recipie/similarRecipesSlider";
 import { RecipeType } from "@/data/types";
 import useQueryRecipes from "@/hooks/use-query-recipes";
-import { Box, ButtonGroup, Center, Flex, Image, Text } from "@chakra-ui/react";
+import useSimilarRecipes from "@/hooks/use-similar-recipes";
+import { Box, ButtonGroup, Center, Flex, Spinner, Image, Text } from "@chakra-ui/react";
 
 const ViewRecipe = ({ recipe_id }: { 
     recipe_id: number; 
@@ -11,6 +13,9 @@ const ViewRecipe = ({ recipe_id }: {
     const { recipes, drafts } = useQueryRecipes();
     const currRecipe: RecipeType | undefined = recipes.find((r) => r.id === recipe_id) ?? drafts.find((r) => r.id === recipe_id);
     console.log(currRecipe)
+
+    // Fetch similar recipes from the API
+    const { similarRecipes, loading, error } = useSimilarRecipes(recipe_id);
 
     if (!currRecipe) {
         return (
@@ -240,6 +245,25 @@ const ViewRecipe = ({ recipe_id }: {
                 </Flex>
 
             </Flex>
+
+            
+            {/* Display loading spinner while fetching similar recipes */}
+            {loading ? (
+                <Center py={8}>
+                    <Spinner size="xl" color="teal.500" />
+                </Center>
+            ) : error ? (
+                <Center py={8}>
+                    <Text color="red.500">Failed to load similar recipes</Text>
+                </Center>
+            ) : similarRecipes.length === 0 ? (
+                <Center py={8}>
+                    <Text color="gray.500">Similar recipes not available yet</Text>
+                </Center>
+            ) : (
+                <SimilarRecipesSlider recipes={similarRecipes} currentRecipeId={recipe_id} />
+            )}
+
 
             
             <ButtonGroup m="8" position="fixed" bottom="0%" right="0%">

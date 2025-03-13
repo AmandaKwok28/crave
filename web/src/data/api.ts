@@ -246,3 +246,15 @@ export const fetchTags = async (title: string, description: string, instructions
   return data;
 };
 
+
+// Fetch similar recipes for a recipe
+export const fetchSimilarRecipes = async (recipeId: number, limit: number = 3): Promise<RecipeType[]> => {
+  const res = await fetch(`${API_URL}/recipe/${recipeId}/similar?limit=${limit}`);
+  
+  if (!res.ok) {
+    throw new Error(`API request failed! with status: ${res.status}`);
+  }
+  
+  const data: RecipeType[] = await res.json();
+  return data;
+};
