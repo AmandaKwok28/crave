@@ -6,6 +6,7 @@ import auth_route from './routes/auth';
 import recipeRoutes from './routes/recipe.routes'
 import userRoutes from './routes/user.routes'
 import feedRoutes from './routes/feed.routes'
+import { startBackgroundJobs } from './services/scheduler';
 
 export const app = express();
 
@@ -29,6 +30,8 @@ app.use('/recipe', recipeRoutes);
 app.use('/user', userRoutes);
 app.use('/feed', feedRoutes);
 
-app.listen(3000, () => {
+startBackgroundJobs();
+
+const server = app.listen(3000, () => {
   console.log(`Listening @ http://localhost:3000`);
 });

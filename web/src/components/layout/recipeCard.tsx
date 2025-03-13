@@ -18,7 +18,7 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
   return (
     <Card.Root width="320px" maxH="500px" overflow="hidden">
         <Image 
-        src={"fallback.png"}
+        src={"/fallback.png"}
         alt="Default Recipe Image" 
         borderRadius="md" 
         maxW="100vw" 
@@ -36,9 +36,7 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
         </Card.Description>
         <Card.Description>
             <Text lineClamp="3">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-            Ut enim ad minim veniam, quis
+            {recipe.description}
             </Text>
         </Card.Description>
       </Card.Body>
