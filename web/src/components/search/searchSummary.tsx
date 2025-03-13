@@ -1,15 +1,11 @@
 import { Box, Tag } from "@chakra-ui/react";
 import { useStore } from "@nanostores/react";
-import { $filters, setFilters } from "@/lib/store";
+import { $filters } from "@/lib/store";
 
 const SearchSummary = () => {
     const filters = useStore($filters);
-
-    // const handleRemove = (filterKey: string) => {
-    //     const updatedFilters = { ...filters };
-    //     // updatedFilters[filterKey] = null;
-    //     setFilters(updatedFilters);
-    // };
+    const capitalizeFirstLetter = (str: string): string => 
+        str[0].toUpperCase() + str.slice(1).toLowerCase();
 
     return (
         <Box
@@ -18,11 +14,29 @@ const SearchSummary = () => {
             mt="2"
             overflowX="auto"
             alignContent="center"
-            spaceX="2"
-            overflowY="hidden"
-        >
+        >   
+            Your Search:&nbsp;&nbsp;
+
+            {/* Tags */}
             {Object.values(filters).map((value, index) => {
-                if (value && (Array.isArray(value) ? value.length > 0 : true)) {  // Only show non-null or non-empty filters
+                if (value && (Array.isArray(value) ? value.length > 0 : true)) {
+                    if (Array.isArray(value)) {
+                        return value.map((item, itemIndex) => (
+                            <Tag.Root
+                                key={`${index}-${itemIndex}`}
+                                variant="subtle"
+                                size="lg"
+                                w="fit-content"
+                                bgGradient='to-r' gradientFrom="purple.500" gradientTo="cyan.300"
+                                color="white"
+                                borderRadius="10px"
+                                mr="2"
+                            >
+                                <Tag.Label>{typeof item === 'string' ? capitalizeFirstLetter(item) : item}</Tag.Label>
+                            </Tag.Root>
+                        ));
+                    }
+
                     return (
                         <Tag.Root
                             key={index}
@@ -32,11 +46,9 @@ const SearchSummary = () => {
                             bgGradient='to-r' gradientFrom="purple.500" gradientTo="cyan.300"
                             color="white"
                             borderRadius="10px"
+                            mr="2"
                         >
-                            <Tag.Label>{`${value}`}</Tag.Label>
-                            {/* <Tag.EndElement>
-                                <Tag.CloseTrigger onClick={() => handleRemove(value)} />
-                            </Tag.EndElement> */}
+                            <Tag.Label>{typeof value === 'string' ? capitalizeFirstLetter(value) : value}</Tag.Label>
                         </Tag.Root>
                     );
                 }

@@ -73,21 +73,15 @@ const Home = () => {
 
                 {/* Home Page Search Box */}
                 <Flex 
-                    //background="gray.200"
                     backgroundColor="rgba(211, 211, 211, 0.4)"
-                    w="55vw"
-                    m="7vh"
+                    w="50vw"
+                    m="5vh"
                     direction="column"
                     borderRadius="20px"
-                >
-
-                <Flex 
-                    direction="column" 
                     gap="8"
                     p="12"
                 >
-
-                    {/* Search bar */}
+                    {/* Search Bar */}
                     <Flex direction="row" alignItems="center">
                         <SearchIcon color="white" />
                         <Input
@@ -102,8 +96,10 @@ const Home = () => {
                         </Input>
                     </Flex>
 
+                    {/* Prices Filter */}
                     <Prices />
 
+                    {/* Difficulty Filter */}
                     <Box >
                         <DifficultyButtons 
                             title="Difficulty" 
@@ -112,6 +108,8 @@ const Home = () => {
                             home={true}
                         />
                     </Box>
+
+                    {/* Search Bar */}
                     <Slider 
                         min={0}
                         max={120}
@@ -131,7 +129,7 @@ const Home = () => {
                     >
                     </Slider>
 
-
+                    {/* Search Button */}
                     <Button 
                         borderRadius="10px"
                         bgGradient="to-l"
@@ -141,10 +139,6 @@ const Home = () => {
                     >
                         Search
                     </Button>
-
-                    
-
-                </Flex>
                 </Flex>
             </Flex>
             <Box 

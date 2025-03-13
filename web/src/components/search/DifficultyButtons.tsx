@@ -25,6 +25,8 @@ const DifficultyButtons = ({
     
     const filters = useStore($filters);
     const [value, setValue] = useState(filters.difficulty || "1")
+    const capitalizeFirstLetter = (str: string): string => 
+        str[0].toUpperCase() + str.slice(1).toLowerCase();
 
     useEffect(() => {
         setValue(filters.difficulty || "1");
@@ -65,7 +67,7 @@ const DifficultyButtons = ({
             <RadioGroup.Item key={item} value={item}>
                 <RadioGroup.ItemHiddenInput />
                 <RadioGroup.ItemIndicator />
-                <RadioGroup.ItemText color={color}>{item}</RadioGroup.ItemText>
+                <RadioGroup.ItemText color={color}>{capitalizeFirstLetter(item)}</RadioGroup.ItemText>
             </RadioGroup.Item>
             ))}
         </VStack>}
@@ -75,7 +77,7 @@ const DifficultyButtons = ({
             <RadioGroup.Item key={item} value={item}>
                 <RadioGroup.ItemHiddenInput />
                 <RadioGroup.ItemIndicator />
-                <RadioGroup.ItemText color={color}>{item}</RadioGroup.ItemText>
+                <RadioGroup.ItemText color={color}>{capitalizeFirstLetter(item)}</RadioGroup.ItemText>
             </RadioGroup.Item>
             ))}
         </HStack>}

@@ -18,17 +18,20 @@ const CuisineCheckBoxes = ({
 }) => {
 
     const filters = useStore($filters);
+    const capitalizeFirstLetter = (str: string): string => 
+        str[0].toUpperCase() + str.slice(1).toLowerCase();
+
     const handleClick = (option: string, checked: string | boolean) => {
 
         let change;
         if (checked) {
             // if it's true, add it to the list
             change = {
-                [title]: [...filters.cuisine, option]
+                [title.toLowerCase()]: [...filters.cuisine, option]
             }
         } else {
             change = {
-                [title]: filters.cuisine.filter((item: string) => { return item !== option})
+                [title.toLowerCase()]: filters.cuisine.filter((item: string) => { return item !== option})
             }
         }
         
@@ -45,7 +48,7 @@ const CuisineCheckBoxes = ({
             color={color}
             fontWeight="bold"
         >
-            {title}
+            {capitalizeFirstLetter(title)}
         </Text>
 
         {options.map((option, index) => (
@@ -57,7 +60,7 @@ const CuisineCheckBoxes = ({
                     <Checkbox.Control>
                         <Checkbox.Indicator />
                     </Checkbox.Control>
-                    <Checkbox.Label color={color}>{option}</Checkbox.Label>
+                    <Checkbox.Label color={color}>{capitalizeFirstLetter(option)}</Checkbox.Label>
                 </Checkbox.Root>
             </Stack>
         ))}

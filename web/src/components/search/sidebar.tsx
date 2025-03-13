@@ -1,6 +1,6 @@
 import TagInput from "@/components/search/tagInput";
 import { Search as SearchIcon } from "lucide-react";
-import { Box, Flex, Input, Text, Tag} from "@chakra-ui/react";
+import { Box, Flex, Input, Text} from "@chakra-ui/react";
 import { useStore } from "@nanostores/react";
 import { $filters, $searchTerm, setFilters, setSearchTerm } from "@/lib/store";
 import Prices from "./prices";
@@ -74,7 +74,7 @@ const Sidebar = () => {
                 value={cookTime}
                 label="Cook Time"
                 marks={[
-                    { value: 0, label: "0" },
+                    { value: 0, label: "0"},
                     { value: 60, label: "1h" },
                     { value: 120, label: "2h+" },
                 ]}
@@ -136,8 +136,7 @@ const Sidebar = () => {
                 title={"Meal Type"}
                 placeholder={"snack, dinner, brunch, etc..."}
             />
-
-           
+            
             <Box mb="12">
 
             </Box>
