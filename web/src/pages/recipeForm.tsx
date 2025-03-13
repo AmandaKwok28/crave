@@ -53,6 +53,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
       response.response.difficulty && setDiff(response.response.difficulty);
       response.response.prepTime && setCookTime(response.response.prepTime.toString());
       response.response.price && setSelectedPrice(response.response.price);
+      response.response.ingredients && setIngredients(response.response.ingredients);
       setTimeout(() => {
       }, 2000);
       setShowAdditionalInfo(true);

@@ -62,6 +62,7 @@ export interface TagsResponse {
     cuisine: string;
     difficulty: string;
     prepTime: number;
+    ingredients: string[];
     tags: string[];
   }
 }
