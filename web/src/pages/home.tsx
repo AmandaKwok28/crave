@@ -141,10 +141,12 @@ const Home = () => {
                     </Button>
                 </Flex>
             </Flex>
-            <Box 
+            <Flex 
                 bg="white" 
-                flex="1" 
-                className="w-screen">
+                w="100vw"
+                justifyContent="center"
+                direction="column"
+            >
                 <Text 
                     textStyle="2xl"
                     color="black"
@@ -152,10 +154,17 @@ const Home = () => {
                     m="4"> 
                     Trending
                 </Text>
-                <Flex direction="row" m="4" gap="6" wrap="wrap">
+                <Flex 
+                    direction="row" 
+                    w="full"
+                    gap="6" 
+                    wrap="wrap" 
+                    justifyContent="center"
+                    ml="14" // for some reason I can't get the recipes to center
+                >
                     <Recipes recipes={recipes}/>
                 </Flex>
-            </Box>
+            </Flex>
         </Flex>
     )
 }
