@@ -39,7 +39,7 @@ app.use('/bookmark', bookmarkRoutes);
 app.use('/gpt', gptRoutes);
 
 const port = process.env.API_PORT ?? 3000;
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log(`Listening @ http://localhost:3000`);
 });
 
