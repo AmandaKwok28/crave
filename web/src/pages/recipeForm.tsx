@@ -183,18 +183,8 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
               <FileUploadList />
             </FileUploadRoot>
 
-            {/* Instructions */}
-            <Field label='Instructions' required >
-              <Textarea
-                value={instructions[0]}
-                onChange={(e) => setInstructions([ e.target.value ])}
-                placeholder='Enter recipe instructions...'
-                h='12lh'
-              />
-            </Field>
-
             {/* Ingredients */}
-            <Field label='Ingredients' required>
+            {showAdditionalInfo && <Field label='Ingredients' required>
               <Flex gap='3' justify='flex-end' flexWrap='wrap' w='100%'>
                 {ingredients.map((ingredient, i) => (
                   <InputGroup
@@ -231,7 +221,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                   </Button>
                 </Flex>
               </Flex>
-            </Field>
+            </Field>}
           </Flex>
           
 
@@ -251,6 +241,16 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder='Enter a recipe description...'
+                h='7lh'
+              />
+            </Field>
+
+            {/* Instructions */}
+            <Field label='Instructions' required w='50rem' maxW='80%' >
+              <Textarea
+                value={instructions[0]}
+                onChange={(e) => setInstructions([ e.target.value ])}
+                placeholder='Enter recipe instructions...'
                 h='10lh'
               />
             </Field>
