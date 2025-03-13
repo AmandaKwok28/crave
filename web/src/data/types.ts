@@ -38,7 +38,10 @@ export interface RecipeType {
   description: string;
   authorId: string;
   published: boolean;
-  author: AuthorType
+  likes: number;
+  liked: boolean;
+  bookmarked: boolean;
+  author: AuthorType;
   mealTypes: string[];
   price: Price;
   cuisine: Cuisine;

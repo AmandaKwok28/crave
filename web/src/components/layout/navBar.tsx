@@ -47,6 +47,7 @@ const NavBar = () => {
                 fontWeight='bold'
                 color='bg'
                 onClick={handleHome}
+                _hover={{ cursor: 'pointer' }}
             >
                 Crave
             </Text>

@@ -4,11 +4,11 @@ import { authGuard } from "../middleware/auth";
 
 const router = Router();
 
-// Get all likes for the current user
+// get all bookmarks for a given user
 router.get('/my', authGuard, async (req, res) => {
-  const likes = await prisma.recipe.findMany({
+  const bookmarks = await prisma.recipe.findMany({
     where: {
-      likes: {
+      bookmarks: {
         some: {
           userId: res.locals.user.id
         }
@@ -19,15 +19,16 @@ router.get('/my', authGuard, async (req, res) => {
     }
   })
 
-  res.json(likes);
+  res.json(bookmarks);
 });
 
-// Like a specific recipe
+
+// bookmark a specific recipe
 router.post('/:recipe_id', authGuard, async (req, res) => {
   const { recipe_id } = req.params;
 
   try {
-    await prisma.like.create({
+    await prisma.bookmark.create({
       data: {
         recipeId: Number(recipe_id),
         userId: res.locals.user.id
@@ -44,12 +45,12 @@ router.post('/:recipe_id', authGuard, async (req, res) => {
   }
 });
 
-// Unlike a specific recipe
+// Unbookmark a specific recipe
 router.delete('/:recipe_id', authGuard, async (req, res) => {
   const { recipe_id } = req.params;
 
   try {
-    await prisma.like.deleteMany({
+    await prisma.bookmark.deleteMany({
       where: {
         recipeId: Number(recipe_id),
         userId: res.locals.user.id

@@ -4,13 +4,13 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "test": "vitest"
+    "test": "API_PORT=0 pnpm vitest"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.0.2",
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
-    "@prisma/client": "6.3.1",
+    "@prisma/client": "6.5.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "4.21.2",
@@ -26,7 +26,7 @@
     "@types/node": "22.13.1",
     "@types/node-cron": "^3.0.11",
     "@types/supertest": "^6.0.2",
-    "prisma": "6.3.1",
+    "prisma": "6.5.0",
     "prisma-mock-vitest": "^0.1.6",
     "supertest": "^7.0.0",
     "ts-node": "10.9.2",

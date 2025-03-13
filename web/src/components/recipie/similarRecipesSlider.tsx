@@ -3,9 +3,9 @@ import { RecipeType } from "@/data/types";
 import RecipeCard from "@/components/layout/recipeCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { lazy, Suspense, useRef } from "react";
+import { Suspense, useRef } from "react";
 
-const Slider = lazy(() => import("react-slick"));
+import Slider from 'react-slick';
 
 interface SimilarRecipesSliderProps {
   recipes: RecipeType[];
