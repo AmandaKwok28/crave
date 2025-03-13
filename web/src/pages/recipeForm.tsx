@@ -34,7 +34,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
   const [ ingredients, setIngredients ] = useState<string[]>(['']);
   const [ currIndex, setCurrindex ] = useState<number>(0);
   const [ empty, setEmpty ] = useState<boolean>(false);
-  const [ img, setImage ] = useState<string>("img_placeholder.jpg");
+  const [ img, setImage ] = useState<string>("/img_placeholder.jpg");
 
   useEffect(() => {
     if (!draft) {
