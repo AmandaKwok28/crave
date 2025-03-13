@@ -1,5 +1,5 @@
-import { fetchDrafts, fetchRecipes } from "@/data/api";
-import { $drafts, $recipes, setDrafts, setRecipes, $filters, $searchTerm } from "@/lib/store";
+import { fetchAllergen, fetchDrafts, fetchRecipes } from "@/data/api";
+import { $drafts, $recipes, setDrafts, setRecipes, $filters, $searchTerm, setAllergenTable, $allergenTable } from "@/lib/store";
 import { useStore } from "@nanostores/react";
 import { useAuth } from "./use-auth";
 import { useEffect } from "react";
@@ -10,6 +10,7 @@ const useQueryRecipes = (ignoreFilters: boolean = false) => {
     const drafts = useStore($drafts);
     const filters = useStore($filters);
     const searchTerm = useStore($searchTerm);
+    const allergenTable = useStore($allergenTable);
 
     const loadRecipes = () => {
       fetchRecipes(ignoreFilters ? {} : filters, searchTerm)
@@ -25,14 +26,31 @@ const useQueryRecipes = (ignoreFilters: boolean = false) => {
       }
     };
 
+    const loadAllergens = async () => {
+      try {
+        const data = await fetchAllergen();  
+        setAllergenTable(data);  
+      } catch (error) {
+        console.error("⚠️ Error fetching allergens:", error);
+        setAllergenTable([]); 
+      }
+    };
+
     useEffect(() => {
       loadRecipes();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters, searchTerm]);
 
+    useEffect(() => {
+      loadAllergens();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
     return {
       recipes,
-      drafts
+      drafts,
+      allergenTable,
+      loadAllergens
     }
 }
 

@@ -143,7 +143,7 @@ const ViewRecipe = ({ recipe_id }: {
                         gradientTo="blue.400"
                         color="white"
                     > 
-                        Cuisine: {currRecipe.cuisine.toLowerCase()}
+                        Cuisine: {currRecipe.cuisine ? currRecipe.cuisine.toLowerCase() : ""}
                     </Box>
 
                     {currRecipe.allergens.map((a) => {
@@ -182,7 +182,7 @@ const ViewRecipe = ({ recipe_id }: {
                         gradientTo="purple.700"
                         color="white"
                     > 
-                        Difficulty: {currRecipe.difficulty.toLowerCase()}
+                        Difficulty: {currRecipe.difficulty ? currRecipe.difficulty.toLowerCase() : ""}
                     </Box>
 
                     {currRecipe.mealTypes && (

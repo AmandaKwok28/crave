@@ -1,4 +1,4 @@
-import { RecipeType, UserType } from "@/data/types";
+import { AllergenType, RecipeType, UserType } from "@/data/types";
 import { persistentAtom } from "@nanostores/persistent";
 import { atom } from "nanostores";
 
@@ -115,4 +115,9 @@ export function setDeletedSearchTag(tag: string) {
 export const $searchTerm = atom<string>("");
 export function setSearchTerm(term: string) {
   $searchTerm.set(term);
+}
+
+export const $allergenTable = atom<AllergenType[]>([]);
+export function setAllergenTable(allergens: AllergenType[]) {
+  $allergenTable.set(allergens);
 }

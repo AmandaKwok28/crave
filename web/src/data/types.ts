@@ -55,3 +55,8 @@ export interface AuthorType {
   school: string;
   major: string;
 }
+
+export interface AllergenType {
+  id: number;
+  name: string;
+}

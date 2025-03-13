@@ -91,6 +91,7 @@ const PublishRecipeButton = ({
             await publishRecipe(id);    
             redirectPage($router, `recipe`, { recipe_id: id });
         } else {
+            console.log(difficulty)
             await editRecipe(
                 draft_id, 
                 title, 

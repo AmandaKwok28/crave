@@ -19,6 +19,7 @@ import { HiUpload } from "react-icons/hi";
 import { FileAcceptDetails } from "node_modules/@chakra-ui/react/dist/types/components/file-upload/namespace";
 import { Cuisine, Difficulty, Price } from "@/data/types";
 import TagInput from "@/components/recipie/tagInput";
+import AutoAllergens from "@/components/search/autoAllergens";
 
 
 // If draft_id is set, this will be autopopulated on page load
@@ -132,6 +133,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
 
   // handle the tags for allergens
   const [allergens, setAllergens] = useState<string[]>([]);  
+  const [editableAllergen, setEditable] = useState<string[]>([]);
   const [sources, setSources] = useState<string[]>([]);
 
   return (
@@ -265,7 +267,14 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
 
 
             {/* Add allergens list */}
-            <TagInput title="Allergens" placeholder="peanuts" tags={allergens} setTags={setAllergens}/>
+            {/* <TagInput title="Allergens" placeholder="peanuts" tags={allergens} setTags={setAllergens}/> */}
+            <AutoAllergens 
+              ingredients={ingredients} 
+              tags={allergens} 
+              setTags={setAllergens} 
+              editableTags={editableAllergen}
+              setEditable={setEditable}
+            />
 
 
             {/* Sources */}
@@ -363,7 +372,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
             prepTime={Number(cookTime)}
             cuisine={Cuisine[cuisine as keyof typeof Cuisine]}
             difficulty={Difficulty[diff as keyof typeof Difficulty]}
-            allergens={allergens}
+            allergens={[...new Set([...allergens, ...editableAllergen])]}   // take the set of the allergens listed in case they write something twice
             sources={sources}
           />
         </ButtonGroup>

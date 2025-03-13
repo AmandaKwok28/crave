@@ -7,6 +7,7 @@ import recipeRoutes from './routes/recipe.routes'
 import userRoutes from './routes/user.routes'
 import feedRoutes from './routes/feed.routes'
 import likeRoutes from './routes/like.routes';
+import allergen_route from './routes/allergens';
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use(auth);
 
 app.use(auth_route);
+app.use(allergen_route);
 app.use('/recipe', recipeRoutes);
 app.use('/user', userRoutes);
 app.use('/feed', feedRoutes);

@@ -178,7 +178,6 @@ export const patchRecipe = async (
         prepTime,
       }),
     });
-    console.log(response)
     if (!response.ok) {
       throw new Error(`API request failed! with status: ${response.status}`);
     }
@@ -211,5 +210,16 @@ export const login = async ( email: string, password: string ): Promise<UserType
   }
 
   const { data }: { data: UserType } = await res.json();
+  return data;
+}
+
+
+// get the allergens
+export const fetchAllergen = async () => {
+  const res = await fetch(`${API_URL}/allergens`);
+  if (!res.ok) {
+    throw new Error(`API request failed! with status: ${res.status}`);
+  }
+  const data = await res.json();
   return data;
 }
