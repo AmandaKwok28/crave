@@ -33,6 +33,8 @@ app.use('/feed', feedRoutes);
 app.use('/like', likeRoutes);
 app.use('/bookmark', bookmarkRoutes);
 
-app.listen(3000, () => {
-  console.log(`Listening @ http://localhost:3000`);
+const port = process.env.API_PORT ?? 3000;
+
+app.listen(port, () => {
+  console.log(`Listening @ http://localhost:${port}`);
 });

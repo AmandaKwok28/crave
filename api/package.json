@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "test": "vitest"
+    "test": "API_PORT=0 pnpm vitest"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.0.2",
