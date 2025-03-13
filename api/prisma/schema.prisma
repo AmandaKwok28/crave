@@ -18,12 +18,22 @@ model Like {
   @@unique([recipeId, userId], name: "likeId")
 }
 
+model Bookmark {
+  id           Int      @id @default(autoincrement())
+  recipeId     Int
+  userId       String
+  recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [userId], references: [id])
+
+  @@unique([recipeId, userId], name: "bookmarkId")
+}
+
 model User {
   id           String       @id @default(uuid())
   email        String    @unique
   name         String
   passwordHash String
-  bookmarks    Int[]
+  bookmarks    Bookmark[]
   likes        Like[]  
   school       String
   major        String
@@ -48,6 +58,7 @@ model Recipe {
   ingredients  String[]
   instructions String[]
   likes        Like[] 
+  bookmarks    Bookmark[]
   published    Boolean  @default(false)
   viewCount    Int      @default(0)
   authorId     String
