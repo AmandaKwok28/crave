@@ -4,29 +4,11 @@ import { authGuard } from "../middleware/auth";
 
 const router = Router();
 
-// get whether or not the current user has bookmarked a specific reipe
-router.get('/recipe/:recipe_id', authGuard, async (req, res) => {
-  const { recipe_id } = req.params;
-
-  const bookmark = await prisma.bookmark.findFirst({
-    where: {
-      recipeId: Number(recipe_id),
-      userId: res.locals.user.id
-    }
-  });
-
-  res.json({
-    bookmarked: !!bookmark
-  });
-});
-
 // get all bookmarks for a given user
-router.get('/user/:user_id', async (req, res) => {
-  const { user_id } = req.params;
-
+router.get('/my', authGuard, async (req, res) => {
   const bookmarks = await prisma.bookmark.findMany({
     where: {
-      userId: user_id
+      userId: res.locals.user.id
     }
   });
 

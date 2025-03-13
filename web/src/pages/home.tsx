@@ -158,7 +158,7 @@ const Home = () => {
                     w="full"
                     gap="6" 
                     align="center"
-                    ml="14"
+                    mb='16'
                     wrap="wrap" 
                     justify="center"
                     justifyContent="center"

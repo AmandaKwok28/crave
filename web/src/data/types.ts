@@ -40,6 +40,7 @@ export interface RecipeType {
   published: boolean;
   likes: number;
   liked: boolean;
+  bookmarked: boolean;
   author: AuthorType;
   mealTypes: string[];
   price: Price;

@@ -6,7 +6,7 @@ export default function DisplayIngredients({
   ingredients: string[]; 
 }) {
   return (
-    <List.Root ml='2'>
+    <List.Root>
       {ingredients.map((ingredient, index) => (
         <List.Item key={index}>
           {ingredient}

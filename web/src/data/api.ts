@@ -113,19 +113,29 @@ export const unlikeRecipe = async (recipe_id: string | number): Promise<void> =>
   }
 }
 
-export const isRecipeLiked = async (recipe_id: string | number): Promise<boolean> => {
-  const response = await fetch(`${API_URL}/like/recipe/${recipe_id}`, {
+// Bookmark routes
+export const bookmarkRecipe = async (recipe_id: string | number): Promise<void> => {
+  const response = await fetch(`${API_URL}/bookmark/${recipe_id}`, {
+    method: 'POST',
     credentials: 'include'
   });
 
   if (!response.ok) {
     throw new Error(`API request failed! with status: ${response.status}`);
   }
-
-  const { liked }: { liked: boolean } = await response.json();
-
-  return liked;
 }
+
+export const unbookmarkRecipe = async (recipe_id: string | number): Promise<void> => {
+  const response = await fetch(`${API_URL}/bookmark/${recipe_id}`, {
+    method: 'DELETE',
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+}
+
 
 // Delete recipe by id
 export const deleteRecipe = async (recipe_id: number) : Promise<boolean> => {

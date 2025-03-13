@@ -17,11 +17,7 @@ router.get('/:id/recipes', authGuard, async (req, res) => {
         published: true
       },
       include: {
-        _count: {
-          select: {
-            likes: true
-          }
-        }
+        author: true
       }
     });
   
@@ -38,33 +34,14 @@ router.get('/:id/drafts', authGuard, async (req, res) => {
     })
     .recipes({
       where: {
-        published: true
+        published: false
       },
       include: {
-        _count: {
-          select: {
-            likes: true
-          }
-        }
+        author: true
       }
     })
   
   res.json(drafts);
-})
-
-// Get user's likes
-router.get('/:id/likes', authGuard, async (req, res) => {
-  const { id } = req.params
-
-  const likes = await prisma.user
-    .findUnique({
-      where: { id: id },
-    })
-    .likes({
-      where: { userId: id },
-    })
-  
-  res.json(likes);
-})
+});
 
 export default router;

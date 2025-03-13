@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../../prisma/db';
 import { authGuard } from '../middleware/auth';
-import { processRecipeSimilarities } from '../services/recipe-similarity';
-import { generateFeatureVector } from '../services/feature-vector';
+
 const router = Router();
 
 // Create a recipe
@@ -42,8 +41,13 @@ router.post('/', async (req, res) => {
       },
     });
 
-    res.json(recipe)
-  });
+    res.json(recipe);
+  } catch(error) {
+    res.status(500).json({
+      message: 'An unknown error occurred'
+    })
+  }
+});
 
 // Update a recipe
 router.patch('/:id/', authGuard, async (req, res) => {
@@ -178,7 +182,6 @@ router.delete('/:recipe_id', async (req, res) => {
   
     res.json(recipe);  
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       message: 'Error deleting recipe'
     });
@@ -192,7 +195,8 @@ router.get(`/:id`, async (req, res) => {
     where: { id: Number(id) },
     include: {
       author: true,
-      likes: true
+      likes: true,
+      bookmarks: true
     }
   });
 
@@ -207,7 +211,9 @@ router.get(`/:id`, async (req, res) => {
   res.json({
     ...recipe,
     likes: recipe.likes.length,
-    liked: !!recipe.likes.find((l) => l.userId === res.locals.user?.id)
+    liked: !!recipe.likes.find((l) => l.userId === res.locals.user?.id),
+    bookmarks: undefined, // Do not share bookmarks with everyone
+    bookmarked: !!recipe.bookmarks.find((b) => b.userId === res.locals.user?.id)
   });
 })
 
