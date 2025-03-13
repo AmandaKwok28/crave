@@ -1,66 +1,80 @@
 import { Router } from "express";
 import { prisma } from "../../prisma/db";
+import { authGuard } from "../middleware/auth";
 
 const router = Router();
 
-// get all bookmarks for a given recipe
-router.get('/bookmark', async (req, res) => {
-  const { recipeId } = req.body
-  const bookmarks = await prisma.bookmark.findMany({
-      where: {
-        recipeId: recipeId
-      }
-  })
-  res.json(bookmarks)
-})
+// get whether or not the current user has bookmarked a specific reipe
+router.get('/recipe/:recipe_id', authGuard, async (req, res) => {
+  const { recipe_id } = req.params;
 
-// get all bookmarks for a given user
-router.get('/user', async (req, res) => {
-  const { userId } = req.body
-  const bookmarks = await prisma.bookmark.findMany({
-      where: {
-        userId: userId
-      }
-  })
-  res.json(bookmarks)
-})
+  const bookmark = await prisma.bookmark.findFirst({
+    where: {
+      recipeId: Number(recipe_id),
+      userId: res.locals.user.id
+    }
+  });
 
-// Create new bookmark given userId and recipeID
-router.post('/', async (req, res) => {
-  const { userId, recipeId } = req.body
-  const bookmark = await prisma.bookmark.create({
-    data: {
-        recipeId: recipeId,
-        userId: userId
-    },
-  })
-  res.json(bookmark)
+  res.json({
+    bookmarked: !!bookmark
+  });
 });
 
-// Get bookmark by both userId and recipeId
-router.get('/both', async (req, res) => {
-  const { userId, recipeId } = req.body
-    const bookmark = await prisma.bookmark.findUnique({
-      where: { 
-        bookmarkId: { 
-          userId: userId, 
-          recipeId: recipeId} 
-        },
-    })
-    res.json(bookmark)
-  })
+// get all bookmarks for a given user
+router.get('/user/:user_id', async (req, res) => {
+  const { user_id } = req.params;
 
-// Delete a bookmark based on both userId and recipeId
-router.delete('/both', async (req, res) => {
-  const { userId, recipeId } = req.body
-    const bookmark = await prisma.bookmark.delete({
-      where: { 
-        bookmarkId: { 
-          userId: userId, 
-          recipeId: recipeId} 
-        },
+  const bookmarks = await prisma.bookmark.findMany({
+    where: {
+      userId: user_id
+    }
+  });
+
+  res.json(bookmarks);
+})
+
+// bookmark a specific recipe
+router.post('/:recipe_id', authGuard, async (req, res) => {
+  const { recipe_id } = req.params;
+
+  try {
+    await prisma.bookmark.create({
+      data: {
+        recipeId: Number(recipe_id),
+        userId: res.locals.user.id
+      }
+    });  
+
+    res.json({
+      success: true
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false
     })
-    res.json(bookmark)
-  })
+  }
+});
+
+// Unbookmark a specific recipe
+router.delete('/:recipe_id', authGuard, async (req, res) => {
+  const { recipe_id } = req.params;
+
+  try {
+    await prisma.bookmark.deleteMany({
+      where: {
+        recipeId: Number(recipe_id),
+        userId: res.locals.user.id
+      }
+    });
+    
+    res.json({
+      success: true
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false
+    })
+  }
+});
 
 export default router;
