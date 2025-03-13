@@ -44,16 +44,22 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const capitalizeFirstLetter = (str: string): string => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
+
   const handleGenerateTags = async () => {
     setLoading(true);
     try {
       const response = await fetchTags(title, description, instructions);
-      console.log(response)
-      response.response.cuisine && setCuisine(response.response.cuisine);
-      response.response.difficulty && setDiff(response.response.difficulty);
-      response.response.prepTime && setCookTime(response.response.prepTime.toString());
-      response.response.price && setSelectedPrice(response.response.price);
-      response.response.ingredients && setIngredients(response.response.ingredients);
+      const { cuisine: gptCuisine, difficulty: gptDifficulty, prepTime: gptPrepTime, price: gptPrice, ingredients: gptIngredients } = response.response;
+
+      gptCuisine && setCuisine(gptCuisine);
+      gptDifficulty && setDiff(gptDifficulty);
+      gptPrepTime && setCookTime(gptPrepTime.toString());
+      gptPrice && setSelectedPrice(gptPrice);
+      gptIngredients && setIngredients(gptIngredients);
+
       setTimeout(() => {
       }, 2000);
       setShowAdditionalInfo(true);
@@ -159,8 +165,8 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
 
   return (
     <Flex gap='4' flexDir='column' minW='100vw' align='center' justify='center'>
-      <Flex pos='fixed' zIndex="100" top='0' left='0' w='100vw' h='10' bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400" align='center' justify='center'>
-        <Text color='bg' fontWeight='bold' fontSize='3xl'>
+      <Flex pos='fixed' zIndex="100" top='0' left='0' w='100vw' h='10' bg="cyan.700" align='center' justify='center'>
+        <Text color='bg' fontWeight='bold' fontSize='2xl'>
           {draft ? 'Edit an Existing Recipe' : 'Create a New Recipe'}
         </Text>
       </Flex>
@@ -217,7 +223,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                       Cannot add an empty ingredient!
                     </Text>
                   )}
-                  <Button bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400" onClick={handleAddIngredient}>
+                  <Button bgGradient="to-r" bg="cyan.500" onClick={handleAddIngredient}>
                     Add Ingredient
                   </Button>
                 </Flex>
@@ -332,7 +338,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                     setTags={setSources}/>
                 </Flex>
                 
-                {/* Ingredients & Cuisine */}
+                {/* Difficulty & Cuisine */}
                 <Flex direction="row" mt="2">      
                     <Flex flexDirection="column" gap={2}> 
                     <Text
@@ -343,13 +349,13 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                         {"Cuisine"}
                     </Text>
 
-                    <RadioGroup.Root value={cuisine} onValueChange={(e) => handleCuisine(e.value)} flexWrap="nowrap">
+                    <RadioGroup.Root value={cuisine} onValueChange={(e) => handleCuisine(e.value)} flexWrap="nowrap" colorPalette="purple">
                     <VStack align="start">
                         {Object.values(Cuisine).map((item) => (
                         <RadioGroup.Item key={item} value={item}>
                             <RadioGroup.ItemHiddenInput />
                             <RadioGroup.ItemIndicator />
-                            <RadioGroup.ItemText>{item}</RadioGroup.ItemText>
+                            <RadioGroup.ItemText>{capitalizeFirstLetter(item)}</RadioGroup.ItemText>
                         </RadioGroup.Item>
                         ))}
                     </VStack>
@@ -371,13 +377,13 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                         {"Difficulty"}
                     </Text>
 
-                    <RadioGroup.Root value={diff} onValueChange={(e) => handleDiff(e.value)} flexWrap="nowrap">
+                    <RadioGroup.Root value={diff} onValueChange={(e) => handleDiff(e.value)} flexWrap="nowrap" colorPalette="purple">
                     <VStack align="start">
                         {Object.values(Difficulty).map((item) => (
                         <RadioGroup.Item key={item} value={item}>
                             <RadioGroup.ItemHiddenInput />
                             <RadioGroup.ItemIndicator />
-                            <RadioGroup.ItemText>{item}</RadioGroup.ItemText>
+                            <RadioGroup.ItemText>{capitalizeFirstLetter(item)}</RadioGroup.ItemText>
                         </RadioGroup.Item>
                         ))}
                     </VStack>
@@ -397,7 +403,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
       <Flex mt="16">
           <ButtonGroup>
             <CancelCreateRecipeButton />
-            <DraftButton
+            {showAdditionalInfo && <DraftButton
               title={title}
               description={description}
               ingredients={ingredients}
@@ -408,9 +414,9 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
               difficulty={Difficulty[diff as keyof typeof Difficulty]}
               allergens={allergens}
               sources={sources}
-            />
+            />}
 
-            <PublishRecipeButton
+            {showAdditionalInfo && <PublishRecipeButton
               title={title}
               description={description}
               ingredients={ingredients}
@@ -422,9 +428,10 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
               difficulty={Difficulty[diff as keyof typeof Difficulty]}
               allergens={allergens}
               sources={sources}
-            />
+            />}
           </ButtonGroup>
-        </Flex>
+      </Flex>
+
       </Flex>
     </Flex>
   );

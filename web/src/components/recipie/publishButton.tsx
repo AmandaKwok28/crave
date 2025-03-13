@@ -114,11 +114,12 @@ const PublishRecipeButton = ({
     <DialogRoot size="md" open={isOpen} onOpenChange={(e) => setIsOpen(e.open)}>
     <DialogTrigger asChild>
     <Button 
-        variant="outline" 
-        bgImage="linear-gradient({colors.blue.500}, {colors.cyan.200})"
+        variant="subtle" 
+        //bgImage="linear-gradient({colors.blue.500}, {colors.cyan.200})"
         color="white" 
-        borderRadius="15px" 
+        //borderRadius="15px" 
         border="non"
+        bg="cyan.700"
     >
             Publish
         </Button>
