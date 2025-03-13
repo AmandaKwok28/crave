@@ -55,3 +55,13 @@ export interface AuthorType {
   school: string;
   major: string;
 }
+
+export interface TagsResponse {
+  response: {
+    price: string;
+    cuisine: string;
+    difficulty: string;
+    prepTime: number;
+    tags: string[];
+  }
+}
