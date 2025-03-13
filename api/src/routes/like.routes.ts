@@ -6,14 +6,21 @@ const router = Router();
 
 // Get all likes for the current user
 router.get('/my', authGuard, async (req, res) => {
-  const likes = await prisma.like.findMany({
+  const likes = await prisma.recipe.findMany({
     where: {
-      userId: res.locals.user.id
+      likes: {
+        some: {
+          userId: res.locals.user.id
+        }
+      }
+    },
+    include: {
+      author: true
     }
-  });
+  })
 
   res.json(likes);
-})
+});
 
 // Like a specific recipe
 router.post('/:recipe_id', authGuard, async (req, res) => {

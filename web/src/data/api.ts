@@ -66,15 +66,16 @@ export const fetchRecipes = async (
 };
 
 // Fetch all drafts
-export const fetchDrafts = async (id:string): Promise<RecipeType[]> => {
-  const response = await fetch(`${API_URL}/user/${id}/drafts`, { credentials: 'include' });
+export const fetchDrafts = async (): Promise<RecipeType[]> => {
+  const response = await fetch(`${API_URL}/user/drafts`, { credentials: 'include' });
 
   if (!response.ok) {
     throw new Error(`API request failed! with status: ${response.status}`);
   }
+  
   const data: RecipeType[] = await response.json();
   return data;
-  };
+};
 
 // Fetch specific recipe
 export const fetchRecipe = async (recipe_id: string | number): Promise<RecipeType> => {
@@ -136,7 +137,6 @@ export const unbookmarkRecipe = async (recipe_id: string | number): Promise<void
   }
 }
 
-
 // Delete recipe by id
 export const deleteRecipe = async (recipe_id: number) : Promise<boolean> => {
   const response = await fetch(`${API_URL}/recipe/${recipe_id}`, {
@@ -150,6 +150,33 @@ export const deleteRecipe = async (recipe_id: number) : Promise<boolean> => {
 
   return true;
 };
+
+export const fetchLikes = async (): Promise<RecipeType[]> => {
+  const response = await fetch(`${API_URL}/like/my`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const likes: RecipeType[] = await response.json();
+  return likes;
+}
+
+export const fetchBookmarks = async (): Promise<RecipeType[]> => {
+  const response = await fetch(`${API_URL}/bookmark/my`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const bookmarks: RecipeType[] = await response.json();
+  return bookmarks;
+}
+
 
 // Publish a recipe
 export const publishRecipe = async (id:number): Promise<boolean> => {

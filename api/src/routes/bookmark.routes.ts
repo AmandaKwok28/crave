@@ -6,14 +6,22 @@ const router = Router();
 
 // get all bookmarks for a given user
 router.get('/my', authGuard, async (req, res) => {
-  const bookmarks = await prisma.bookmark.findMany({
+  const bookmarks = await prisma.recipe.findMany({
     where: {
-      userId: res.locals.user.id
+      bookmarks: {
+        some: {
+          userId: res.locals.user.id
+        }
+      }
+    },
+    include: {
+      author: true
     }
-  });
+  })
 
   res.json(bookmarks);
-})
+});
+
 
 // bookmark a specific recipe
 router.post('/:recipe_id', authGuard, async (req, res) => {

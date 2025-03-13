@@ -60,6 +60,26 @@ export function addDrafts(recipe: RecipeType) {
     $drafts.set([...$drafts.get(), recipe]);
 }
 
+// Likes store
+export const $likes = persistentAtom<RecipeType[]>('likes', [], {
+  encode: JSON.stringify,
+  decode: JSON.parse
+});
+
+export function setLikes(recipes: RecipeType[]) {
+  $likes.set(recipes)
+}
+
+// Bookmarks store
+export const $bookmarks = persistentAtom<RecipeType[]>('bookmarks', [], {
+  encode: JSON.stringify,
+  decode: JSON.parse
+});
+
+export function setBookmarks(recipes: RecipeType[]) {
+  $bookmarks.set(recipes)
+}
+
 // Filters store 
 // TODO: Add filters type?
 

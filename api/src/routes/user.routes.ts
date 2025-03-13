@@ -5,12 +5,10 @@ import { authGuard } from '../middleware/auth';
 const router = Router();
 
 // Get user's published recipes
-router.get('/:id/recipes', authGuard, async (req, res) => {
-  const { id } = req.params
-
+router.get('/recipes', authGuard, async (req, res) => {
   const recipes = await prisma.user
     .findUnique({
-      where: { id: id },
+      where: { id: res.locals.user.id },
     })
     .recipes({
       where: {
@@ -25,12 +23,10 @@ router.get('/:id/recipes', authGuard, async (req, res) => {
 })
 
 // Get user's unpublished recipes
-router.get('/:id/drafts', authGuard, async (req, res) => {
-  const { id } = req.params
-
+router.get('/drafts', authGuard, async (req, res) => {
   const drafts = await prisma.user
     .findUnique({
-      where: { id: id },
+      where: { id: res.locals.user.id },
     })
     .recipes({
       where: {
