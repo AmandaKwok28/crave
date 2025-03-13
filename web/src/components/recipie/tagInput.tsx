@@ -5,11 +5,13 @@ import { useState } from "react";
 const TagInput = ({
     title,
     placeholder,
+    width,
     tags,
     setTags
 }:{
     title:string,
     placeholder:string,
+    width?: string,
     tags: string[],
     setTags: any
 }) => {
@@ -32,8 +34,8 @@ const TagInput = ({
     }
 
     return (
-        <Flex direction="column" >
-            <Field label={title} required>
+        <Flex direction="column">
+            <Field label={title} required w={width}>
             <Input
                 placeholder={`e.g. ${placeholder}`}
                 color="black"

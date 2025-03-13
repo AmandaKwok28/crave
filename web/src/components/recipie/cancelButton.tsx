@@ -29,11 +29,11 @@ const CancelCreateRecipeButton = () => {
     </DialogTrigger>
     <DialogContent>
         <DialogHeader>
-        <DialogTitle textStyle="2xl" fontWeight="bold">Cancel Recipie Creation?</DialogTitle>
+        <DialogTitle textStyle="2xl" fontWeight="bold">Cancel Recipe Creation?</DialogTitle>
         </DialogHeader>
         <DialogBody>
         <p>
-            Do you want to cancel creating this recipe? you will loose all progress by doing so.
+            Do you want to cancel creating this recipe? You will loose all progress by doing so.
         </p>
         </DialogBody>
         <DialogFooter>

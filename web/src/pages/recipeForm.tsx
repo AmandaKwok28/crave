@@ -19,7 +19,7 @@ import { HiUpload } from "react-icons/hi";
 import { FileAcceptDetails } from "node_modules/@chakra-ui/react/dist/types/components/file-upload/namespace";
 import { Cuisine, Difficulty, Price } from "@/data/types";
 import TagInput from "@/components/recipie/tagInput";
-
+import { Separator } from '@chakra-ui/react'
 
 // If draft_id is set, this will be autopopulated on page load
 // Also, "publishing" simply edits the draft and sets published = true
@@ -146,9 +146,10 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
 
         <Flex direction="row" gap="8">
 
-          {/* Column 1: image, cooking instructions, preferences */}
+          {/* Column 1 */}
           <Flex direction="column" gap="4">
-            {/* Add an image upload option... */}
+
+            {/* Image Upload */}
             <Image rounded="md" src={img} w="30vw"/>
 
             <FileUploadRoot accept={["image/png"]} onFileAccept={handleImageFile}>
@@ -160,6 +161,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
               <FileUploadList />
             </FileUploadRoot>
 
+            {/* Instructions */}
             <Field label='Instructions' required >
               <Textarea
                 value={instructions[0]}
@@ -169,132 +171,8 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
               />
             </Field>
 
-            {/* Tags */}
-            Additional Information (optional)
-            <Flex direction="row" w="full" gap="2" alignItems="center" justifyContent="space-between">
-
-              {/* Price */}
-              <Flex direction="row" w="full" gap="2" alignItems="center" justifyContent="space-between">
-              <Text color="black"> Price </Text>
-              <Flex direction="row" gap="2">
-                  {["$", "$$", "$$$", "$$$$"].map((price) => (
-                      <Button
-                          key={price}
-                          size="sm"
-                          borderRadius="10px"
-                          bg={selectedPrice === price ? "purple.400" : ""}
-                          color={selectedPrice === price ? 'white' : 'black'}
-                          onClick={() => handleSelect(price)}
-                          variant="outline"
-                      >
-                          {price}
-                      </Button>
-                  ))}
-              </Flex>
-
-        </Flex>
-
-            </Flex>
-
-            {/* Cook time */}
-            <Field label='Cook Time' required >
-              <Input
-                    placeholder="Enter time in minutes"
-                    value={cookTime} // Bind input value to state
-                    onChange={handleChange} // Track changes in input
-                />
-            </Field>
-
-            <Flex direction="row" gap="20" mt="2">      
-                <Flex flexDirection="column" gap={2}> 
-                <Text
-                    fontSize="sm"
-                    mb="5px"
-                    fontWeight="bold"
-                >
-                    {"Cuisine"}
-                </Text>
-
-                <RadioGroup.Root value={cuisine} onValueChange={(e) => handleCuisine(e.value)} flexWrap="nowrap">
-                <VStack align="start">
-                    {Object.values(Cuisine).map((item) => (
-                    <RadioGroup.Item key={item} value={item}>
-                        <RadioGroup.ItemHiddenInput />
-                        <RadioGroup.ItemIndicator />
-                        <RadioGroup.ItemText>{item}</RadioGroup.ItemText>
-                    </RadioGroup.Item>
-                    ))}
-                </VStack>
-                </RadioGroup.Root>
-
-                <Button variant="outline" size="sm" borderRadius="12px" onClick={() => handleClear()}>
-                    Clear
-                </Button>
-
-                </Flex>
-                
-                {/* Difficulty: Dropdown */}
-                <Flex flexDirection="column" gap={2}> 
-                <Text
-                    fontSize="sm"
-                    mb="5px"
-                    fontWeight="bold"
-                >
-                    {"Difficulty"}
-                </Text>
-
-                <RadioGroup.Root value={diff} onValueChange={(e) => handleDiff(e.value)} flexWrap="nowrap">
-                <VStack align="start">
-                    {Object.values(Difficulty).map((item) => (
-                    <RadioGroup.Item key={item} value={item}>
-                        <RadioGroup.ItemHiddenInput />
-                        <RadioGroup.ItemIndicator />
-                        <RadioGroup.ItemText>{item}</RadioGroup.ItemText>
-                    </RadioGroup.Item>
-                    ))}
-                </VStack>
-                </RadioGroup.Root>
-
-                <Button variant="outline" size="sm" borderRadius="12px" onClick={() => handleClearDiff()}>
-                    Clear
-                </Button>
-
-                </Flex>
-
-            </Flex>
-
-
-            {/* Add allergens list */}
-            <TagInput title="Allergens" placeholder="peanuts" tags={allergens} setTags={setAllergens}/>
-
-
-            {/* Sources */}
-            <TagInput title="sources" placeholder="CharMar" tags={sources} setTags={setSources}/>
-
-          </Flex>
-          
-
-          {/* Title, description, ingredients */}
-          <Flex direction="column" gap="4">
-
-            <Field label='Title' required w='50rem' maxW='80%'>
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder='Enter a recipe title...'
-              />
-            </Field>
-
-            <Field label='Description' required w='50rem' maxW='80%'>
-              <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder='Enter a recipe description...'
-                h='10lh'
-              />
-            </Field>
-
-            <Field label='Ingredients' required w='50rem' maxW='80%'>
+            {/* Ingredients */}
+            <Field label='Ingredients' required>
               <Flex gap='3' justify='flex-end' flexWrap='wrap' w='100%'>
                 {ingredients.map((ingredient, i) => (
                   <InputGroup
@@ -332,41 +210,174 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                 </Flex>
               </Flex>
             </Field>
-
           </Flex>
           
+
+          {/* Column 2 */}
+          <Flex direction="column" gap="4">
+
+            <Field label='Title' required w='50rem' maxW='80%'>
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder='Enter a recipe title...'
+              />
+            </Field>
+
+            <Field label='Description' required w='50rem' maxW='80%'>
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder='Enter a recipe description...'
+                h='10lh'
+              />
+            </Field>
+
+            <Separator w='50rem' maxW='80%' size="sm" mt="2"/>
+
+            {/* Additional Information Section */}
+            <Text fontWeight="bold" fontSize="sm">Additional Information</Text>
+            
+            {/* Price */}
+            <Flex direction="row" gap='23.5rem' maxW="80%">
+              <Text color="black" fontWeight="bold" fontSize="sm"> Price </Text>
+              <Flex direction="row" gap="2">
+                  {["$", "$$", "$$$", "$$$$"].map((price) => (
+                      <Button
+                          key={price}
+                          size="sm"
+                          borderRadius="10px"
+                          bg={selectedPrice === price ? "purple.400" : ""}
+                          color={selectedPrice === price ? 'white' : 'black'}
+                          onClick={() => handleSelect(price)}
+                          variant="outline"
+                      >
+                          {price}
+                      </Button>
+                  ))}
+              </Flex>
+            </Flex>
+            <Flex direction="row" justify="space-between" w="41rem">  
+
+              {/* Tag Inputs */}
+              <Flex direction="column">
+              {/* Cook time */}
+                <Field label='Cook Time' required w='20rem' >
+                  <Input
+                        placeholder="Enter time in minutes"
+                        value={cookTime} // Bind input value to state
+                        onChange={handleChange} // Track changes in input
+                    />
+                </Field>
+
+                {/* Allergens */}
+                <TagInput 
+                  title="Allergens" 
+                  placeholder="Peanuts"
+                  width="20rem"
+                  tags={allergens} 
+                  setTags={setAllergens}/>
+
+                {/* Sources */}
+                <TagInput 
+                  title="Sources" 
+                  placeholder="CharMar" 
+                  width="20rem"
+                  tags={sources} 
+                  setTags={setSources}/>
+              </Flex>
+              
+              {/* Ingredients & Cuisine */}
+              <Flex direction="row" mt="2">      
+                  <Flex flexDirection="column" gap={2}> 
+                  <Text
+                      fontSize="sm"
+                      mb="5px"
+                      fontWeight="bold"
+                  >
+                      {"Cuisine"}
+                  </Text>
+
+                  <RadioGroup.Root value={cuisine} onValueChange={(e) => handleCuisine(e.value)} flexWrap="nowrap">
+                  <VStack align="start">
+                      {Object.values(Cuisine).map((item) => (
+                      <RadioGroup.Item key={item} value={item}>
+                          <RadioGroup.ItemHiddenInput />
+                          <RadioGroup.ItemIndicator />
+                          <RadioGroup.ItemText>{item}</RadioGroup.ItemText>
+                      </RadioGroup.Item>
+                      ))}
+                  </VStack>
+                  </RadioGroup.Root>
+
+                  <Button variant="outline" size="sm" borderRadius="12px" onClick={() => handleClear()}>
+                      Clear
+                  </Button>
+
+                  </Flex>
+                  
+                  {/* Difficulty: Dropdown */}
+                  <Flex flexDirection="column" gap={2}> 
+                  <Text
+                      fontSize="sm"
+                      mb="5px"
+                      fontWeight="bold"
+                  >
+                      {"Difficulty"}
+                  </Text>
+
+                  <RadioGroup.Root value={diff} onValueChange={(e) => handleDiff(e.value)} flexWrap="nowrap">
+                  <VStack align="start">
+                      {Object.values(Difficulty).map((item) => (
+                      <RadioGroup.Item key={item} value={item}>
+                          <RadioGroup.ItemHiddenInput />
+                          <RadioGroup.ItemIndicator />
+                          <RadioGroup.ItemText>{item}</RadioGroup.ItemText>
+                      </RadioGroup.Item>
+                      ))}
+                  </VStack>
+                  </RadioGroup.Root>
+
+                  <Button variant="outline" size="sm" borderRadius="12px" onClick={() => handleClearDiff()}>
+                      Clear
+                  </Button>
+                  </Flex>
+              </Flex>
+            </Flex>
+          </Flex>
         </Flex>
        
+      <Flex mt="16">
+          <ButtonGroup>
+            <CancelCreateRecipeButton />
+            <DraftButton
+              title={title}
+              description={description}
+              ingredients={ingredients}
+              instructions={instructions}
+              price={Price[priceValue as keyof typeof Price]}
+              prepTime={Number(cookTime)}
+              cuisine={Cuisine[cuisine as keyof typeof Cuisine]}
+              difficulty={Difficulty[diff as keyof typeof Difficulty]}
+              allergens={allergens}
+              sources={sources}
+            />
 
-        <ButtonGroup>
-          <CancelCreateRecipeButton />
-          <DraftButton
-            title={title}
-            description={description}
-            ingredients={ingredients}
-            instructions={instructions}
-            price={Price[priceValue as keyof typeof Price]}
-            prepTime={Number(cookTime)}
-            cuisine={Cuisine[cuisine as keyof typeof Cuisine]}
-            difficulty={Difficulty[diff as keyof typeof Difficulty]}
-            allergens={allergens}
-            sources={sources}
-          />
-
-          <PublishRecipeButton
-            title={title}
-            description={description}
-            ingredients={ingredients}
-            instructions={instructions}
-            draft_id={draft?.id}
-            price={Price[priceValue as keyof typeof Price]}
-            prepTime={Number(cookTime)}
-            cuisine={Cuisine[cuisine as keyof typeof Cuisine]}
-            difficulty={Difficulty[diff as keyof typeof Difficulty]}
-            allergens={allergens}
-            sources={sources}
-          />
-        </ButtonGroup>
+            <PublishRecipeButton
+              title={title}
+              description={description}
+              ingredients={ingredients}
+              instructions={instructions}
+              draft_id={draft?.id}
+              price={Price[priceValue as keyof typeof Price]}
+              prepTime={Number(cookTime)}
+              cuisine={Cuisine[cuisine as keyof typeof Cuisine]}
+              difficulty={Difficulty[diff as keyof typeof Difficulty]}
+              allergens={allergens}
+              sources={sources}
+            />
+          </ButtonGroup>
+        </Flex>
       </Flex>
     </Flex>
   );
