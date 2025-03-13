@@ -21,12 +21,19 @@ const exampleRecipe = {
   authorId: '1',
   createdAt: new Date(),
   updatedAt: new Date(),
-  viewCount: 0
+  viewCount: 0,
+  mealTypes: ["snack"],
+  price: null,
+  cuisine: null,
+  allergens: ["peanuts"],
+  difficulty: null,
+  prepTime: 10,
+  sources: ["Charmar"]
 };
 
 test('Recipe creation', async () => {
   prisma.recipe.create.mockResolvedValue({
-    ...exampleRecipe
+    ...exampleRecipe,
   });
 
   const response = await request(app)
