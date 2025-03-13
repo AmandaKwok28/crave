@@ -8,7 +8,7 @@ import userRoutes from './routes/user.routes'
 import feedRoutes from './routes/feed.routes'
 import { startBackgroundJobs } from './services/scheduler';
 
-const app = express();
+export const app = express();
 
 app.use(cors({
   origin: true,
