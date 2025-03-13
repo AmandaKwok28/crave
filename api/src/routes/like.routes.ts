@@ -1,40 +1,80 @@
 import { Router } from "express";
 import { prisma } from "../../prisma/db";
+import { authGuard } from "../middleware/auth";
 
 const router = Router();
 
-// get all likes for a given recipe
-router.get('/recipe', async (req, res) => {
-  const { recipeId } = req.body
-  const like = await prisma.like.findMany({
-      where: {
-        recipeId: recipeId
-      }
-  })
-  res.json(like)
-})
+// get whether or not the current user has liked a specific reipe
+router.get('/recipe/:recipe_id', authGuard, async (req, res) => {
+  const { recipe_id } = req.params;
+
+  const like = await prisma.like.findFirst({
+    where: {
+      recipeId: Number(recipe_id),
+      userId: res.locals.user.id
+    }
+  });
+
+  res.json({
+    liked: !!like
+  });
+});
 
 // get all likes for a given user
-router.get('/user', async (req, res) => {
-  const { userId } = req.body
+router.get('/user/:user_id', async (req, res) => {
+  const { user_id } = req.params;
+
   const like = await prisma.like.findMany({
-      where: {
-        userId: userId
-      }
-  })
-  res.json(like)
+    where: {
+      userId: user_id
+    }
+  });
+
+  res.json(like);
 })
 
-// Create new like given userId and recipeID
-router.post('/', async (req, res) => {
-  const { userId, recipeId } = req.body
-  const like = await prisma.like.create({
-    data: {
-        recipeId: recipeId,
-        userId: userId
-    },
-  })
-  res.json(like)
+// Like a specific recipe
+router.post('/:recipe_id', authGuard, async (req, res) => {
+  const { recipe_id } = req.params;
+
+  try {
+    await prisma.like.create({
+      data: {
+        recipeId: Number(recipe_id),
+        userId: res.locals.user.id
+      }
+    });  
+
+    res.json({
+      success: true
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false
+    })
+  }
+});
+
+// Unlike a specific recipe
+router.delete('/:recipe_id', authGuard, async (req, res) => {
+  const { recipe_id } = req.params;
+
+  try {
+    await prisma.like.deleteMany({
+      where: {
+        recipeId: Number(recipe_id),
+        userId: res.locals.user.id
+      }
+    });
+    
+    res.json({
+      success: true
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false
+    })
+  }
 });
 
 // Get like by both userId and recipeId

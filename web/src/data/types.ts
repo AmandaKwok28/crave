@@ -14,7 +14,9 @@ export interface RecipeType {
   description: string;
   authorId: string;
   published: boolean;
-  author: AuthorType
+  likes: number;
+  liked: boolean;
+  author: AuthorType;
 }
 
 export interface AuthorType {

@@ -91,12 +91,24 @@ router.put('/:id/publish', async (req, res) => {
 })
 
 // Delete recipe
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params
-  const recipe = await prisma.recipe.delete({
-    where: { id: Number(id) },
-  })
-  res.json(recipe)
+router.delete('/:recipe_id', async (req, res) => {
+  const { recipe_id } = req.params;
+
+  try {
+    const recipe = await prisma.recipe.delete({
+      where: {
+        id: Number(recipe_id),
+        authorId: res.locals.user.id
+      }
+    });
+  
+    res.json(recipe);  
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Error deleting recipe'
+    });
+  }
 })
 
 // Get single recipe
@@ -105,12 +117,8 @@ router.get(`/:id`, async (req, res) => {
   const recipe = await prisma.recipe.findUnique({
     where: { id: Number(id) },
     include: {
-      _count: {
-        select: {
-          likes: true
-        }
-      },
-      author: true
+      author: true,
+      likes: true
     }
   });
 
@@ -122,7 +130,11 @@ router.get(`/:id`, async (req, res) => {
     return;
   }
 
-  res.json(recipe);
+  res.json({
+    ...recipe,
+    likes: recipe.likes.length,
+    liked: !!recipe.likes.find((l) => l.userId === res.locals.user?.id)
+  });
 })
 
 export default router;

@@ -33,15 +33,69 @@ export const fetchDrafts = async (id:string): Promise<RecipeType[]> => {
   return data;
   };
 
+// Fetch specific recipe
+export const fetchRecipe = async (recipe_id: string | number): Promise<RecipeType> => {
+  const response = await fetch(`${API_URL}/recipe/${recipe_id}`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+
+  const recipe: RecipeType = await response.json();
+  return recipe;
+};
+
+// Like a recipe
+export const likeRecipe = async (recipe_id: string | number): Promise<void> => {
+  const response = await fetch(`${API_URL}/like/${recipe_id}`, {
+    method: 'POST',
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+}
+
+export const unlikeRecipe = async (recipe_id: string | number): Promise<void> => {
+  const response = await fetch(`${API_URL}/like/${recipe_id}`, {
+    method: 'DELETE',
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+}
+
+export const isRecipeLiked = async (recipe_id: string | number): Promise<boolean> => {
+  const response = await fetch(`${API_URL}/like/recipe/${recipe_id}`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+
+  const { liked }: { liked: boolean } = await response.json();
+
+  return liked;
+}
+
 // Delete recipe by id
 export const deleteRecipe = async (recipe_id: number) : Promise<boolean> => {
-const response = await fetch(`${API_URL}/recipe/${recipe_id}`, {
-    method: "DELETE",
-});
-if (!response.ok) {
+  const response = await fetch(`${API_URL}/recipe/${recipe_id}`, {
+    credentials: 'include',
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
     throw new Error(`API request failed with status ${response.status}`);
-}
-return true;
+  }
+
+  return true;
 };
 
 export const publishRecipe = async (id:number): Promise<boolean> => {

@@ -1,89 +1,128 @@
 import NavBar from "@/components/layout/navBar";
 import DeleteRecipe from "@/components/recipie/deleteRecipe";
 import DisplayIngredients from "@/components/recipie/displayIngredients";
+import { fetchRecipe, likeRecipe, unlikeRecipe } from "@/data/api";
 import { RecipeType } from "@/data/types";
-import useQueryRecipes from "@/hooks/use-query-recipes";
-import { Blockquote, Box, ButtonGroup, Center, Flex, Stack, Text } from "@chakra-ui/react";
+import { useAuth } from "@/hooks/use-auth";
+import { Blockquote, Box, Button, Center, Flex, HStack, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Heart } from "lucide-react";
+import { useEffect, useState } from "react";
 
+// Recipe page
 const ViewRecipe = ({ recipe_id }: { 
-    recipe_id: number; 
+  recipe_id: number; 
 }) => {
-    const { recipes, drafts } = useQueryRecipes();
-    const currRecipe: RecipeType | undefined = recipes.find((r) => r.id === recipe_id) ?? drafts.find((r) => r.id === recipe_id);
-    console.log(currRecipe)
+  const { user } = useAuth();
 
-    if (!currRecipe) {
-        return (
-            <Flex className="flex flex-col">
-                <NavBar/>
-                <Center w="100vw" h="100vh">
-                    Recipe not Available
-                </Center>
-            </Flex>
-        );
+  const [ recipe, setRecipe ] = useState<RecipeType | null>();
+
+  // When set to true, regrabs recipe and like data
+  const [ refresh, setRefresh ] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (!refresh) {
+      return;
     }
-    
-    return (
-        <Flex className="flex flex-col">
-            <NavBar/>
-            <Stack mt="10" direction="row" >
-                <Box h="100%" w="60%">
-                    <Text
-                    color="Black"
-                    textStyle="5xl"
-                    ml="2rem"
-                    textAlign="left"
-                    fontWeight="bold"
-                    mt="1rem">
-                        {currRecipe.title}
-                    </Text>
-                    <Text
-                    color="gray.600"
-                    fontSize="xl"
-                    ml="3rem"> 
-                    
-                        {currRecipe.description} 
-                    </Text>
-                    <Text
-                    color="Black"
-                    fontSize="3xl"
-                    ml="4rem">
-                        Ingredients List:
-                    </Text>
-                    <Flex  ml="6rem">
-                        <DisplayIngredients ingredient_list={currRecipe.ingredients}/>
-                    </Flex>
-                </Box>
-                <Center bgGradient="to-r" gradientFrom="teal.300" gradientTo="green.400" padding="4" color="white" w="50vw" h="50vh" mt="6rem" ml="6rem" mr="6rem" mb="3rem">
-                    <Text fontSize="2rem">Image Placeholder </Text>
-                </Center>
-            </Stack>
-            <Flex mb="20" ml="10" mr="10"> 
-                <Text
-                    color="Black"
-                    fontSize="2rem"
-                    ml="4rem">
-                        Instructions: 
-                </Text>
-                <Blockquote.Root 
-                    variant="solid" 
-                    colorPalette="cyan.600" 
-                    fontSize="1rem"
-                    ml="2rem">
-                        <Blockquote.Content >
-                            {currRecipe.instructions[0]} 
-                        </Blockquote.Content>
-                        <Blockquote.Caption>
-                            — Enjoy your tasty meal!
-                        </Blockquote.Caption>
-                </Blockquote.Root>
 
-            </Flex>
-            <ButtonGroup m="8" position="fixed" bottom="0%" right="0%">
-                <DeleteRecipe recipe={currRecipe} />
-            </ButtonGroup>
-        </Flex>
-    )
+    fetchRecipe(recipe_id)
+      .then((res) => setRecipe(res))
+      .catch(() => setRecipe(null));
+    
+    setRefresh(false);
+  }, [ recipe_id, refresh ]);
+
+  const likeCallback = () => {
+    if (!recipe) {
+      return;
+    }
+
+    if (recipe.liked) {
+      unlikeRecipe(recipe.id)
+        .finally(() => setRefresh(true));
+    } else {
+      likeRecipe(recipe.id)
+        .finally(() => setRefresh(true));
+    }
+  };
+
+  if (!recipe) {
+    return (
+      <Flex className="flex flex-col">
+        <NavBar/>
+        <Center w="100vw" h="100vh">
+          {recipe === undefined && <Spinner />}
+          {recipe === null && <Text>Recipe not Available</Text>}
+        </Center>
+      </Flex>
+    );
+  }
+
+  return (
+    <VStack gap='4' my='16' w='100vw'>
+      <NavBar />
+
+      <HStack align='items-start' justify='center' flexWrap='wrap-reverse' mb='8'>
+        {/* Left side: title, desc, and ingredients */}
+        <VStack w={{ base: '85vw', lg: '40vw' }} align='flex-start' mt={{ base: '0', lg: '4' }}>
+          <HStack w='100%' justify='space-between' align='flex-start'>
+            <VStack align='flex-start'>
+              <Text fontSize='3xl' fontWeight='bold' whiteSpace='pre-line'>
+                {recipe.title}
+              </Text>
+              <Text fontSize='xl' fontWeight='light' fontStyle='italic' whiteSpace='pre-line'>
+                {recipe.description}
+              </Text>
+            </VStack>
+            
+            <VStack align='flex-end'>
+              <HStack>
+                <Button 
+                  variant='ghost'
+                  color={recipe.liked ? 'red.400' : 'gray.600'}
+                  onClick={likeCallback}
+                  px='2.5'
+                >
+                  {recipe.likes.toLocaleString()}
+                  <Heart />
+                </Button>
+              </HStack>
+
+              {recipe.authorId === user.id && <DeleteRecipe recipe_id={recipe.id} />}
+            </VStack>
+          </HStack>
+
+          <VStack mt='5'>
+            <Text>Ingredients</Text>
+            <DisplayIngredients ingredients={recipe.ingredients} />
+          </VStack>
+        </VStack>
+
+        {/* Right side: image */}
+        <VStack w={{ base: '85vw', lg: '40vw' }} align={{ base: 'center', lg: 'flex-end' }}>
+          <Box
+            bgGradient="to-r"
+            gradientFrom="teal.300"
+            gradientTo="green.400"
+            w='100%'
+            h={{ base: '25rem', lg: '30rem' }}
+            rounded='3xl'
+          />
+        </VStack>
+      </HStack>
+
+      <VStack align='flex-start' w={{ base: '85vw', lg: '80vw' }}>
+        <Text fontSize='2xl'>Instructions</Text>
+        <Blockquote.Root>
+          <Blockquote.Content whiteSpace='pre-line'>
+            {recipe.instructions[0]}
+          </Blockquote.Content>
+          <Blockquote.Caption>
+            - Enjoy!
+          </Blockquote.Caption>
+        </Blockquote.Root>
+      </VStack>
+    </VStack>
+  );
 }
 
 export default ViewRecipe;
