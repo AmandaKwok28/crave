@@ -1,4 +1,4 @@
-name: Unit Tests
+name: Frontend Tests
 
 on:
   pull_request:
@@ -25,13 +25,13 @@ jobs:
           version: 10
       
       - name: Install Dependencies
-        working-directory: ./api
+        working-directory: ./web
         run: pnpm install
       
-      - name: Setup Prisma Client
-        working-directory: ./api
-        run: pnpm prisma generate
-      
-      - name: Run Vitest Tests
-        working-directory: ./api
-        run: pnpm vitest
+      - name: Run Cypress Tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./web
+          build: pnpm build
+          start: pnpm start
+          browser: firefox
