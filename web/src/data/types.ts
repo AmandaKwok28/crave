@@ -4,6 +4,7 @@ export interface UserType {
   name: string;
   school: string;
   major: string;
+  avatarImage?: string;
 }
 
 export enum Price {
@@ -49,6 +50,7 @@ export interface RecipeType {
   difficulty: Difficulty;
   sources: string[];
   prepTime: number;
+  image?: string
 }
 
 export interface AuthorType {

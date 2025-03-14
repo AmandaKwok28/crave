@@ -1,10 +1,12 @@
 import NavBar from "@/components/layout/navBar";
 import Recipes from "@/components/recipie/recipes";
+import { Field } from "@/components/ui/field";
 import { useAuth } from "@/hooks/use-auth";
+import useMutationUser from "@/hooks/use-mutation-user";
 import useQueryRecipes from "@/hooks/use-query-recipes";
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex, Input } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react"
-import { useState } from "react";
+import { KeyboardEvent, useState } from "react";
 
 function TabButton({
   label, value, curtab, callback
@@ -27,40 +29,70 @@ function TabButton({
 
 const Profile = () => {
   const { user } = useAuth();
+  const { updateAvatar } = useMutationUser();
   const { recipes, drafts, likes, bookmarks } = useQueryRecipes();
 
   const [ tab, setTab ] = useState<string>('recipes'); 
+  const [ url, setUrl ] = useState<string>('');
+
+  const handleImageFile = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      updateAvatar(url);
+      setUrl('');
+    }
+  }
   
   return (
     <Flex direction="column">
+
       <NavBar />
-      <Flex bg="white" w="100vw" minH="100vh" mt="5vh" overflowY="auto">
+
+      {/* Sidebar */}
+      <Flex bg="white" w="100vw" minH="100vh" mt="4vh" overflowY="auto">
         <Flex direction="row" minH="100vh" overflowY="auto">                
           <Box 
             direction="row"
             minH="100vh"
+            h="100vh"
             w="20vw"
             bgGradient="to-l" gradientFrom="green.200" gradientTo="blue.300"
-            overflowY="auto"
             position="fixed"
             zIndex="100"
           >
             <div className="max-h-sm h-auto flex flex-col self-start w-full">
-                <div className="flex items-center flex-row">
-                    <Box className="p-4 items-center">
-                        <Image borderRadius="full" src="anon.jpg" boxSize="50px"/>
+
+                {/* User info: avatar, email, username */}
+                <Flex direction="row" align="center" p="2" mt="2" mr="2">
+                  <Flex direction="row" align="center" spaceX="2">
+                    <Box p="1">
+                        <Image borderRadius="full" src={user.avatarImage ? user.avatarImage : '/anon.jpg'} boxSize="50px"/>
                     </Box>
-                    <div>
+                    <Flex direction="column">
                         <h2 className="text-white text-xl font-bold">
                             {user.name}
                         </h2>
                         <h1 className="text-white">
                             {user.email}
                         </h1>
-                    </div>
-                </div>
+                    </Flex>
+                  </Flex>
+                </Flex>
 
+                
                 <div className="max-h-sm h-auto p-4 text-white w-full space-y-2">
+
+                  <Field label="Image Url">
+                    <Input
+                      bg="white"
+                      color="black"
+                      placeholder="Enter an image url"
+                      onKeyDown={(e) => handleImageFile(e)}
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                    >
+                    </Input>
+                  </Field>
+
                   <TabButton 
                     label='My Recipes'
                     value='recipes'
@@ -92,7 +124,7 @@ const Profile = () => {
             </div>
           </Box>
             
-          <Flex direction="row" m="3" wrap="wrap" ml="22vw">
+          <Flex direction="row" m="3" wrap="wrap" ml="22vw" mt="5vh">
             {tab === 'recipes' && <Recipes recipes={recipes.filter((r) => r.authorId === user.id)} />}
             {tab === 'drafts' && <Recipes recipes={drafts} />}
             {tab === 'likes' && <Recipes recipes={likes} />}

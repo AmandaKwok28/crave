@@ -39,6 +39,7 @@ model User {
   major        String
   recipes      Recipe[]
   session      Session[]
+  avatarImage  String?    // should be optional
 }
 
 model Session {

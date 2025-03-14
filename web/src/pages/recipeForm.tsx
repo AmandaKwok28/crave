@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/file-upload"
 import { redirectPage } from "@nanostores/router";
 import { Trash } from "lucide-react";
-import { useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { HiUpload } from "react-icons/hi";
 import { FileAcceptDetails } from "node_modules/@chakra-ui/react/dist/types/components/file-upload/namespace";
 import { Cuisine, Difficulty, Price } from "@/data/types";
@@ -25,6 +25,7 @@ import AutoAllergens from "@/components/search/autoAllergens";
 import pluralize from "pluralize";
 import { $allergenTable } from "@/lib/store";
 import { useStore } from "@nanostores/react";
+import useMutationRecipe from "@/hooks/use-mutation-recipes";
 
 
 // If draft_id is set, this will be autopopulated on page load
@@ -45,10 +46,12 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
   const [ sources, setSources ] = useState<string[]>([]);
   const [ currIndex, setCurrindex ] = useState<number>(0);
   const [ empty, setEmpty ] = useState<boolean>(false);
-  const [ img, setImage ] = useState<string>("img_placeholder.jpg");
+  const [ img, setImage ] = useState<string>("/img_placeholder.jpg");
   const [ showAdditionalInfo, setShowAdditionalInfo] = useState<boolean>(false);
   const [ loading, setLoading ] = useState<boolean>(false);
   const [ editableAllergen, setEditable] = useState<string[]>([]);
+  const [ url, setUrl ] = useState<string>('');
+
   const allergyTable = useStore($allergenTable);
 
   const allergyList = allergyTable.map(allergen => allergen.name);
@@ -96,13 +99,13 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
     }
   }
 
-  const handleImageFile = (e: FileAcceptDetails) => {
-    if (e.files.length > 0) {
-      const file = e.files[0];
-      const imageUrl = URL.createObjectURL(file); // Generate temporary URL
-      setImage(imageUrl); // Store the image URL in state
-    }
-  }
+  // const handleImageFile = (e: FileAcceptDetails) => {
+  //   if (e.files.length > 0) {
+  //     const file = e.files[0];
+  //     const imageUrl = URL.createObjectURL(file); // Generate temporary URL
+  //     setImage(imageUrl); // Store the image URL in state
+  //   }
+  // }
 
   // tag input logic
   let priceValue = "CHEAP";
@@ -183,6 +186,12 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
       setAllergens(matchedAllergens); // Update state with matched allergens
   };
 
+  const handleImageFile = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setImage(url);
+      setUrl(url);
+    }
+  }
 
   return (
     <Flex gap='4' flexDir='column' minW='100vw' align='center' justify='center'>
@@ -202,14 +211,25 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
             {/* Image Upload */}
             <Image rounded="md" src={img} w="30vw"/>
 
-            <FileUploadRoot accept={["image/png"]} onFileAccept={handleImageFile}>
+            {/* <FileUploadRoot accept={["image/png"]} onFileAccept={handleImageFile}>
               <FileUploadTrigger asChild>
                 <Button variant="outline" size="sm">
                   <HiUpload /> Upload file
                 </Button>
               </FileUploadTrigger>
               <FileUploadList />
-            </FileUploadRoot>
+            </FileUploadRoot> */}
+            <Field label="Image Url">
+              <Input
+                bg="white"
+                color="black"
+                placeholder="Enter an image url"
+                onKeyDown={(e) => handleImageFile(e)}
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              >
+              </Input>
+            </Field>
 
             {/* Ingredients */}
             {showAdditionalInfo && <Field label='Ingredients' required>
@@ -448,6 +468,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
               difficulty={Difficulty[diff as keyof typeof Difficulty]}
               allergens={allergens}
               sources={sources}
+              image={url}
             />}
           </ButtonGroup>
       </Flex>

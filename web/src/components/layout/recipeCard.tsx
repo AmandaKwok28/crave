@@ -29,7 +29,7 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
   return (
     <Card.Root width="370px" maxH="500px" overflow="hidden" borderRadius="20px">
         <Image 
-        src={"/fallback.png"}
+        src={recipe.image ? recipe.image : '/fallback.png'}
         alt="Default Recipe Image" 
         maxW="100vw" 
         height="25vh" 

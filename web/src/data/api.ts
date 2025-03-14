@@ -205,7 +205,8 @@ export const createRecipe = async (
   allergens: string[],
   difficulty: Difficulty,
   sources: string[],
-  prepTime: number
+  prepTime: number,
+  image?: string
 ): Promise<RecipeType> => {
 
     const response = await fetch(`${API_URL}/recipe`, {
@@ -224,6 +225,7 @@ export const createRecipe = async (
         difficulty,
         sources,
         prepTime,
+        image
       }),
     });
     console.log(response)
@@ -248,7 +250,8 @@ export const patchRecipe = async (
   allergens: string[],
   difficulty: Difficulty,
   sources: string[],
-  prepTime: number
+  prepTime: number,
+  image?: string
 ): Promise<RecipeType> => {
     const response = await fetch(`${API_URL}/recipe/${id}`, {
       method: "PATCH",
@@ -267,6 +270,7 @@ export const patchRecipe = async (
         difficulty,
         sources,
         prepTime,
+        image
       }),
     });
     if (!response.ok) {
@@ -349,3 +353,27 @@ export const fetchSimilarRecipes = async (recipeId: number, limit: number = 3): 
   const data: RecipeType[] = await res.json();
   return data;
 };
+
+
+// update the avatar url
+export const editAvatarUrl = async (email: string, url: string): Promise<UserType> => {
+  const res = await fetch(`${API_URL}/user/avatar`, {
+    method: 'PATCH',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email,
+      url,
+    })
+  });
+
+  if (!res.ok) {
+    throw new Error(`API request failed! with status: ${res.status}`);
+  }
+
+  const user: UserType = await res.json();
+  return user;
+
+}
