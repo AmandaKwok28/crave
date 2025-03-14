@@ -41,16 +41,17 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
                 {recipe.title}
             </Text>
         </Card.Title>
-        <Card.Description>
+        <Box display="flex" alignItems="center" gap="2">
           <AvatarGroup>
             <Avatar.Root size="xs" variant="subtle">
               <Avatar.Fallback name={`${recipe.author ? recipe.author.name : 'You'}`} />
               <Avatar.Image />
             </Avatar.Root>
           </AvatarGroup>
-            {recipe.author ? `${recipe.author.name}` : "You"}
-        </Card.Description>
-        <Card.Description>
+          <Text>{recipe.author ? `${recipe.author.name}` : "You"}</Text>
+        </Box>
+
+        <Box>
             <Text lineClamp="3">
             {recipe.description}
             </Text>
@@ -81,7 +82,7 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
                 )}
             </Box>
         
-        </Card.Description>
+        </Box>
       </Card.Body>
       <Card.Footer>
         <Button 
