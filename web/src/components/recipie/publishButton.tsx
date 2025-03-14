@@ -48,7 +48,7 @@ const PublishRecipeButton = ({
     difficulty,
     sources,
     prepTime,
-    image 
+    image, 
 }: PublishRecipeProps ) => {
     const { user } = useAuth();
     const { addNewRecipe, editRecipe } = useMutationRecipes();

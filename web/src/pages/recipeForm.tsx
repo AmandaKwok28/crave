@@ -7,16 +7,16 @@ import { InputGroup } from "@/components/ui/input-group";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import { $router } from "@/lib/router";
 import { Button, ButtonGroup, Flex, IconButton, Input, Text, Textarea, Image, VStack, RadioGroup, Spinner } from "@chakra-ui/react";
-import {
-  FileUploadList,
-  FileUploadRoot,
-  FileUploadTrigger,
-} from "@/components/ui/file-upload"
+// import {
+//   FileUploadList,
+//   FileUploadRoot,
+//   FileUploadTrigger,
+// } from "@/components/ui/file-upload"
 import { redirectPage } from "@nanostores/router";
 import { Trash } from "lucide-react";
 import { KeyboardEvent, useEffect, useState } from "react";
-import { HiUpload } from "react-icons/hi";
-import { FileAcceptDetails } from "node_modules/@chakra-ui/react/dist/types/components/file-upload/namespace";
+// import { HiUpload } from "react-icons/hi";
+// import { FileAcceptDetails } from "node_modules/@chakra-ui/react/dist/types/components/file-upload/namespace";
 import { Cuisine, Difficulty, Price } from "@/data/types";
 import TagInput from "@/components/recipie/tagInput";
 import { Separator } from '@chakra-ui/react'
@@ -25,7 +25,6 @@ import AutoAllergens from "@/components/search/autoAllergens";
 import pluralize from "pluralize";
 import { $allergenTable } from "@/lib/store";
 import { useStore } from "@nanostores/react";
-import useMutationRecipe from "@/hooks/use-mutation-recipes";
 
 
 // If draft_id is set, this will be autopopulated on page load
@@ -51,6 +50,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
   const [ loading, setLoading ] = useState<boolean>(false);
   const [ editableAllergen, setEditable] = useState<string[]>([]);
   const [ url, setUrl ] = useState<string>('');
+  const [ mealType, setMealType ] = useState<string[]>([]);  
 
   const allergyTable = useStore($allergenTable);
 
@@ -153,13 +153,14 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
     setLoading(true);
     try {
       const response = await fetchTags(title, description, instructions);
-      const { cuisine: gptCuisine, difficulty: gptDifficulty, prepTime: gptPrepTime, price: gptPrice, ingredients: gptIngredients } = response.response;
+      const { cuisine: gptCuisine, difficulty: gptDifficulty, prepTime: gptPrepTime, price: gptPrice, ingredients: gptIngredients, mealTypes: gptMealTypes } = response.response;
 
       gptCuisine && setCuisine(gptCuisine);
       gptDifficulty && setDiff(gptDifficulty);
       gptPrepTime && setCookTime(gptPrepTime.toString());
       gptPrice && setSelectedPrice(gptPrice);
       gptIngredients && setIngredients(gptIngredients);
+      gptMealTypes && setMealType(gptMealTypes)
       matchAllergens(allergyList, gptIngredients);          // match allergies to ingredients list
 
       setTimeout(() => {
@@ -376,7 +377,18 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                     width="20rem"
                     tags={sources} 
                     setTags={setSources}/>
+
+                  {/* Meal Type */}
+                  <TagInput 
+                      title="Meal Type"
+                      placeholder="Snack, Lunch, Dinner"
+                      width="20rem"
+                      tags={mealType}
+                      setTags={setMealType}
+                    />
                 </Flex>
+
+                    
                 
                 {/* Difficulty & Cuisine */}
                 <Flex direction="row" mt="2">      
@@ -446,29 +458,32 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
             {showAdditionalInfo && <DraftButton
               title={title}
               description={description}
-              ingredients={ingredients}
+              ingredients={ingredients.map((item) => item.toLowerCase())}
               instructions={instructions}
               price={Price[priceValue as keyof typeof Price]}
               prepTime={Number(cookTime)}
               cuisine={Cuisine[cuisine as keyof typeof Cuisine]}
               difficulty={Difficulty[diff as keyof typeof Difficulty]}
-              allergens={allergens}
-              sources={sources}
+              allergens={allergens.map((item) => item.toLowerCase())}
+              sources={sources.map((item) => item.toLowerCase())}
+              mealTypes={mealType.map((item) => item.toLowerCase())}
+              image={url}
             />}
 
             {showAdditionalInfo && <PublishRecipeButton
               title={title}
               description={description}
-              ingredients={ingredients}
+              ingredients={ingredients.map((ing) => ing.toLowerCase())}
               instructions={instructions}
               draft_id={draft?.id}
               price={Price[priceValue as keyof typeof Price]}
               prepTime={Number(cookTime)}
               cuisine={Cuisine[cuisine as keyof typeof Cuisine]}
               difficulty={Difficulty[diff as keyof typeof Difficulty]}
-              allergens={allergens}
-              sources={sources}
+              allergens={allergens.map((item) => item.toLowerCase())}
+              sources={sources.map((item) => item.toLowerCase())}
               image={url}
+              mealTypes={mealType.map((item) => item.toLowerCase())}
             />}
           </ButtonGroup>
       </Flex>

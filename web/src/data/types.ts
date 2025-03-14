@@ -74,5 +74,6 @@ export interface TagsResponse {
     prepTime: number;
     ingredients: string[];
     tags: string[];
+    mealTypes: string[]
   }
 }

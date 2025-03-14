@@ -28,6 +28,7 @@ type PublishRecipeProps = {
     difficulty: Difficulty,
     sources?: string[],
     prepTime: number,
+    image?: string
 }
 
 
@@ -42,14 +43,14 @@ const DraftButton = ({
     allergens,
     difficulty,
     sources,
-    prepTime 
+    prepTime,
+    image
 
 }: PublishRecipeProps ) => {
     const { addNewRecipeDraft } = useMutationRecipes();
     const { user } = useAuth();
 
     const handleSave = async () => {
-
         await addNewRecipeDraft(
             title, 
             description, 
@@ -62,7 +63,8 @@ const DraftButton = ({
             allergens,
             difficulty,
             sources ? sources : [],
-            prepTime
+            prepTime,
+            image
         );
         openPage($router, "profile");
     };
