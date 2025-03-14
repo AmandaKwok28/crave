@@ -33,5 +33,5 @@ jobs:
         with:
           working-directory: ./web
           build: pnpm build
-          start: pnpm start
+          start: pnpm preview
           browser: firefox
