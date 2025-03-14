@@ -7,11 +7,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Like {
+  id           Int      @id @default(autoincrement())
+  recipeId     Int
+  userId       String
+  recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date         DateTime   @default(now())
+
+  @@unique([recipeId, userId], name: "likeId")
+}
+
+model Bookmark {
+  id           Int      @id @default(autoincrement())
+  recipeId     Int
+  userId       String
+  recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, userId], name: "bookmarkId")
+}
+
 model User {
   id           String       @id @default(uuid())
   email        String    @unique
   name         String
   passwordHash String
+  bookmarks    Bookmark[]
+  likes        Like[]  
   school       String
   major        String
   recipes      Recipe[]
@@ -34,6 +57,30 @@ model RecipeFeatureVector {
   updatedAt    DateTime @updatedAt
 }
 
+enum Price {
+  CHEAP
+  MODERATE
+  PRICEY
+  EXPENSIVE
+}
+
+enum Cuisine {
+  ITALIAN
+  MEXICAN
+  CHINESE
+  INDIAN
+  JAPANESE
+  FRENCH
+  MEDITERRANEAN
+  AMERICAN
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
 model Recipe {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
@@ -43,16 +90,31 @@ model Recipe {
   description  String?
   ingredients  String[]
   instructions String[]
+  likes        Like[] 
+  bookmarks    Bookmark[]
   published    Boolean  @default(false)
   viewCount    Int      @default(0)
   authorId     String
-  author       User     @relation(fields: [authorId], references: [id])
+  author       User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  mealTypes    String[] @default([])
+  price        Price?
+  cuisine      Cuisine?
+  allergens    String[] @default([])
+  difficulty   Difficulty?
+  sources      String[] @default([])
+  prepTime     Int?
   
   similarRecipes RecipeSimilarity[] @relation("SimilarToRecipe")
   similarToOtherRecipes RecipeSimilarity[] @relation("SimilarRecipe")
  
   // New relation to feature vector
   featureVector RecipeFeatureVector?
+}
+
+model Allergen {
+  id        Int    @id @default(autoincrement()) 
+  name      String @unique
+  createdAt DateTime @default(now()) 
 }
 
 model RecipeSimilarity {

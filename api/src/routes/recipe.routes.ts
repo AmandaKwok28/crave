@@ -1,13 +1,28 @@
 import { Router } from 'express';
 import { prisma } from '../../prisma/db';
 import { authGuard } from '../middleware/auth';
-import { processRecipeSimilarities } from '../services/recipe-similarity';
-import { generateFeatureVector } from '../services/feature-vector';
+
 const router = Router();
 
-// Create new recipe
+// Create a recipe
 router.post('/', async (req, res) => {
-    const { title, description, ingredients, instructions, authorId, image } = req.body
+  const { 
+    title, 
+    description, 
+    ingredients, 
+    instructions, 
+    authorId, 
+    image, 
+    mealTypes, 
+    difficulty, 
+    price, 
+    cuisine, 
+    allergens, 
+    sources, 
+    prepTime 
+  } = req.body;
+
+  try {
     const recipe = await prisma.recipe.create({
       data: {
         title,
@@ -16,15 +31,42 @@ router.post('/', async (req, res) => {
         instructions,
         image,
         author: { connect: { id: authorId } },
+        mealTypes: mealTypes || [],
+        difficulty: difficulty ? difficulty.toUpperCase() : null,
+        price: price ? price.toUpperCase() : null,
+        cuisine: cuisine ? cuisine.toUpperCase() : null,  // need to change the schema
+        allergens: allergens || [],
+        sources: sources || [],
+        prepTime: prepTime || null,
       },
     });
 
-    res.json(recipe)
-  });
+    res.json(recipe);
+  } catch(error) {
+    res.status(500).json({
+      message: 'An unknown error occurred'
+    })
+  }
+});
 
+// Update a recipe
 router.patch('/:id/', authGuard, async (req, res) => {
   const { id } = req.params;
-  const { title, description, ingredients, instructions, published, image } = req.body
+  const { 
+    title, 
+    description, 
+    ingredients, 
+    instructions, 
+    published,
+    image,
+    mealTypes,
+    difficulty,
+    price,
+    cuisine,
+    allergens,
+    sources,
+    prepTime
+  } = req.body;
 
   const validate = await prisma.recipe.findFirst({ where: { id: Number(id) } });
   if (!validate) {
@@ -48,12 +90,19 @@ router.patch('/:id/', authGuard, async (req, res) => {
       id: Number(id)
     },
     data: {
-      title,
-      description,
-      ingredients,
-      instructions,
+      title, 
+      description, 
+      ingredients, 
+      instructions, 
       published,
-      image
+      image,
+      mealTypes,
+      difficulty,
+      price,
+      cuisine,
+      allergens,
+      sources,
+      prepTime
     }
   });
 
@@ -120,12 +169,23 @@ router.put('/:id/publish', async (req, res) => {
 })
 
 // Delete recipe
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params
-  const recipe = await prisma.recipe.delete({
-    where: { id: Number(id) },
-  })
-  res.json(recipe)
+router.delete('/:recipe_id', async (req, res) => {
+  const { recipe_id } = req.params;
+
+  try {
+    const recipe = await prisma.recipe.delete({
+      where: {
+        id: Number(recipe_id),
+        authorId: res.locals.user.id
+      }
+    });
+  
+    res.json(recipe);  
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error deleting recipe'
+    });
+  }
 })
 
 // Get single recipe
@@ -133,9 +193,28 @@ router.get(`/:id`, async (req, res) => {
   const { id } = req.params
   const recipe = await prisma.recipe.findUnique({
     where: { id: Number(id) },
-    include: { author: true }
-  })
-  res.json(recipe)
+    include: {
+      author: true,
+      likes: true,
+      bookmarks: true
+    }
+  });
+
+  if (!recipe) {
+    res.status(404).json({
+      message: 'Recipe not found'
+    });
+
+    return;
+  }
+
+  res.json({
+    ...recipe,
+    likes: recipe.likes.length,
+    liked: !!recipe.likes.find((l) => l.userId === res.locals.user?.id),
+    bookmarks: undefined, // Do not share bookmarks with everyone
+    bookmarked: !!recipe.bookmarks.find((b) => b.userId === res.locals.user?.id)
+  });
 })
 
 export default router;

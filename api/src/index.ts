@@ -6,6 +6,10 @@ import auth_route from './routes/auth';
 import recipeRoutes from './routes/recipe.routes'
 import userRoutes from './routes/user.routes'
 import feedRoutes from './routes/feed.routes'
+import likeRoutes from './routes/like.routes';
+import bookmarkRoutes from './routes/bookmark.routes';
+import gptRoutes from './routes/gpt.routes';
+import allergen_route from './routes/allergens';
 import { startBackgroundJobs } from './services/scheduler';
 import path from 'path';
 
@@ -27,9 +31,13 @@ app.use(cookieParser());
 app.use(auth);
 
 app.use(auth_route);
+app.use(allergen_route);
 app.use('/recipe', recipeRoutes);
 app.use('/user', userRoutes);
 app.use('/feed', feedRoutes);
+app.use('/like', likeRoutes);
+app.use('/bookmark', bookmarkRoutes);
+app.use('/gpt', gptRoutes);
 
 // Add these lines after your API routes
 // Serve static files from the React/Vue build directory

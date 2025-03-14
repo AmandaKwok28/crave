@@ -1,4 +1,4 @@
-import { Button, Highlight } from "@chakra-ui/react"
+import { Button, Em, IconButton, Text } from "@chakra-ui/react"
 import {
   DialogActionTrigger,
   DialogBody,
@@ -11,47 +11,57 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import useMutationRecipe from "@/hooks/use-mutation-recipes";
-import { RecipeType } from "@/data/types";
-import { openPage } from "@nanostores/router";
+import { redirectPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
+import { Trash } from "lucide-react";
+import { toaster } from "../ui/toaster";
 
-const DeleteRecipe = ({ recipe }: {recipe: RecipeType} ) => {
+const DeleteRecipe = ({ recipe_id }: { recipe_id: number } ) => {
+  const { deleteRecipeById } = useMutationRecipe();
 
-    const { deleteRecipeById } = useMutationRecipe();
-
-    const handleDelete = async () => {
-        await deleteRecipeById(recipe.id);
-        openPage($router, "home");
-    };
+  const handleDelete = () => {
+    deleteRecipeById(recipe_id)
+      .then(() => redirectPage($router, 'home'))
+      .catch(() => toaster.create({
+        title: 'Error deleting recipe',
+        description: 'Please try again later'
+      }));
+  };
 
   return (
-    <DialogRoot size="md">
-    <DialogTrigger asChild>
-        <Button p="4" size="lg" bgGradient="to-r" gradientFrom="red.300" gradientTo="orange.300" color="white">
-            Delete
-        </Button>
-    </DialogTrigger>
-    <DialogContent>
+    <DialogRoot size='md'>
+      <DialogTrigger asChild>
+        <IconButton variant='ghost' color='red.400'>
+          <Trash />
+        </IconButton>
+      </DialogTrigger>
+
+      <DialogContent>
         <DialogHeader>
-        <DialogTitle textStyle="2xl" fontWeight="bold">Delete Recipe?</DialogTitle>
+          <DialogTitle textStyle="2xl" fontWeight="bold">Delete Recipe</DialogTitle>
         </DialogHeader>
         <DialogBody>
-            <Highlight query="Warning:" styles={{ px: "0.5", bg: "orange.subtle", color: "orange.fg" }}>
-                Do you want to delete this recipe? Warning: you cannot undo this action.
-            </Highlight>
+          <Text whiteSpace='pre-line'>
+            Are you sure you want to delete this recipe?{'\n\n'}
+            <Em color='orange.fg'>
+              You cannot undo this action.
+            </Em>
+          </Text>
         </DialogBody>
         <DialogFooter>
         <DialogActionTrigger asChild>
-            <Button p="4" size="lg" bg="gray.400" color="white">
-                Back
-            </Button>
+          <Button p="4" size="lg" bg="gray.400" color="white">
+            Cancel
+          </Button>
         </DialogActionTrigger>
-            <Button p="4" size="lg" bgGradient="to-r" gradientFrom="red.300" gradientTo="orange.300" color="white" onClick={handleDelete}>
-                Delete
-            </Button>
+        <DialogActionTrigger asChild>
+          <Button p="4" size="lg" bgGradient="to-r" gradientFrom="red.300" gradientTo="orange.300" color="white" onClick={handleDelete}>
+            Delete
+          </Button>
+        </DialogActionTrigger>
         </DialogFooter>
         <DialogCloseTrigger />
-    </DialogContent>
+      </DialogContent>
     </DialogRoot>
   )
 }

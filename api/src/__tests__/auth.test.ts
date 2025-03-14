@@ -16,7 +16,9 @@ const exampleUser = {
   name: 'Example User',
   email: 'example@example.com',
   school: 'Example University',
-  major: 'Example Major'
+  major: 'Example Major',
+  likes: [],
+  bookmarks: []
 };
 
 describe('Account registration', () => {

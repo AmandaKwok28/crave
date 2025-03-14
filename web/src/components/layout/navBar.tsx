@@ -5,6 +5,7 @@ import { openPage, redirectPage } from "@nanostores/router";
 import { LogOut, PlusCircleIcon, Search, User } from "lucide-react";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu";
 import { toaster } from "../ui/toaster";
+import { clearFilters } from "@/lib/store";
 
 const NavBar = () => {
 
@@ -21,6 +22,7 @@ const NavBar = () => {
     }
 
     const handleHome = () => {
+        clearFilters();
         openPage($router, "home");
     }
 
@@ -45,6 +47,7 @@ const NavBar = () => {
                 fontWeight='bold'
                 color='bg'
                 onClick={handleHome}
+                _hover={{ cursor: 'pointer' }}
             >
                 Crave
             </Text>

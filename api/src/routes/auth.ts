@@ -106,7 +106,7 @@ auth_route.post('/register', async (req, res) => {
   } catch (error) {
     res.status(400).json({
       message: 'Could not register new user'
-    });
+  });
 
     return;
   }
