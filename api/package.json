@@ -4,6 +4,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node src/index.ts",
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "copyfiles -u 0 \"scripts/**/*\" dist/",
+    "start": "node dist/src/index.js",
     "test": "vitest"
   },
   "dependencies": {
@@ -26,6 +29,7 @@
     "@types/node": "22.13.1",
     "@types/node-cron": "^3.0.11",
     "@types/supertest": "^6.0.2",
+    "copyfiles": "^2.4.1",
     "prisma": "6.3.1",
     "prisma-mock-vitest": "^0.1.6",
     "supertest": "^7.0.0",

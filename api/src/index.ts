@@ -7,6 +7,7 @@ import recipeRoutes from './routes/recipe.routes'
 import userRoutes from './routes/user.routes'
 import feedRoutes from './routes/feed.routes'
 import { startBackgroundJobs } from './services/scheduler';
+import path from 'path';
 
 export const app = express();
 
@@ -29,6 +30,15 @@ app.use(auth_route);
 app.use('/recipe', recipeRoutes);
 app.use('/user', userRoutes);
 app.use('/feed', feedRoutes);
+
+// Add these lines after your API routes
+// Serve static files from the React/Vue build directory
+app.use(express.static(path.join(__dirname, '../../../web/dist')));
+
+// For any route not found in API, serve the index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../../web/dist/index.html'));
+});
 
 startBackgroundJobs();
 
