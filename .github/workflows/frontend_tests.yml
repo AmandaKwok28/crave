@@ -38,15 +38,15 @@ jobs:
         with:
           version: 10
 
+      - name: Install Backend Dependencies
+        working-directory: ./api
+        run: pnpm install
+
       - name: Connect to PostgreSQL
         working-directory: ./api
         run: pnpm prisma generate
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/tests
-      
-      - name: Install Backend Dependencies
-        working-directory: ./api
-        run: pnpm install
       
       - name: Run Backend
         working-directory: ./api
