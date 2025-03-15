@@ -1,6 +1,6 @@
 describe('Register Page', () => {
   before(() => {
-    cy.exec('cd ../api && pnpm prisma migrate reset --force');
+    cy.exec('cd ../api && export VITE_API_URL="http://localhost:3000" && pnpm prisma migrate reset --force');
   });
 
   it('successfully loads', () => {
