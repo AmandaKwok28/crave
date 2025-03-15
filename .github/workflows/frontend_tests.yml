@@ -54,10 +54,14 @@ jobs:
         working-directory: ./web
         run: pnpm install
       
+      - name: Start Backend Server
+        working-directory: ./api
+        run: pnpm dev &
+      
       - name: Run Cypress Tests
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./web
           build: pnpm build
-          start: pnpm preview, cd ../api && pnpm dev
+          start: pnpm preview
           browser: firefox
