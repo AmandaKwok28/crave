@@ -9,6 +9,20 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: node:23-bookworm-slim
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
       - name: Checkout Repository
@@ -23,8 +37,22 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 10
+
+      - name: Connect to PostgreSQL
+        working-directory: ./api
+        run: pnpm prisma generate
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/tests
       
-      - name: Install Dependencies
+      - name: Install Backend Dependencies
+        working-directory: ./api
+        run: pnpm install
+      
+      - name: Run Backend
+        working-directory: ./api
+        run: pnpm dev
+      
+      - name: Install Frontend Dependencies
         working-directory: ./web
         run: pnpm install
       
