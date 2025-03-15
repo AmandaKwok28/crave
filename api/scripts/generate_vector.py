@@ -2,6 +2,9 @@ import os
 import sys
 import json
 
+os.environ["DNNL_ENABLE_MAX_CPU_ISA"] = "0"
+os.environ["DNNL_VERBOSE"] = "0"
+
 try:
     # Parse the JSON batch input
     recipes_json = sys.argv[1]

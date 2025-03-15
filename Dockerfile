@@ -1,5 +1,6 @@
 # Use Node.js image with Debian (better Python compatibility)
-FROM node:20-slim
+FROM --platform=linux/amd64 node:20-slim
+# FROM --platform=linux/arm64 node:20
 
 # Set the working directory
 WORKDIR /usr/src/app
@@ -27,7 +28,7 @@ COPY api/scripts/requirements.txt ./scripts/
 RUN pip3 install --upgrade pip && \
     pip3 install --no-cache-dir -r scripts/requirements.txt
 
-# Then, handle frontend setup
+# handle frontend setup
 WORKDIR /usr/src/app/web
 COPY web/package.json web/pnpm-lock.yaml ./
 RUN pnpm install
@@ -43,11 +44,9 @@ RUN pnpm build
 # Build the backend
 WORKDIR /usr/src/app/api
 RUN pnpm build
-RUN ls -la dist || echo "dist directory not created"
 
 # Expose backend port
 EXPOSE 3000
 
-# Start the backend server (which will serve frontend files)
 WORKDIR /usr/src/app/api
 CMD ["pnpm", "start"]

@@ -36,7 +36,7 @@ export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<
     const { stdout, stderr } = await execAsync(`python3 ${scriptPath} '${batchData}'`);
     
     if (stderr) {
-      console.log('Python stderr:', stderr);
+      console.log('Python:', stderr);
     }
 
     // Parse the result - expects format { recipeId: vector, ... }
