@@ -48,7 +48,7 @@ jobs:
         working-directory: ./api
         run: pnpm prisma migrate reset --force
         env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+          DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/postgres"
 
       - name: Install Frontend Dependencies
         working-directory: ./web
