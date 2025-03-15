@@ -1,10 +1,11 @@
 describe('Register Page', () => {
   before(() => {
-    cy.exec('cd ../api && export DATABASE_URL="postgresql://postgres:postgres@postgres:5432/postgres" && pnpm prisma migrate reset --force');
+    cy.reset_db();
   });
 
   it('successfully loads', () => {
     cy.visit('/register');
+    cy.location('pathname').should('eq', '/register');
   });
 
   it('contains necessary elements', () => {
@@ -33,20 +34,6 @@ describe('Register Page', () => {
   });
 
   it('allows us to register', () => {
-    cy.visit('/register');
-
-    cy.get('input[placeholder="John Doe"]').type('Example User');
-    cy.get('input[placeholder="me@school.edu"]').type('test@example.com');
-    cy.get('input[type="password"]').type('password');
-
-    cy.contains('span', 'Pick your school').click();
-    cy.get('div[data-value="jhu"]').click();
-
-    cy.contains('span', 'Pick your major').click();
-    cy.get('div[data-value="neuro"]').click();
-
-    cy.contains('button', 'Register!').click();
-
-    cy.location('pathname').should('eq', '/');
+    cy.login('test@example.com', 'password');
   });
 })

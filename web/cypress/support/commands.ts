@@ -35,3 +35,41 @@
 //     }
 //   }
 // }
+
+Cypress.Commands.add('reset_db', () => {
+  if (process.env.DATABASE_URL) {
+    cy.exec(`cd ../api && export DATABASE_URL="${process.env.DATABASE_URL}" && pnpm prisma migrate reset --force`);
+  } else {
+    cy.exec('cd ../api && pnpm prisma migrate reset --force');
+  }
+
+  Cypress.session.clearAllSavedSessions();
+});
+
+Cypress.Commands.add('login', (email, password) => {
+  cy.session([email, password], () => {
+    cy.visit('/register');
+
+    cy.get('input[placeholder="John Doe"]').type('Example User');
+    cy.get('input[placeholder="me@school.edu"]').type(email);
+    cy.get('input[type="password"]').type(password);
+  
+    cy.contains('span', 'Pick your school').click();
+    cy.get('div[data-value="jhu"]').click();
+  
+    cy.contains('span', 'Pick your major').click();
+    cy.get('div[data-value="neuro"]').click();
+  
+    cy.contains('button', 'Register!').click();
+  
+    cy.location('pathname').should('eq', '/');  
+  });
+});
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+declare namespace Cypress {
+  interface Chainable {
+    reset_db(): Chainable<void>
+    login(email: string, password: string): Chainable<void>
+  }
+}

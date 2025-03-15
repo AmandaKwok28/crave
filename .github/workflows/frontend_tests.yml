@@ -64,7 +64,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./web
-          env: VITE_API_URL=http://localhost:3000
+          env: VITE_API_URL=http://localhost:3000,DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
           build: pnpm build
           start: pnpm preview
           browser: firefox
