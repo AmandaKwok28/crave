@@ -9,7 +9,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: node:23-bookworm-slim
+    container:
+      image: cypress/browsers:22.14.0
+      options: --user 1001
 
     services:
       postgres:
