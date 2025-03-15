@@ -46,9 +46,9 @@ jobs:
 
       - name: Connect to PostgreSQL
         working-directory: ./api
-        run: pnpm prisma generate
+        run: pnpm prisma migrate reset --force
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/tests
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/tests"
 
       - name: Install Frontend Dependencies
         working-directory: ./web

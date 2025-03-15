@@ -1,4 +1,8 @@
 describe('Register Page', () => {
+  before(() => {
+    cy.exec('cd ../api && pnpm prisma migrate reset --force');
+  });
+
   it('successfully loads', () => {
     cy.visit('/register');
   });
@@ -29,6 +33,20 @@ describe('Register Page', () => {
   });
 
   it('allows us to register', () => {
-    
+    cy.visit('/register');
+
+    cy.get('input[placeholder="John Doe"]').type('Example User');
+    cy.get('input[placeholder="me@school.edu"]').type('test@example.com');
+    cy.get('input[type="password"]').type('password');
+
+    cy.contains('span', 'Pick your school').click();
+    cy.get('div[data-value="jhu"]').click();
+
+    cy.contains('span', 'Pick your major').click();
+    cy.get('div[data-value="neuro"]').click();
+
+    cy.contains('button', 'Register!').click();
+
+    cy.location('pathname').should('eq', '/');
   });
 })

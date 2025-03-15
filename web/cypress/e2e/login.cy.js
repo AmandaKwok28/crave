@@ -23,6 +23,6 @@ describe('Login Page', () => {
   });
 
   it('allows us to log in', () => {
-
+    cy.visit('/login');
   });
 })
