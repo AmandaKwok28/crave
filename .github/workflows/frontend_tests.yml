@@ -59,7 +59,6 @@ jobs:
       - name: Run Cypress Tests
         uses: cypress-io/github-action@v6
         with:
-          working-directory: ./web
-          build: pnpm build
-          start: pnpm preview
+          build: cd ./web && pnpm build
+          start: cd ./web && pnpm preview, cd ../api && pnpm dev
           browser: firefox
