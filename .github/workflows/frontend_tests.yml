@@ -47,11 +47,7 @@ jobs:
         run: pnpm prisma generate
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/tests
-      
-      - name: Run Backend
-        working-directory: ./api
-        run: pnpm dev
-      
+
       - name: Install Frontend Dependencies
         working-directory: ./web
         run: pnpm install
