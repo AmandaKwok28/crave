@@ -1,5 +1,5 @@
 # Use Node.js image with Debian (better Python compatibility)
-FROM --platform=linux/arm64 node:20-slim
+FROM --platform=linux/amd64 node:20-slim
 # FROM --platform=linux/arm64 node:20
 
 # Set the working directory
@@ -36,6 +36,8 @@ RUN pnpm install
 # Copy all source code to the root working directory
 WORKDIR /usr/src/app
 COPY . .
+RUN cp .env.production .env
+ENV NODE_ENV=production
 
 # Build the frontend
 WORKDIR /usr/src/app/web
