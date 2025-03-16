@@ -15,11 +15,27 @@ router.get('/my', authGuard, async (req, res) => {
       }
     },
     include: {
-      author: true
+      author: true,
+      likes: true,
+      bookmarks: true
     }
-  })
+  });
 
-  res.json(likes);
+  if (!likes) {
+    res.status(404).json({
+      message: 'Likes not found'
+    });
+
+    return;
+  }
+
+  res.json(likes.map((like) => ({
+    ...like,
+    likes: like.likes.length,
+    liked: !!like.likes.find((l) => l.userId === res.locals.user?.id),
+    bookmarks: undefined, // Do not share bookmarks with everyone
+    bookmarked: !!like.bookmarks.find((b) => b.userId === res.locals.user?.id)
+  })));
 });
 
 // Like a specific recipe

@@ -33,11 +33,27 @@ router.get('/drafts', authGuard, async (req, res) => {
         published: false
       },
       include: {
-        author: true
+        author: true,
+        likes: true,
+        bookmarks: true
       }
-    })
+    });
   
-  res.json(drafts);
+  if (!drafts) {
+    res.status(404).json({
+      message: 'Drafts not found'
+    });
+
+    return;
+  }
+  
+  res.json(drafts.map((draft) => ({
+    ...draft,
+    likes: draft.likes.length,
+    liked: !!draft.likes.find((l) => l.userId === res.locals.user?.id),
+    bookmarks: undefined, // Do not share bookmarks with everyone
+    bookmarked: !!draft.bookmarks.find((b) => b.userId === res.locals.user?.id)
+  })));
 });
 
 export default router;
