@@ -24,7 +24,7 @@ const exampleUser = {
   };
 
 // Sample recipe data
-const hello = [
+const sampleRecipes = [
  {
     id: 2,
     published: true,
@@ -68,34 +68,19 @@ const hello = [
 
 beforeEach(() => {
     vi.clearAllMocks();
-    prisma.recipe.findMany.mockResolvedValue(hello);
+    prisma.recipe.findMany.mockResolvedValue(sampleRecipes);
   });
 
 describe('Successfull filtration', () => {
-
-// Get Feed
-test('Get feed', async () => {
-  const response = await request(app)
-    .get('/feed');
-
-  console.log('Response Status:', response.status);
-  console.log('Response Body:', response.body);
-  expect(response.status).toBe(200);
-  expect(response.body).toBeInstanceOf(Array);
-  expect(response.body.length).toBe(1);
-  expect(response.body[0].mealTypes).toContain('dinner');
-});
 
 // Meal Types
 test('Filter recipes by meal types', async () => {
     const response = await request(app)
       .get('/feed?mealTypes=dinner');
 
-    console.log('Response Status:', response.status);
-    console.log('Response Body:', response.body);
     expect(response.status).toBe(200);
     expect(response.body).toBeInstanceOf(Array);
-   // expect(response.body.length).toBe(1);
+    expect(response.body.length).toBe(1);
     expect(response.body[0].mealTypes).toContain('dinner');
   });
 
@@ -106,7 +91,7 @@ test('Filter recipes by price', async () => {
     
     expect(response.status).toBe(200);
     expect(response.body).toBeInstanceOf(Array);
-    // expect(response.body.length).toBe(1);
+    expect(response.body.length).toBe(1);
     expect(response.body[0].price).toBe('MODERATE');
   });
 
@@ -118,7 +103,7 @@ test('Filter recipes by price', async () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toBeInstanceOf(Array);
-    //expect(response.body.length).toBe(1);
+    expect(response.body.length).toBe(1);
     expect(response.body[0].cuisine).toBe('ITALIAN');
   });
 
@@ -129,7 +114,7 @@ test('Filter recipes by allergens', async () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toBeInstanceOf(Array);
-   // expect(response.body.length).toBe(1);
+    expect(response.body.length).toBe(1);
     expect(response.body[0].allergens).toContain('eggs');
   });
 
@@ -140,7 +125,7 @@ test('Filter recipes by difficulty', async () => {
     
     expect(response.status).toBe(200);
     expect(response.body).toBeInstanceOf(Array);
-    // expect(response.body.length).toBe(1);
+    expect(response.body.length).toBe(1);
     expect(response.body[0].difficulty).toContain('MEDIUM');
   });
 
@@ -151,7 +136,7 @@ test('Filter recipes by difficulty', async () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toBeInstanceOf(Array);
-    //expect(response.body.length).toBe(1);
+    expect(response.body.length).toBe(1);
     expect(response.body[0].prepTime).toBeLessThanOrEqual(40);
   });
 
@@ -162,7 +147,7 @@ test('Filter recipes by difficulty', async () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toBeInstanceOf(Array);
-    //expect(response.body.length).toBe(1);
+    expect(response.body.length).toBe(1);
     expect(response.body[0].sources).contains("CharMar");
   });
 
@@ -173,7 +158,7 @@ test('Filter recipes by difficulty', async () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toBeInstanceOf(Array);
-    //expect(response.body.length).toBe(1);
+    expect(response.body.length).toBe(1);
     expect(response.body[0].author.major).toBe("Example Major");
   });
 
@@ -181,7 +166,7 @@ test('Filter recipes by difficulty', async () => {
   test('Filter recipes with multiple filters', async () => {
     const response = await request(app).get('/feed?mealTypes=dinner&price=MODERATE&cuisine=ITALIAN');
     expect(response.status).toBe(200);
-    //expect(response.body.length).toBe(1);
+    expect(response.body.length).toBe(1);
     expect(response.body[0].mealTypes).toContain('dinner');
     expect(response.body[0].price).toBe('MODERATE');
     expect(response.body[0].cuisine).toBe('ITALIAN');
@@ -206,7 +191,7 @@ test('Filter recipes by difficulty', async () => {
   
   // Pagination
   test('Pagination - limit results', async () => {
-    prisma.recipe.findMany.mockResolvedValue(hello.slice(0, 1));
+    prisma.recipe.findMany.mockResolvedValue(sampleRecipes.slice(0, 1));
     const response = await request(app).get('/feed?limit=1');
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
