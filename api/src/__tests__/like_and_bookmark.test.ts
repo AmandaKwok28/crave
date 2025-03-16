@@ -99,18 +99,18 @@ const exampleRecipe2 = {
 describe('Create and delete like tests', () => {
     beforeEach(async () => {
         // adding user for testing
-        prisma.user.create.mockResolvedValue({
+        prisma.user.findUnique.mockResolvedValue({
         ...exampleUser1,
         passwordHash: await hashPassword('password')
         });
 
         // adding recipe for testing
-        prisma.recipe.create.mockResolvedValue({
+        prisma.recipe.findUnique.mockResolvedValue({
           ...exampleRecipe1
         });
 
         // adding like for testing
-        prisma.like.create.mockResolvedValue({
+        prisma.like.findUnique.mockResolvedValue({
             ...exampleLike1
         }); 
     });
@@ -175,13 +175,13 @@ describe('Create and delete like tests', () => {
 describe('fetch like tests for current user and recipes', () => {
     beforeEach(async () => {
         // adding users for testing
-        prisma.user.create.mockResolvedValue({
+        prisma.user.findUnique.mockResolvedValue({
         ...exampleUser2,
         passwordHash: await hashPassword('password')
         });
-        prisma.user.create.mockResolvedValue({
+        prisma.user.findUnique.mockResolvedValue({
           ...exampleUser1,
-          passwordHash: await hashPassword('password1')
+          passwordHash: await hashPassword('password')
         });
         
         // adding recipes for testing
@@ -193,15 +193,15 @@ describe('fetch like tests for current user and recipes', () => {
       });
 
         // adding likes for testing
-        prisma.like.create.mockResolvedValue({
+        prisma.like.findUnique.mockResolvedValue({
             ...exampleLike1
         }); 
-        prisma.like.create.mockResolvedValue({
+        prisma.like.findUnique.mockResolvedValue({
           ...exampleLike2
       }); 
     }); 
 
-    test('Checking get all likes for a given user when they have no likes', async () => {
+    test('Checking get all likes for a given user when they do have likes', async () => {
       prisma.session.findUnique.mockResolvedValue({
         id: '02',
         userId: '2def',
@@ -219,20 +219,44 @@ describe('fetch like tests for current user and recipes', () => {
           ])
         
         expect(response.body).toStrictEqual({
-            likes: [exampleLike2]
+            message: "Likes not found"
         });
 
         expect(response.status).toBe(200);
     });  
+
+    test('Checking get all likes for a given user when they have no likes', async () => {
+      prisma.session.findUnique.mockResolvedValue({
+        id: '01',
+        userId: '1abc',
+        expiresAt: new Date(Date.now() + 1_000_000),
+        //@ts-ignore
+        user: {
+        ...exampleUser1,
+        passwordHash: 'password'
+        }
+      });
+        const response = await request(app)
+            .get('/like/my')
+            .set('Cookie', [
+              'session=01'
+          ])
+        
+        expect(response.body).toStrictEqual({
+            message: "Likes not found"
+        });
+
+        expect(response.status).toBe(404);
+    });  
     
     test('Checking if a user has liked a specific recipe when they have not', async () => {
         prisma.session.findUnique.mockResolvedValue({
-              id: '02',
-              userId: '2def',
+              id: '01',
+              userId: '1abc',
               expiresAt: new Date(Date.now() + 1_000_000),
               //@ts-ignore
               user: {
-                ...exampleUser2,
+                ...exampleUser1,
                 passwordHash: 'password'
               }
         });
@@ -240,7 +264,7 @@ describe('fetch like tests for current user and recipes', () => {
         const response = await request(app)
             .get('/recipe/1')
             .set('Cookie', [
-                'session=02'
+                'session=01'
             ])
             .send({
             recipeId: exampleRecipe1.id
@@ -275,7 +299,7 @@ describe('fetch like tests for current user and recipes', () => {
       });
       
       expect(response.body).contains({
-        liked: false
+        liked: true
       });
 
       expect(response.status).toBe(200);
