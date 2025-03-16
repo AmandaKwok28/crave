@@ -2,6 +2,10 @@ import { faker } from '@faker-js/faker';
 
 faker.seed(41)
 
+const num_base_recipies = 2
+const num_variations = 4
+const change_arr = [0, 0, 1, 1, 1, 2, 2, 4, 5, 8]
+
 //generating a random ingredient list of length 3-15
 function get_ingredient_list(seed: number): string[] {
   faker.seed(seed)
@@ -34,8 +38,6 @@ function remove_noun(num: number, ingredients_list: string[]): string[] {
   return new_list
 }
 
-const change_arr = [0, 0, 1, 1, 1, 2, 2, 4, 5, 8]
-
 // generating semi-random data for the 10 'base' recipe templetes
 var testRecipesTextData = [ {
   title: "test",
@@ -44,7 +46,7 @@ var testRecipesTextData = [ {
   instructions: [ "test" ],
 }]
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < num_base_recipies; i++) {
   testRecipesTextData[i] = {
     title: faker.food.dish(),
     description: faker.food.description(),
@@ -55,10 +57,10 @@ for (let i = 0; i < 10; i++) {
 
 // generating increasingly dissimilar recipes for each of the 'base' recipe templetes
 
-for (let base_index = 0; base_index < 10; base_index++) {
+for (let base_index = 0; base_index < num_base_recipies; base_index++) {
   const testRecipesSimilarTextData = [ testRecipesTextData[base_index] ]
 
-  for (let i = 1; i < 10; i++) {
+  for (let i = 1; i < num_variations+1; i++) {
     testRecipesSimilarTextData[i-1] = {
       title: testRecipesTextData[base_index].title + " " + String(i),
       description: testRecipesTextData[base_index].description + " " + faker.lorem.paragraph(i),

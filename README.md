@@ -50,15 +50,12 @@ run the seed comand.
 
 from the api folder after setting up the development backend you can run this command to seed the database with some test data
 
+
 ```bash
 pnpm prisma db seed
 ```
 
-There are 100 recipes total in the seed data. 10 categories of 10 recipies where within each category recipes are increasingly less similar.
-You can sign in with these credentials after seeding
-
-example1@example.com
-password
+There are 10 recipes to start with in the seed data. 2 categories of 5 recipies where within each category recipes are increasingly less similar.
 
 ## Testing
 

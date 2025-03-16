@@ -37,6 +37,14 @@ const testRecipesData = [ {
   authorId: '1abc',
   createdAt: new Date(),
   updatedAt: new Date(),
+  //Additional
+  mealTypes: [],
+  price: null,
+  cuisine: null,
+  allergens: [],
+  difficulty: null,
+  sources: [],
+  prepTime: null
 }]
 
 for (let i = 0; i < testRecipesTextData.length; i++) {
@@ -49,6 +57,14 @@ for (let i = 0; i < testRecipesTextData.length; i++) {
     authorId: '1abc',
     createdAt: new Date(),
     updatedAt: new Date(),
+    //Additional
+    mealTypes: [],
+    price: null,
+    cuisine: null,
+    allergens: [],
+    difficulty: null,
+    sources: [],
+    prepTime: null
   }
 }
 
@@ -67,7 +83,7 @@ async function main() {
     }
   })
   console.log(`Created user with id: ${user.id}`)
-  
+
   // adding batch of test recipes
   for (const testRecipe of testRecipesData) {
     const recipe = await prisma.recipe.create({
