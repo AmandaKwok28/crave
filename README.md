@@ -79,7 +79,7 @@ Adding additional frontend & E2E tests is also easy. Navigate to the `web/cypres
 
 ## Deployment
 
-To build a release version of the frontend, run ```pnpm build``` within the `web/` directory, and then run `pnpm preview` to check out the build before deployment. The backend can be built using ```pnpm build``` and deployed as a regular Node.JS server.
+To build a release version of the frontend, run ```pnpm build``` within the `web/` directory, and then run `pnpm preview` to check out the build before deployment.
 
 frontend deployment: <https://crave-v3pt.onrender.com>
 

@@ -6,4 +6,5 @@ beforeEach(() => {
   mockReset(prisma);
 });
 
+// https://github.com/prisma/prisma/issues/10203
 export const prisma = mockDeep<PrismaClient>();
