@@ -69,7 +69,7 @@ Otherwise, tests can be written according to Vitest docs.
 
 ### Frontend & E2E Testing
 
-Frontend & E2E tests are run using [Cypress](https://www.cypress.io/). Simply navigate to the `web/` directory and (assuming all development prerequisites are currently installed) run the following:
+Frontend & E2E tests are run using [Cypress](https://www.cypress.io/). First, both the backend and frontend servers must be running (refer back to `## Developing`). Then, simply navigate to the `web/` directory and (assuming all development prerequisites are currently installed) run the following:
 
 ```bash
 pnpm test
