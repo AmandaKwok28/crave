@@ -17,6 +17,13 @@ const exampleLike: Like = {
   date: new Date(),
 };
 
+const exampleLikeResponseString = {
+  id: 1,
+  recipeId: 1,
+  userId: '1abc',
+  date: (new Date()).toISOString(),
+};
+
 const exampleRecipe = {
   id: 1,
   published: true,
@@ -31,6 +38,30 @@ const exampleRecipe = {
   viewCount: 0,
   likes: [exampleLike],
   bookmarks: [],
+  mealTypes: ["snack"],
+  price: null,
+  cuisine: null,
+  allergens: ["peanuts"],
+  difficulty: null,
+  prepTime: 10,
+  sources: ["Charmar"]
+};
+
+const exampleRecipeExpectedFetchString = {
+  id: 1,
+  published: true,
+  title: 'Example Recipe',
+  description: 'Description',
+  ingredients: [ '' ],
+  instructions: [ '' ],
+  image: 'Image',
+  authorId: '1',
+  createdAt: (new Date()).toISOString(),
+  updatedAt: (new Date()).toISOString(),
+  viewCount: 0,
+  liked: false,
+  likes: 1,
+  bookmarked: false,
   mealTypes: ["snack"],
   price: null,
   cuisine: null,
@@ -58,8 +89,9 @@ test('Recipe creation', async () => {
 
   expect(response.body).toStrictEqual({
     ...exampleRecipe,
-    createdAt: exampleRecipe.createdAt,
-    updatedAt: exampleRecipe.createdAt
+    likes: [exampleLikeResponseString],
+    createdAt: exampleRecipe.createdAt.toISOString(),
+    updatedAt: exampleRecipe.createdAt.toISOString(),
   });
 
   expect(response.status).toBe(200);
@@ -73,15 +105,8 @@ test('get recipe', async () => {
   const response = await request(app)
     .get('/recipe/1')
 
-  expect(response.body).contains({
-    id: 1,
-    published: true,
-    title: 'Example Recipe',
-    description: 'Description',
-    ingredients: [ '' ],
-    instructions: [ '' ],
-    image: 'Image',
-    authorId: '1',
+  expect(response.body).toStrictEqual({
+    ...exampleRecipeExpectedFetchString
   });
 
   expect(response.status).toBe(200);
