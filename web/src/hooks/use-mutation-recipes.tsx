@@ -21,7 +21,8 @@ const useMutationRecipe = () => {
             allergens: string[],
             difficulty: Difficulty,
             sources: string[],
-            prepTime: number
+            prepTime: number,
+            image?: string
         ) => {
         try {
             if (!title || !description || !ingredients || !instructions ) {
@@ -40,6 +41,7 @@ const useMutationRecipe = () => {
                 difficulty,
                 sources,
                 prepTime,
+                image
             );
             addRecipe(recipe);
             return recipe.id;
@@ -61,7 +63,8 @@ const useMutationRecipe = () => {
         allergens: string[],
         difficulty: Difficulty,
         sources: string[],
-        prepTime: number
+        prepTime: number,
+        image?: string
     ) => {
         try {
             if (!title || !description || !ingredients || !instructions ) {
@@ -80,6 +83,7 @@ const useMutationRecipe = () => {
                 difficulty,
                 sources,
                 prepTime,
+                image
             );
             addDrafts(recipe);
             return recipe.id;
@@ -102,7 +106,8 @@ const useMutationRecipe = () => {
         allergens: string[],
         difficulty: Difficulty,
         sources: string[],
-        prepTime: number
+        prepTime: number,
+        image?: string
     ) => {
         if (!id || !title || !description || !ingredients || !instructions ) {
             throw new Error("Title, ingredients, description, and instructions must have content to publish!")
@@ -126,6 +131,7 @@ const useMutationRecipe = () => {
                 difficulty,
                 sources,
                 prepTime,
+                image
             );
             return recipe.id;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars

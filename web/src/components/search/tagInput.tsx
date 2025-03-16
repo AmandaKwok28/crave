@@ -24,7 +24,7 @@ const TagInput = ({
 
     // adding tags: 
     const handleKeyDown = (e: any) => {
-        const value = inputValue.trim();
+        const value = inputValue.trim().toLowerCase();   // make sure that the tag inputs only send lowercase values
         if (e.key === "Enter" && value !== "") {
             setTags([...tags, value]);
             addSearchTags(value)

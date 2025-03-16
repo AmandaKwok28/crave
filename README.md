@@ -17,10 +17,15 @@ Next, clone the repository and navigate to the `web/` folder and run `pnpm insta
 
 Then, navigate to the `api/` folder and run `pnpm install`
 
-For a database, you can either use a local PostgreSQL instance, or you can create an external one with [prisma](https://console.prisma.io/cm76k5lgv04fom2dzj2ohv0rm/overview). Either way, you'll have a database URL you should save in a `.env` file within the `api/` directory with the following schema:
+For a database, you can either use a local PostgreSQL instance, or you can create an external one with [prisma](https://console.prisma.io/cm76k5lgv04fom2dzj2ohv0rm/overview). Either way, you'll have a database URL you should save in a `.env` file. 
+
+Furthermore, you need to provide your own OpenAI API key to use our AI-powered features. If you don’t have one, you can get it from OpenAI's API key page. If you're testing the app without using AI features, you can leave OPEN_AI_KEY empty or use a placeholder value.
+
+Within the `api/` directory, save a `.env` file with the following schema:
 
 ```json
 DATABASE_URL=<YOUR_URL_HERE>
+OPEN_AI_KEY=<YOUR_OPENAI_API_KEY_HERE>
 ```
 
 ## Developing
