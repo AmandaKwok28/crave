@@ -9,6 +9,7 @@
     "lint": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\"",
     "preview": "vite preview",
     "prettier": "prettier --write \"src/**/*.{js,ts,jsx,tsx}\" --config \".prettierrc.json\"",
+    "test": "cypress run",
     "cy:open": "cypress open",
     "cy:run": "cypress run"
   },

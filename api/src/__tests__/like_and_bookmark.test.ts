@@ -5,9 +5,8 @@ import { hashPassword } from '../lib/password';
 import {prisma} from '../lib/__mocks__/prisma';
 
 vi.mock('../../prisma/db', async () => {
-  const actual = await vi.importActual<typeof import('../lib/__mocks__/prisma')>('../lib/__mocks__/prisma');
   return {
-    ...actual
+    ...await vi.importActual<typeof import('../lib/__mocks__/prisma')>('../lib/__mocks__/prisma')
   };
 });
 
@@ -74,9 +73,9 @@ const exampleRecipe3 = {
 };
 
 test('Recipe creation', async () => {
-  prisma.recipe.create.mockResolvedValue({
-    ...exampleRecipe1
-  });
+  // prisma.recipe.create.mockResolvedValue({
+  //   ...exampleRecipe1
+  // });
 
   const response = await request(app)
     .post('/recipe/')
