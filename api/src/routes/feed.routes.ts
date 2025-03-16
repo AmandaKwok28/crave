@@ -120,18 +120,28 @@ router.get('/', async (req, res) => {
         ...prepTimeFilter,
         ...majorsFilter
       },
-      include: { author: true },
+      include: {
+        author: true,
+        likes: true,
+        bookmarks: true
+      },
       take: Number(take) || undefined,
       skip: Number(skip) || undefined,
       orderBy: {
         updatedAt: orderBy as Prisma.SortOrder,
       },
     })
-    res.json(recipes)
+
+    res.json(recipes.map((recipe) => ({
+      ...recipe,
+      likes: recipe.likes.length,
+      liked: !!recipe.likes.find((l) => l.userId === res.locals.user?.id),
+      bookmarks: undefined, // Do not share bookmarks with everyone
+      bookmarked: !!recipe.bookmarks.find((b) => b.userId === res.locals.user?.id)
+    })));
   } catch (error: any) {
     res.status(400).json({ message: error.message || 'An error occurred while fetching recipes' });
   }
-  
 })
 
 export default router;
