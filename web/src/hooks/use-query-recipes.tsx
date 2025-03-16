@@ -61,6 +61,7 @@ const useQueryRecipes = (ignoreFilters: boolean = false) => {
       likes,
       bookmarks,
       allergenTable,
+      loadRecipes,
       loadAllergens
     }
 }
