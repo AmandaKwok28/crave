@@ -3,7 +3,7 @@ import request from 'supertest';
 import { app } from '../index';
 import { hashPassword } from '../lib/password';
 import { prisma } from '../lib/__mocks__/prisma';
-import { Like } from '@prisma/client';
+import { Bookmark, Like } from '@prisma/client';
 
 vi.mock('../../prisma/db', async () => {
   return {
@@ -16,6 +16,12 @@ const exampleLike1: Like = {
   recipeId: 1,
   userId: '1abc',
   date: new Date(),
+};
+
+const exampleBookmark1: Bookmark = {
+  id: 1,
+  recipeId: 2,
+  userId: '2def',
 };
 
 const exampleUser1 = {
@@ -59,6 +65,12 @@ const exampleLike2: Like = {
   userId: '2def',
   date: new Date(),
 };
+const exampleLike2ResponseString = {
+  id: 2,
+  recipeId: 2,
+  userId: '2def',
+  date: (new Date()).toISOString(),
+};
 
 const exampleUser2 = {
   id: '2def',
@@ -67,7 +79,7 @@ const exampleUser2 = {
   school: 'Example University',
   major: 'Example Major',
   likes: [exampleLike2],
-  bookmarks: []
+  bookmarks: [exampleBookmark1]
 };
 
 
@@ -80,7 +92,7 @@ const exampleRecipe2 = {
     instructions: [ '' ],
     image: 'Image',
     likes: [exampleLike2],
-    bookmarks: [],
+    bookmarks: [exampleBookmark1],
     authorId: '1abc',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -96,21 +108,23 @@ const exampleRecipe2 = {
     prepTime: null
 };
 
+const exampleLikes = [exampleLike1, exampleLike2]
+
 describe('Create and delete like tests', () => {
     beforeEach(async () => {
         // adding user for testing
-        prisma.user.create.mockResolvedValue({
+        prisma.user.findUnique.mockResolvedValue({
         ...exampleUser1,
         passwordHash: await hashPassword('password')
         });
 
         // adding recipe for testing
-        prisma.recipe.create.mockResolvedValue({
+        prisma.recipe.findUnique.mockResolvedValue({
           ...exampleRecipe1
         });
 
         // adding like for testing
-        prisma.like.create.mockResolvedValue({
+        prisma.like.findUnique.mockResolvedValue({
             ...exampleLike1
         }); 
     });
@@ -170,77 +184,94 @@ describe('Create and delete like tests', () => {
 
         expect(response.status).toBe(200);
     });
- 
 });
 
 describe('fetch like tests for current user and recipes', () => {
     beforeEach(async () => {
-        // adding user for testing
-        prisma.user.create.mockResolvedValue({
+        // adding users for testing
+        prisma.user.findUnique.mockResolvedValue({
         ...exampleUser2,
         passwordHash: await hashPassword('password')
         });
+        prisma.user.findUnique.mockResolvedValue({
+          ...exampleUser1,
+          passwordHash: await hashPassword('password')
+        });
         
-        // adding recipe for testing
+        // adding recipes for testing
         prisma.recipe.findUnique.mockResolvedValue({
             ...exampleRecipe1,
         });
+        prisma.recipe.findUnique.mockResolvedValue({
+          ...exampleRecipe2,
+      });
 
-        // adding like for testing
-        prisma.like.create.mockResolvedValue({
-            ...exampleLike2
+        // adding likes for testing
+        prisma.like.findUnique.mockResolvedValue({
+            ...exampleLike1
         }); 
+        prisma.like.findUnique.mockResolvedValue({
+          ...exampleLike2
+      }); 
     }); 
 
-    // test('Checking get all likes for a given user', async () => {
-    //     const response = await request(app)
-    //         .get('/like/user/1abc')
-    //         .send({
-    //         userId: exampleLike1.userId
-    //     });
-        
-    //     expect(response.body).toStrictEqual({
-    //         likes: [exampleLike1]
-    //     });
+    test('Checking get all likes for a given user when they do have likes', async () => {
+      prisma.session.findUnique.mockResolvedValue({
+        id: '02',
+        userId: '2def',
+        expiresAt: new Date(Date.now() + 1_000_000),
+        //@ts-ignore
+        user: {
+        ...exampleUser2,
+        passwordHash: 'password'
+        }
+      });
 
-    //     expect(response.status).toBe(200);
-    // });  
+      const response = await request(app)
+          .get('/get-user')
+          .set('Cookie', [
+            'session=02'
+        ])
+      
+      expect(response.body.data.likes).toStrictEqual(
+          [ {...exampleLike2ResponseString} ]
+      );
+
+      expect(response.status).toBe(200);
+    });  
+
+    test('Checking get all likes for a given user when they have no likes', async () => {
+      prisma.session.findUnique.mockResolvedValue({
+        id: '01',
+        userId: '1abc',
+        expiresAt: new Date(Date.now() + 1_000_000),
+        //@ts-ignore
+        user: {
+        ...exampleUser1,
+        passwordHash: 'password'
+        }
+      });
+        const response = await request(app)
+            .get('/like/my')
+            .set('Cookie', [
+              'session=01'
+          ])
+        
+        expect(response.body).toStrictEqual({
+            message: "Likes not found"
+        });
+
+        expect(response.status).toBe(404);
+    });  
     
-    // test('Checking if a user has liked a specific recipe when they have', async () => {
-    //     prisma.session.findUnique.mockResolvedValue({
-    //             id: '02',
-    //             userId: '2def',
-    //             expiresAt: new Date(Date.now() + 1_000_000),
-    //             //@ts-ignore
-    //             user: {
-    //             ...exampleUser2,
-    //             passwordHash: 'password'
-    //             }
-    //     });
-
-    //     const response = await request(app)
-    //         .get('/like/recipe/2')
-    //         .set('Cookie', [
-    //             'session=02'
-    //         ])
-    //         .send({
-    //         recipeId: exampleLike2.recipeId
-    //     });
-        
-    //     expect(response.body).toStrictEqual({
-    //         liked: true
-    //     });
-
-    // });  
-
     test('Checking if a user has liked a specific recipe when they have not', async () => {
         prisma.session.findUnique.mockResolvedValue({
-              id: '02',
-              userId: '2def',
+              id: '01',
+              userId: '1abc',
               expiresAt: new Date(Date.now() + 1_000_000),
               //@ts-ignore
               user: {
-                ...exampleUser2,
+                ...exampleUser1,
                 passwordHash: 'password'
               }
         });
@@ -248,7 +279,7 @@ describe('fetch like tests for current user and recipes', () => {
         const response = await request(app)
             .get('/recipe/1')
             .set('Cookie', [
-                'session=02'
+                'session=01'
             ])
             .send({
             recipeId: exampleRecipe1.id
@@ -260,4 +291,238 @@ describe('fetch like tests for current user and recipes', () => {
 
         expect(response.status).toBe(200);
     });  
+
+    test('Checking if a user has liked a specific recipe when they have', async () => {
+      prisma.session.findUnique.mockResolvedValue({
+            id: '02',
+            userId: '2def',
+            expiresAt: new Date(Date.now() + 1_000_000),
+            //@ts-ignore
+            user: {
+              ...exampleUser2,
+              passwordHash: 'password'
+            }
+      });
+
+      const response = await request(app)
+          .get('/recipe/2')
+          .set('Cookie', [
+              'session=02'
+          ])
+          .send({
+          recipeId: exampleRecipe1.id
+      });
+      
+      expect(response.body).contains({
+        liked: true
+      });
+
+      expect(response.status).toBe(200);
+  });  
+});
+
+
+describe('Create and delete bookmark tests', () => {
+  beforeEach(async () => {
+      // adding user for testing
+      prisma.user.findUnique.mockResolvedValue({
+      ...exampleUser2,
+      passwordHash: await hashPassword('password')
+      });
+
+      // adding recipe for testing
+      prisma.recipe.findUnique.mockResolvedValue({
+        ...exampleRecipe2
+      });
+
+      // adding bookmark for testing
+      prisma.bookmark.findUnique.mockResolvedValue({
+          ...exampleBookmark1
+      }); 
+  });
+
+  test('Adding a bookmark to a recipe for a user', async () => {
+      prisma.session.findUnique.mockResolvedValue({
+            id: '02',
+            userId: '2def',
+            expiresAt: new Date(Date.now() + 1_000_000),
+            //@ts-ignore
+            user: {
+              ...exampleUser2,
+              passwordHash: 'password'
+            }
+      });
+
+      const response = await request(app)
+          .post('/bookmark/1')
+          .set('Cookie', [
+              'session=02'
+          ])
+          .send({
+          recipeId: exampleBookmark1.recipeId
+      });
+      
+      expect(response.body).toStrictEqual({
+          success: true
+      });
+
+      expect(response.status).toBe(200);
+  });   
+
+  test('Removing a bookmark from a recipe for a user', async () => {
+      prisma.session.findUnique.mockResolvedValue({
+            id: '02',
+            userId: '2def',
+            expiresAt: new Date(Date.now() + 1_000_000),
+            //@ts-ignore
+            user: {
+              ...exampleUser2,
+              passwordHash: 'password'
+            }
+      });
+
+      const response = await request(app)
+          .delete('/bookmark/2')
+          .set('Cookie', [
+              'session=02'
+          ])
+          .send({
+          recipeId: exampleBookmark1.recipeId
+      });
+      
+      expect(response.body).toStrictEqual({
+          success: true
+      });
+
+      expect(response.status).toBe(200);
+  });
+});
+
+describe('fetch bookmark tests for current user and recipes', () => {
+  beforeEach(async () => {
+    // adding user for testing
+    prisma.user.findUnique.mockResolvedValue({
+      ...exampleUser2,
+      passwordHash: await hashPassword('password')
+    });
+    prisma.user.findUnique.mockResolvedValue({
+      ...exampleUser1,
+      passwordHash: await hashPassword('password')
+    });
+
+      // adding recipe for testing
+      prisma.recipe.findUnique.mockResolvedValue({
+        ...exampleRecipe2
+      });
+
+      // adding bookmark for testing
+      prisma.bookmark.findUnique.mockResolvedValue({
+          ...exampleBookmark1
+      }); 
+  }); 
+
+  test('Checking get all bookmarks for a given user when they do have bookmarks', async () => {
+    prisma.session.findUnique.mockResolvedValue({
+      id: '02',
+      userId: '2def',
+      expiresAt: new Date(Date.now() + 1_000_000),
+      //@ts-ignore
+      user: {
+      ...exampleUser2,
+      passwordHash: 'password'
+      }
+    });
+
+    const response = await request(app)
+        .get('/get-user')
+        .set('Cookie', [
+          'session=02'
+      ])
+    
+    expect(response.body.data.bookmarks).toStrictEqual(
+        [exampleBookmark1]
+    );
+
+    expect(response.status).toBe(200);
+  });  
+
+  test('Checking get all bookmarks for a given user when they have no bookmarks', async () => {
+    prisma.session.findUnique.mockResolvedValue({
+      id: '01',
+      userId: '1abc',
+      expiresAt: new Date(Date.now() + 1_000_000),
+      //@ts-ignore
+      user: {
+      ...exampleUser1,
+      passwordHash: 'password'
+      }
+    });
+      const response = await request(app)
+          .get('/bookmark/my')
+          .set('Cookie', [
+            'session=01'
+        ])
+      
+      expect(response.body).toStrictEqual({
+          message: "Bookmarks not found"
+      });
+
+      expect(response.status).toBe(404);
+  });  
+  
+  test('Checking if a user has bookmarked a specific recipe when they have not', async () => {
+      prisma.session.findUnique.mockResolvedValue({
+            id: '01',
+            userId: '1abc',
+            expiresAt: new Date(Date.now() + 1_000_000),
+            //@ts-ignore
+            user: {
+              ...exampleUser1,
+              passwordHash: 'password'
+            }
+      });
+
+      const response = await request(app)
+          .get('/recipe/1')
+          .set('Cookie', [
+              'session=01'
+          ])
+          .send({
+          recipeId: exampleRecipe1.id
+      });
+      
+      expect(response.body).contains({
+        bookmarked: false
+      });
+
+      expect(response.status).toBe(200);
+  });  
+
+  test('Checking if a user has bookmarked a specific recipe when they have', async () => {
+    prisma.session.findUnique.mockResolvedValue({
+          id: '02',
+          userId: '2def',
+          expiresAt: new Date(Date.now() + 1_000_000),
+          //@ts-ignore
+          user: {
+            ...exampleUser2,
+            passwordHash: 'password'
+          }
+    });
+
+    const response = await request(app)
+        .get('/recipe/2')
+        .set('Cookie', [
+            'session=02'
+        ])
+        .send({
+        recipeId: exampleRecipe1.id
+    });
+    
+    expect(response.body).contains({
+      bookmarked: true
+    });
+
+    expect(response.status).toBe(200);
+});  
 });

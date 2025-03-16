@@ -48,6 +48,20 @@ Additionally, in the api folder, create a .env file with the following:
 
 ```DATABASE_URL=<database_api_url>```
 
+## Seeding
+
+WARNING: if you seed the database it will remove all current users to avoid unique email conflicts. If you don't want to get rid of the current database values don't
+run the seed comand.
+
+from the api folder after setting up the development backend you can run this command to seed the database with some test data
+
+
+```bash
+pnpm prisma db seed
+```
+
+There are 10 recipes to start with in the seed data. 2 categories of 5 recipies where within each category recipes are increasingly less similar.
+
 ## Testing
 
 Normally, testing is ran automatically on any pull request to `dev` or `master`. For the time being, this functionality is restricted and testing must be done locally.
