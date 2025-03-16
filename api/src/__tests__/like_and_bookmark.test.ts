@@ -59,6 +59,12 @@ const exampleLike2: Like = {
   userId: '2def',
   date: new Date(),
 };
+const exampleLike2ResponseString = {
+  id: 2,
+  recipeId: 2,
+  userId: '2def',
+  date: (new Date()).toISOString(),
+};
 
 const exampleUser2 = {
   id: '2def',
@@ -95,6 +101,8 @@ const exampleRecipe2 = {
     sources: [],
     prepTime: null
 };
+
+const exampleLikes = [exampleLike1, exampleLike2]
 
 describe('Create and delete like tests', () => {
     beforeEach(async () => {
@@ -212,17 +220,18 @@ describe('fetch like tests for current user and recipes', () => {
         passwordHash: 'password'
         }
       });
-        const response = await request(app)
-            .get('/like/my')
-            .set('Cookie', [
-              'session=02'
-          ])
-        
-        expect(response.body).toStrictEqual({
-            message: "Likes not found"
-        });
 
-        expect(response.status).toBe(200);
+      const response = await request(app)
+          .get('/get-user')
+          .set('Cookie', [
+            'session=02'
+        ])
+      
+      expect(response.body.data.likes).toStrictEqual(
+          [ {...exampleLike2ResponseString} ]
+      );
+
+      expect(response.status).toBe(200);
     });  
 
     test('Checking get all likes for a given user when they have no likes', async () => {
