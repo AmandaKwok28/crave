@@ -10,7 +10,7 @@ router.get('/my', authGuard, async (req, res) => {
     where: {
       bookmarks: {
         some: {
-          userId: res.locals.user.id
+          userId: res.locals.user!.id
         }
       }
     },
@@ -32,9 +32,9 @@ router.get('/my', authGuard, async (req, res) => {
   res.json(bookmarks.map((bookmark) => ({
     ...bookmark,
     likes: bookmark.likes.length,
-    liked: !!bookmark.likes.find((l) => l.userId === res.locals.user?.id),
+    liked: !!bookmark.likes.find((l) => l.userId === res.locals.user!.id),
     bookmarks: undefined, // Do not share bookmarks with everyone
-    bookmarked: !!bookmark.bookmarks.find((b) => b.userId === res.locals.user?.id)
+    bookmarked: !!bookmark.bookmarks.find((b) => b.userId === res.locals.user!.id)
   })));
 });
 
@@ -47,7 +47,7 @@ router.post('/:recipe_id', authGuard, async (req, res) => {
     await prisma.bookmark.create({
       data: {
         recipeId: Number(recipe_id),
-        userId: res.locals.user.id
+        userId: res.locals.user!.id
       }
     });  
 
@@ -69,7 +69,7 @@ router.delete('/:recipe_id', authGuard, async (req, res) => {
     await prisma.bookmark.deleteMany({
       where: {
         recipeId: Number(recipe_id),
-        userId: res.locals.user.id
+        userId: res.locals.user!.id
       }
     });
     

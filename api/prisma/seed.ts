@@ -29,7 +29,6 @@ const exampleUser1 = {
 };
 
 const testRecipesData = [ {
-  id: 1,
   published: true,
   title: testRecipesTextData[0].title,
   description: testRecipesTextData[0].description,
@@ -42,7 +41,6 @@ const testRecipesData = [ {
 
 for (let i = 0; i < testRecipesTextData.length; i++) {
   testRecipesData[i] = {
-    id: i+1,
     published: true,
     title: testRecipesTextData[i].title,
     description: testRecipesTextData[i].description,

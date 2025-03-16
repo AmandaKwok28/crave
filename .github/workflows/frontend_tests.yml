@@ -1,0 +1,69 @@
+name: Frontend Tests
+
+on:
+  pull_request:
+    branches:
+      - never
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:22.14.0
+      options: --user 1001
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.JS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '23'
+      
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install Backend Dependencies
+        working-directory: ./api
+        run: pnpm install
+
+      - name: Connect to PostgreSQL
+        working-directory: ./api
+        run: pnpm prisma migrate reset --force
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/postgres"
+
+      - name: Install Frontend Dependencies
+        working-directory: ./web
+        run: pnpm install
+      
+      - name: Start Backend Server
+        working-directory: ./api
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/postgres"
+        run: pnpm dev &
+      
+      - name: Run Cypress Tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./web
+          env: VITE_API_URL=http://localhost:3000,DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
+          build: pnpm build
+          start: pnpm preview
+          browser: firefox

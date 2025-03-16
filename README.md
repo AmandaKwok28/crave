@@ -26,7 +26,7 @@ DATABASE_URL=<YOUR_URL_HERE>
 ## Developing
 
 Starting from the root folder, you can run these commands:
- 
+
 ```bash
 cd ./api
 pnpm install
@@ -43,15 +43,47 @@ Additionally, in the api folder, create a .env file with the following:
 
 ```DATABASE_URL=<database_api_url>```
 
+## Testing
+
+Normally, testing is ran automatically on any pull request to `dev` or `master`. For the time being, this functionality is restricted and testing must be done locally.
+
+### Backend Testing
+
+Backend tests are run using [Vitest](https://vitest.dev/). Simply navigate to the `api/` directory and (assuming all development prerequisites are currently installed) run the following:
+
+```bash
+pnpm test
+```
+
+Adding additional backend tests is extremely easy. Simply create a new file in the `api/src/__tests__/` directory that ends in `.test.ts` and it will automatically be detected by Vitest. At the top of the file, make sure you copy the Mock Prisma client initialization code:
+
+```typescript
+vi.mock('../../prisma/db', async () => {
+  return {
+    ...await vi.importActual<typeof import('../lib/__mocks__/prisma')>('../lib/__mocks__/prisma')
+  };
+});
+```
+
+Otherwise, tests can be written according to Vitest docs.
+
+### Frontend & E2E Testing
+
+Frontend & E2E tests are run using [Cypress](https://www.cypress.io/). First, both the backend and frontend servers must be running (refer back to `## Developing`). Then, simply navigate to the `web/` directory and (assuming all development prerequisites are currently installed) run the following:
+
+```bash
+pnpm test
+```
+
+Adding additional frontend & E2E tests is also easy. Navigate to the `web/cypress/e2e/` directory and create a file ending in `.cy.js`. From there, tests can be constructed according to Cypress docs. Some global Cypress helper functions are provided and documented in the `web/cypress/support/commands.ts` file.
+
 ## Deployment
 
-To build a release version of the frontend, run ```pnpm build``` within the `web/` directory.
+To build a release version of the frontend, run ```pnpm build``` within the `web/` directory, and then run `pnpm preview` to check out the build before deployment.
 
-frontend deployment:
-https://crave-v3pt.onrender.com
+frontend deployment: <https://crave-v3pt.onrender.com>
 
-backend deployment:
-https://team-05-db.onrender.com
+backend deployment: <https://team-05-db.onrender.com>
 
 ## Contributing
 
