@@ -170,69 +170,61 @@ describe('Create and delete like tests', () => {
 
         expect(response.status).toBe(200);
     });
- 
 });
 
 describe('fetch like tests for current user and recipes', () => {
     beforeEach(async () => {
-        // adding user for testing
+        // adding users for testing
         prisma.user.create.mockResolvedValue({
         ...exampleUser2,
         passwordHash: await hashPassword('password')
         });
+        prisma.user.create.mockResolvedValue({
+          ...exampleUser1,
+          passwordHash: await hashPassword('password1')
+        });
         
-        // adding recipe for testing
+        // adding recipes for testing
         prisma.recipe.findUnique.mockResolvedValue({
             ...exampleRecipe1,
         });
+        prisma.recipe.findUnique.mockResolvedValue({
+          ...exampleRecipe2,
+      });
 
-        // adding like for testing
+        // adding likes for testing
         prisma.like.create.mockResolvedValue({
-            ...exampleLike2
+            ...exampleLike1
         }); 
+        prisma.like.create.mockResolvedValue({
+          ...exampleLike2
+      }); 
     }); 
 
-    // test('Checking get all likes for a given user', async () => {
-    //     const response = await request(app)
-    //         .get('/like/user/1abc')
-    //         .send({
-    //         userId: exampleLike1.userId
-    //     });
+    test('Checking get all likes for a given user when they have no likes', async () => {
+      prisma.session.findUnique.mockResolvedValue({
+        id: '02',
+        userId: '2def',
+        expiresAt: new Date(Date.now() + 1_000_000),
+        //@ts-ignore
+        user: {
+        ...exampleUser2,
+        passwordHash: 'password'
+        }
+      });
+        const response = await request(app)
+            .get('/like/my')
+            .set('Cookie', [
+              'session=02'
+          ])
         
-    //     expect(response.body).toStrictEqual({
-    //         likes: [exampleLike1]
-    //     });
+        expect(response.body).toStrictEqual({
+            likes: [exampleLike2]
+        });
 
-    //     expect(response.status).toBe(200);
-    // });  
+        expect(response.status).toBe(200);
+    });  
     
-    // test('Checking if a user has liked a specific recipe when they have', async () => {
-    //     prisma.session.findUnique.mockResolvedValue({
-    //             id: '02',
-    //             userId: '2def',
-    //             expiresAt: new Date(Date.now() + 1_000_000),
-    //             //@ts-ignore
-    //             user: {
-    //             ...exampleUser2,
-    //             passwordHash: 'password'
-    //             }
-    //     });
-
-    //     const response = await request(app)
-    //         .get('/like/recipe/2')
-    //         .set('Cookie', [
-    //             'session=02'
-    //         ])
-    //         .send({
-    //         recipeId: exampleLike2.recipeId
-    //     });
-        
-    //     expect(response.body).toStrictEqual({
-    //         liked: true
-    //     });
-
-    // });  
-
     test('Checking if a user has liked a specific recipe when they have not', async () => {
         prisma.session.findUnique.mockResolvedValue({
               id: '02',
@@ -260,4 +252,32 @@ describe('fetch like tests for current user and recipes', () => {
 
         expect(response.status).toBe(200);
     });  
+
+    test('Checking if a user has liked a specific recipe when they have', async () => {
+      prisma.session.findUnique.mockResolvedValue({
+            id: '02',
+            userId: '2def',
+            expiresAt: new Date(Date.now() + 1_000_000),
+            //@ts-ignore
+            user: {
+              ...exampleUser2,
+              passwordHash: 'password'
+            }
+      });
+
+      const response = await request(app)
+          .get('/recipe/2')
+          .set('Cookie', [
+              'session=02'
+          ])
+          .send({
+          recipeId: exampleRecipe1.id
+      });
+      
+      expect(response.body).contains({
+        liked: false
+      });
+
+      expect(response.status).toBe(200);
+  });  
 });

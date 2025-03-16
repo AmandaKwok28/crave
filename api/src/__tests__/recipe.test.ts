@@ -53,3 +53,18 @@ test('Recipe creation', async () => {
 
   expect(response.status).toBe(200);
 });
+
+test('get recipe', async () => {
+  prisma.recipe.create.mockResolvedValue({
+    ...exampleRecipe,
+  });
+
+  const response = await request(app)
+    .get('/recipe/1')
+
+  expect(response.body).toStrictEqual({
+    ...exampleRecipe
+  });
+
+  expect(response.status).toBe(200);
+});
