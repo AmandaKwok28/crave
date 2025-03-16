@@ -8,7 +8,7 @@ const router = Router();
 router.get('/recipes', authGuard, async (req, res) => {
   const recipes = await prisma.user
     .findUnique({
-      where: { id: res.locals.user.id },
+      where: { id: res.locals.user!.id },
     })
     .recipes({
       where: {
@@ -26,7 +26,7 @@ router.get('/recipes', authGuard, async (req, res) => {
 router.get('/drafts', authGuard, async (req, res) => {
   const drafts = await prisma.user
     .findUnique({
-      where: { id: res.locals.user.id },
+      where: { id: res.locals.user!.id },
     })
     .recipes({
       where: {
@@ -50,9 +50,9 @@ router.get('/drafts', authGuard, async (req, res) => {
   res.json(drafts.map((draft) => ({
     ...draft,
     likes: draft.likes.length,
-    liked: !!draft.likes.find((l) => l.userId === res.locals.user?.id),
+    liked: !!draft.likes.find((l) => l.userId === res.locals.user!.id),
     bookmarks: undefined, // Do not share bookmarks with everyone
-    bookmarked: !!draft.bookmarks.find((b) => b.userId === res.locals.user?.id)
+    bookmarked: !!draft.bookmarks.find((b) => b.userId === res.locals.user!.id)
   })));
 });
 

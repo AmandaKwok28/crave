@@ -4,6 +4,9 @@ import { deleteSessionTokenCookie, validateSessionToken } from "../lib/session";
 export async function auth(req: Request, res: Response, next: (err?: any) => void) {
   const token = req.cookies['session'];
 
+  res.locals.user = null;
+  res.locals.session = null;
+
   if (token) {
     const { session, user } = await validateSessionToken(token);
 
@@ -22,7 +25,7 @@ export async function auth(req: Request, res: Response, next: (err?: any) => voi
 
 // Use in routes that require auth
 export async function authGuard(req: Request, res: Response, next: (err?: any) => void) {
-  if (!res.locals.user) {
+  if (!res.locals.user || !res.locals.session) {
     res.status(401).json({
       message: 'Unauthorized'
     });
