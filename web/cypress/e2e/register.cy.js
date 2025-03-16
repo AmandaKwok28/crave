@@ -3,14 +3,15 @@ describe('Register Page', () => {
     cy.reset_db();
   });
 
-  it('successfully loads', () => {
+  beforeEach(() => {
     cy.visit('/register');
+  })
+
+  it('successfully loads', () => {
     cy.location('pathname').should('eq', '/register');
   });
 
   it('contains necessary elements', () => {
-    cy.visit('/register');
-
     // Card title text
     cy.contains('h3', 'Register');
     cy.contains('p', 'Create a new Crave account');

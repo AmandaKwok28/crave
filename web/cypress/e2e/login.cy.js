@@ -3,14 +3,15 @@ describe('Login Page', () => {
     cy.reset_db();
   });
 
-  it('successfully loads', () => {
+  beforeEach(() => {
     cy.visit('/login');
+  });
+
+  it('successfully loads', () => {
     cy.location('pathname').should('eq', '/login');
   });
 
   it('contains necessary elements', () => {
-    cy.visit('/login');
-
     // Card title text
     cy.contains('Sign in to your account');
     cy.contains('create a new account');

@@ -3,19 +3,17 @@ describe('Homepage', () => {
     cy.reset_db();
   });
 
-  it('successfully loads', () => {
+  beforeEach(() => {
     cy.login('test@example.com', 'password');
-
+    cy.create_recipe('Example Recipe');
     cy.visit('/');
+  });
 
+  it('successfully loads', () => {
     cy.location('pathname').should('eq', '/');
   });
 
   it('contains necessary elements', () => {
-    cy.login('test@example.com', 'password');
-
-    cy.visit('/');
-
     // Nav Bar
     cy.contains('p', 'Crave');
     cy.get('svg.lucide-circle-plus');
