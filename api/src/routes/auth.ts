@@ -50,7 +50,8 @@ auth_route.post('/login', async (req, res) => {
         const validPassword = await verifyPassword(data.password, user.passwordHash)
 
         if (!validPassword) {
-            res.status(401).json({ message: 'Incorrect Password' });
+            res.status(401).json({ message: 'Incorrect Login' });
+            return;
         }
 
         const token = generateSessionToken();
@@ -105,7 +106,7 @@ auth_route.post('/register', async (req, res) => {
   } catch (error) {
     res.status(400).json({
       message: 'Could not register new user'
-    });
+  });
 
     return;
   }

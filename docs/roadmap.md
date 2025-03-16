@@ -25,7 +25,7 @@ Update the profile page with more features. Implement recommendation algorithm f
 
 * **Must-Have Features:**
 
-  * [ ] As a college student, I want to see similar recipes to the ones that I'm currently viewing to compare similar recipes. (ALGORITHM, Pt.1 text data based analysis)
+  * [ ] As a college student, I want to see similar recipes to the ones that I'm currently viewing to compare similar recipes. (ALGORITHM, Pt.1 text data based analysis)(Reinforcement Learning for recommendation system)
   * [ ] As a college student, I want to filter recipes by specific categories and search by keywords so that I can only see recipes that are relevant to the resources I want.
   * [ ] As a college student, I want to be able to like and bookmark recipes so that I can show appreciation for the recipe and view them later.
   * [ ] As a college student, I want to see automatically generated tags for common allergies so that I can avoid harming myself or others.

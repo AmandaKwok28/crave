@@ -47,7 +47,8 @@ function RegisterForm() {
 
     setLoading(true);
 
-    register(email, password, name, school, major)
+    // made major lowercase for searching
+    register(email, password, name, school, major.toLowerCase())
       .then(() => redirectPage($router, 'home'))
       .catch((error) => setErrors(JSON.parse(error.message)))
       .finally(() => setLoading(false));

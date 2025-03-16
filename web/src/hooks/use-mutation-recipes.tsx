@@ -1,4 +1,5 @@
 import { createRecipe, deleteRecipe, patchRecipe } from "@/data/api";
+import { Cuisine, Difficulty, Price } from "@/data/types";
 import { addDrafts, addRecipe, removeRecipe } from "@/lib/store";
 
 const useMutationRecipe = () => {
@@ -8,13 +9,40 @@ const useMutationRecipe = () => {
         removeRecipe(recipe_id);
     };
 
-    const addNewRecipe = async (title: string, description: string, ingredients: string[], instructions: string[], id: string) => {
+    const addNewRecipe = async (
+            title: string, 
+            description: string, 
+            ingredients: string[], 
+            instructions: string[], 
+            id: string,
+            mealTypes: string[],
+            price: Price,
+            cuisine: Cuisine,
+            allergens: string[],
+            difficulty: Difficulty,
+            sources: string[],
+            prepTime: number,
+            image?: string
+        ) => {
         try {
             if (!title || !description || !ingredients || !instructions ) {
-                throw new Error("All field must have content to publish!")
+                throw new Error("Title, ingredients, description, and instructions must have content to publish!")
             }
-            const recipe = await createRecipe(title, description, ingredients, instructions, id);
-            // console.log(recipe);
+            const recipe = await createRecipe(
+                title, 
+                description, 
+                ingredients, 
+                instructions, 
+                id,
+                mealTypes,
+                price,
+                cuisine,
+                allergens,
+                difficulty,
+                sources,
+                prepTime,
+                image
+            );
             addRecipe(recipe);
             return recipe.id;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -23,12 +51,40 @@ const useMutationRecipe = () => {
         }
     };
 
-    const addNewRecipeDraft = async (title: string, description: string, ingredients: string[], instructions: string[], id: string) => {
+    const addNewRecipeDraft = async (
+        title: string, 
+        description: string, 
+        ingredients: string[], 
+        instructions: string[], 
+        id: string,
+        mealTypes: string[],
+        price: Price,
+        cuisine: Cuisine,
+        allergens: string[],
+        difficulty: Difficulty,
+        sources: string[],
+        prepTime: number,
+        image?: string
+    ) => {
         try {
             if (!title || !description || !ingredients || !instructions ) {
-                throw new Error("All field must have content to publish!")
+                throw new Error("Title, ingredients, description, and instructions must have content to publish!")
             }
-            const recipe = await createRecipe(title, description, ingredients, instructions, id);
+            const recipe = await createRecipe(
+                title, 
+                description, 
+                ingredients, 
+                instructions, 
+                id,
+                mealTypes,
+                price,
+                cuisine,
+                allergens,
+                difficulty,
+                sources,
+                prepTime,
+                image
+            );
             addDrafts(recipe);
             return recipe.id;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -37,16 +93,46 @@ const useMutationRecipe = () => {
         }
     };
 
-    const editRecipe = async (id: number, title: string, description: string, ingredients: string[], instructions: string[], published: boolean) => {
+    const editRecipe = async (
+        id: number, 
+        title: string, 
+        description: string, 
+        ingredients: string[], 
+        instructions: string[], 
+        published: boolean,
+        mealTypes: string[],
+        price: Price,
+        cuisine: Cuisine,
+        allergens: string[],
+        difficulty: Difficulty,
+        sources: string[],
+        prepTime: number,
+        image?: string
+    ) => {
         if (!id || !title || !description || !ingredients || !instructions ) {
-            throw new Error("All field must have content to publish!");
+            throw new Error("Title, ingredients, description, and instructions must have content to publish!")
         }
 
         try {
             if (!title || !description || !ingredients || !instructions ) {
                 throw new Error("All field must have content to publish!")
             }
-            const recipe = await patchRecipe(id, title, description, ingredients, instructions, published);
+            const recipe = await patchRecipe(
+                id, 
+                title, 
+                description, 
+                ingredients, 
+                instructions, 
+                published,
+                mealTypes,
+                price,
+                cuisine,
+                allergens,
+                difficulty,
+                sources,
+                prepTime,
+                image
+            );
             return recipe.id;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {

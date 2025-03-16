@@ -1,0 +1,85 @@
+import { Router } from "express";
+import { prisma } from "../../prisma/db";
+import { authGuard } from "../middleware/auth";
+
+const router = Router();
+
+// Get all likes for the current user
+router.get('/my', authGuard, async (req, res) => {
+  const likes = await prisma.recipe.findMany({
+    where: {
+      likes: {
+        some: {
+          userId: res.locals.user!.id
+        }
+      }
+    },
+    include: {
+      author: true,
+      likes: true,
+      bookmarks: true
+    }
+  });
+
+  if (!likes) {
+    res.status(404).json({
+      message: 'Likes not found'
+    });
+
+    return;
+  }
+
+  res.json(likes.map((like) => ({
+    ...like,
+    likes: like.likes.length,
+    liked: !!like.likes.find((l) => l.userId === res.locals.user!.id),
+    bookmarks: undefined, // Do not share bookmarks with everyone
+    bookmarked: !!like.bookmarks.find((b) => b.userId === res.locals.user!.id)
+  })));
+});
+
+// Like a specific recipe
+router.post('/:recipe_id', authGuard, async (req, res) => {
+  const { recipe_id } = req.params;
+
+  try {
+    await prisma.like.create({
+      data: {
+        recipeId: Number(recipe_id),
+        userId: res.locals.user!.id
+      }
+    });  
+
+    res.json({
+      success: true
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false
+    })
+  }
+});
+
+// Unlike a specific recipe
+router.delete('/:recipe_id', authGuard, async (req, res) => {
+  const { recipe_id } = req.params;
+
+  try {
+    await prisma.like.deleteMany({
+      where: {
+        recipeId: Number(recipe_id),
+        userId: res.locals.user!.id
+      }
+    });
+    
+    res.json({
+      success: true
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false
+    })
+  }
+});
+
+export default router;

@@ -4,6 +4,31 @@ export interface UserType {
   name: string;
   school: string;
   major: string;
+  avatarImage?: string;
+}
+
+export enum Price {
+  CHEAP = "CHEAP",
+  MODERATE = "MODERATE",
+  PRICEY = "PRICEY",
+  EXPENSIVE = "EXPENSIVE",
+}
+
+export enum Difficulty {
+  EASY = "EASY",
+  MEDIUM = "MEDIUM",
+  HARD = "HARD",
+}
+
+export enum Cuisine {
+  ITALIAN = "ITALIAN",
+  MEXICAN = "MEXICAN",
+  CHINESE = "CHINESE",
+  INDIAN = "INDIAN",
+  JAPANESE = "JAPANESE",
+  FRENCH = "FRENCH",
+  MEDITERRANEAN = "MEDITERRANEAN",
+  AMERICAN = "AMERICAN",
 }
 
 export interface RecipeType {
@@ -14,7 +39,18 @@ export interface RecipeType {
   description: string;
   authorId: string;
   published: boolean;
-  author: AuthorType
+  likes: number;
+  liked: boolean;
+  bookmarked: boolean;
+  author: AuthorType;
+  mealTypes: string[];
+  price: Price;
+  cuisine: Cuisine;
+  allergens: string[];
+  difficulty: Difficulty;
+  sources: string[];
+  prepTime: number;
+  image?: string
 }
 
 export interface AuthorType {
@@ -23,4 +59,21 @@ export interface AuthorType {
   name: string;
   school: string;
   major: string;
+}
+
+export interface AllergenType {
+  id: number;
+  name: string;
+}
+
+export interface TagsResponse {
+  response: {
+    price: string;
+    cuisine: string;
+    difficulty: string;
+    prepTime: number;
+    ingredients: string[];
+    tags: string[];
+    mealTypes: string[]
+  }
 }

@@ -10,7 +10,7 @@ const Recipes = ({recipes}:{recipes:RecipeType[]}) => {
     }
 
     return (
-        <Flex gap="3" wrap="wrap">
+        <Flex gap="10" wrap="wrap" justifyContent="center" w="full">
             {recipes.map((card:RecipeType) => (
                 <RecipeCard key={card.id} recipe={card} /> 
             ))}

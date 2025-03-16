@@ -17,17 +17,24 @@ const CancelCreateRecipeButton = () => {
   return (
     <DialogRoot size="md">
     <DialogTrigger asChild>
-        <Button bgGradient="to-r" gradientFrom="red.300" gradientTo="orange.300" color="white">
+    <Button 
+        variant="subtle" 
+        //bgImage="linear-gradient({colors.blue.500}, {colors.cyan.200})"
+        bg="cyan.500"
+        color="white" 
+        //borderRadius="15px" 
+        border="non"
+    >
             Cancel
         </Button>
     </DialogTrigger>
     <DialogContent>
         <DialogHeader>
-        <DialogTitle textStyle="2xl" fontWeight="bold">Cancel Recipie Creation?</DialogTitle>
+        <DialogTitle textStyle="2xl" fontWeight="bold">Cancel Recipe Creation?</DialogTitle>
         </DialogHeader>
         <DialogBody>
         <p>
-            Do you want to cancel creating this recipe? you will loose all progress by doing so.
+            Do you want to cancel creating this recipe? You will loose all progress by doing so.
         </p>
         </DialogBody>
         <DialogFooter>
