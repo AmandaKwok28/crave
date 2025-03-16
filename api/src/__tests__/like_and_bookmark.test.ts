@@ -2,7 +2,8 @@ import { test, expect, vi, describe, beforeEach } from 'vitest';
 import request from 'supertest';
 import { app } from '../index';
 import { hashPassword } from '../lib/password';
-import {prisma} from '../lib/__mocks__/prisma';
+import { prisma } from '../lib/__mocks__/prisma';
+import { Like } from '@prisma/client';
 
 vi.mock('../../prisma/db', async () => {
   return {
@@ -10,55 +11,63 @@ vi.mock('../../prisma/db', async () => {
   };
 });
 
-const exampleLike1 = {
-    id: 1,
-    recipeId: 1,
-    userId: '1abc',
-    date: new Date(),
+const exampleLike1: Like = {
+  id: 1,
+  recipeId: 1,
+  userId: '1abc',
+  date: new Date(),
 };
 
-
 const exampleUser1 = {
-    id: '1abc',
-    name: 'Example User 1',
-    email: 'example1@example.com',
-    school: 'Example University',
-    major: 'Example Major',
-    likes: [],
-    bookmarks: []
+  id: '1abc',
+  name: 'Example User 1',
+  email: 'example1@example.com',
+  school: 'Example University',
+  major: 'Example Major',
+  likes: [],
+  bookmarks: []
 };
 
 const exampleRecipe1 = {
-    id: 1,
-    published: true,
-    title: 'Example Recipe 1',
-    description: 'Description',
-    ingredients: [ '' ],
-    instructions: [ '' ],
-    likes: [],
-    bookmarks: [],
-    image: 'Image',
-    authorId: '1abc',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    viewCount: 0
+  id: 1,
+  published: true,
+  title: 'Example Recipe 1',
+  description: 'Description',
+  ingredients: [ '' ],
+  instructions: [ '' ],
+  likes: [],
+  bookmarks: [],
+  image: 'Image',
+  authorId: '1abc',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  viewCount: 0,
+
+  // Additional
+  mealTypes: [],
+  price: null,
+  cuisine: null,
+  allergens: [],
+  difficulty: null,
+  sources: [],
+  prepTime: null
 };
 
-const exampleLike2 = {
-    id: 2,
-    recipeId: 2,
-    userId: '2def',
-    date: new Date(),
+const exampleLike2: Like = {
+  id: 2,
+  recipeId: 2,
+  userId: '2def',
+  date: new Date(),
 };
 
 const exampleUser2 = {
-    id: '2def',
-    name: 'Example User 2',
-    email: 'example2@example.com',
-    school: 'Example University',
-    major: 'Example Major',
-    likes: [exampleLike2],
-    bookmarks: []
+  id: '2def',
+  name: 'Example User 2',
+  email: 'example2@example.com',
+  school: 'Example University',
+  major: 'Example Major',
+  likes: [exampleLike2],
+  bookmarks: []
 };
 
 
@@ -75,7 +84,16 @@ const exampleRecipe2 = {
     authorId: '1abc',
     createdAt: new Date(),
     updatedAt: new Date(),
-    viewCount: 0
+    viewCount: 0,
+
+    // Additional
+    mealTypes: [],
+    price: null,
+    cuisine: null,
+    allergens: [],
+    difficulty: null,
+    sources: [],
+    prepTime: null
 };
 
 describe('Create and delete like tests', () => {
@@ -88,7 +106,7 @@ describe('Create and delete like tests', () => {
 
         // adding recipe for testing
         prisma.recipe.create.mockResolvedValue({
-            ...exampleRecipe1,
+          ...exampleRecipe1
         });
 
         // adding like for testing
@@ -164,11 +182,7 @@ describe('fetch like tests for current user and recipes', () => {
         });
         
         // adding recipe for testing
-        prisma.recipe.create.mockResolvedValue({
-            ...exampleRecipe2,
-        });
-        // adding recipe for testing
-        prisma.recipe.create.mockResolvedValue({
+        prisma.recipe.findUnique.mockResolvedValue({
             ...exampleRecipe1,
         });
 
@@ -232,7 +246,7 @@ describe('fetch like tests for current user and recipes', () => {
         });
 
         const response = await request(app)
-            .get('/like/recipe/1')
+            .get('/recipe/1')
             .set('Cookie', [
                 'session=02'
             ])
@@ -240,11 +254,10 @@ describe('fetch like tests for current user and recipes', () => {
             recipeId: exampleRecipe1.id
         });
         
-        expect(response.body).toStrictEqual({
-            liked: false
+        expect(response.body).contains({
+          liked: false
         });
 
         expect(response.status).toBe(200);
     });  
-
 });
