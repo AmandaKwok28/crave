@@ -31,7 +31,8 @@ const exampleUser1 = {
   school: 'Example University',
   major: 'Example Major',
   likes: [],
-  bookmarks: []
+  bookmarks: [],
+  avatarImage: ''
 };
 
 const exampleRecipe1 = {
@@ -79,7 +80,8 @@ const exampleUser2 = {
   school: 'Example University',
   major: 'Example Major',
   likes: [exampleLike2],
-  bookmarks: [exampleBookmark1]
+  bookmarks: [exampleBookmark1],
+  avatarImage: ''
 };
 
 
@@ -114,8 +116,8 @@ describe('Create and delete like tests', () => {
     beforeEach(async () => {
         // adding user for testing
         prisma.user.findUnique.mockResolvedValue({
-        ...exampleUser1,
-        passwordHash: await hashPassword('password')
+          ...exampleUser1,
+          passwordHash: await hashPassword('password')
         });
 
         // adding recipe for testing
