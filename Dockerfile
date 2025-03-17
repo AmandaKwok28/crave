@@ -28,6 +28,22 @@ COPY api/scripts/requirements.txt ./scripts/
 RUN pip3 install --upgrade pip && \
     pip3 install --no-cache-dir -r scripts/requirements.txt
 
+
+# After installing Python requirements
+# Create model directory first
+WORKDIR /usr/src/app/api/scripts
+RUN mkdir -p model_cache
+
+# Copy only the download script first
+COPY api/scripts/download_model.py ./
+
+# Increase network timeouts and retry the model download
+RUN pip3 install --upgrade pip && \
+    pip3 install --no-cache-dir requests urllib3 && \
+    export HTTPS_PROXY_REQUEST_TIMEOUT=300 && \
+    export HUGGINGFACE_HUB_VERBOSITY=info && \
+    python3 download_model.py || python3 download_model.py || python3 download_model.py
+
 # handle frontend setup
 WORKDIR /usr/src/app/web
 COPY web/package.json web/pnpm-lock.yaml ./
@@ -36,7 +52,7 @@ RUN pnpm install
 # Copy all source code to the root working directory
 WORKDIR /usr/src/app
 COPY . .
-RUN cp .env.production .env
+RUN cp web/.env.production web/.env
 ENV NODE_ENV=production
 
 # Build the frontend

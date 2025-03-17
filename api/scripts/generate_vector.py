@@ -1,9 +1,9 @@
 import os
 import sys
 import json
+import time
 
-os.environ["DNNL_ENABLE_MAX_CPU_ISA"] = "0"
-os.environ["DNNL_VERBOSE"] = "0"
+
 
 try:
     # Parse the JSON batch input
@@ -16,7 +16,10 @@ try:
     os.makedirs(cache_dir, exist_ok=True)
     print(f"Using model cache at: {cache_dir}", file=sys.stderr)
 
-    model = SentenceTransformer('all-MiniLM-L6-v2', cache_folder=cache_dir) 
+
+    # model = SentenceTransformer('sentence-transformers/paraphrase-TinyBERT-L4-v2', cache_folder=cache_dir) 
+    model = SentenceTransformer('paraphrase-MiniLM-L3-v2', cache_folder=cache_dir) 
+    # model = SentenceTransformer('all-MiniLM-L6-v2', cache_folder=cache_dir) 
     # model = SentenceTransformers('all-mpnet-base-v2')  # More accurate, slower
 
     # Process all recipes in batch
