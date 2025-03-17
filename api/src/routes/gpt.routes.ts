@@ -20,7 +20,8 @@ router.post('/', async (req, res) => {
         3. **Difficulty Level**: Categorize the difficulty as **EASY, MEDIUM, or HARD** based on the complexity of preparation and number of steps.  
         4. **Prep Time**: Provide an estimated preparation time in minutes. Please give a slightly overestimated value to ensure there is enough time for preparation and cooking
         5. **Ingredients** Provide a list of 10 ingredients for this recipe in a CSV format. Include all the ingredients needed, but exclude quantities and measurements. List the ingredients in simple, concise terms. 
-        6. **General Tags**: Provide 5 relevant tags in CSV format that describe the dish (e.g., **spicy, vegetarian, one-pot, gluten-free**).  
+        6. **General Tags**: Provide 5 relevant tags in CSV format that describe the dish (e.g., **spicy, vegetarian, one-pot, gluten-free**). 
+        7. **Meal Type**: Based on the recipe, categorize the meal as one of the following types: Breakfast, Lunch, Dinner, Snack, Dessert, Brunch, Appetizer, or Side Dish. You can select multiple meal types if applicable, depending on when the recipe is typically consumed.
 
         ### **Example Response Format (JSON)**  
         Provide the results in JSON format. Do not include introductory or closing remarks. Here is an example.
@@ -28,9 +29,10 @@ router.post('/', async (req, res) => {
         "price": "$$",
         "cuisine": "THAI",
         "difficulty": "MEDIUM",
-        "prepTime": 60
-        "ingredients": ["Coconut milk", "Chicken breasts", "Thai red curry paste", "Basil leaves", "Fish sauce", "Palm sugar", "Kaffir lime leaves", "Bamboo shoots", "Thai eggplant", "Jasmine rice"]
-        "tags": ["spicy", "coconut", "chicken", "curry", "dairy-free"]
+        "prepTime": 60,
+        "ingredients": ["Coconut milk", "Chicken breasts", "Thai red curry paste", "Basil leaves", "Fish sauce", "Palm sugar", "Kaffir lime leaves", "Bamboo shoots", "Thai eggplant", "Jasmine rice"],
+        "tags": ["spicy", "coconut", "chicken", "curry", "dairy-free"],
+        "mealTypes": ["snack", "lunch", "breakfast"]
         }
         `
         const response = await fetch('https://api.openai.com/v1/chat/completions', {

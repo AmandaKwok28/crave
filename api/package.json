@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "build": "tsc && npm run copy-assets",
     "copy-assets": "copyfiles -u 0 \"scripts/**/*\" dist/",
     "start": "node dist/src/index.js",
@@ -17,12 +17,11 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "4.21.2",
-    "i": "^0.3.7",
     "node-cron": "^3.0.3",
-    "npm": "^11.1.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.6.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "5.0.0",
@@ -33,13 +32,13 @@
     "prisma": "6.5.0",
     "prisma-mock-vitest": "^0.1.6",
     "supertest": "^7.0.0",
-    "ts-node": "10.9.2",
+    "tsx": "^4.19.3",
     "typescript": "5.7.3",
     "vitest": "^3.0.7",
     "vitest-mock-extended": "^3.0.1"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts"
   },
   "packageManager": "pnpm@9.2.0+sha512.98a80fd11c2e7096747762304106432b3ddc67dcf54b5a8c01c93f68a2cd5e05e6821849522a06fb76284d41a2660d5e334f2ee3bbf29183bf2e739b1dafa771"
 }

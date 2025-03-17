@@ -1,11 +1,48 @@
 import { RecipeType } from "@/data/types";
 import { $router } from "@/lib/router";
-import { Card, Button, Image, Text, Tag, Box } from "@chakra-ui/react";
+import { Card, Button, Image, Text, Tag, Box, HStack } from "@chakra-ui/react";
 import { redirectPage } from "@nanostores/router";
 import { Avatar, AvatarGroup } from "@chakra-ui/react"
-
+import { Bookmark, Heart } from "lucide-react";
+import { bookmarkRecipe, likeRecipe, unbookmarkRecipe, unlikeRecipe } from "@/data/api";
+import useQueryRecipes from "@/hooks/use-query-recipes";
 
 const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
+  // Whatever makes sense
+  const { loadRecipes } = useQueryRecipes();
+
+  const likeCallback = () => {
+    if (!recipe) {
+      return;
+    }
+
+    if (recipe.liked) {
+      unlikeRecipe(recipe.id)
+        .then(() => loadRecipes())
+        .catch(console.error);
+    } else {
+      likeRecipe(recipe.id)
+        .then(() => loadRecipes())
+        .catch(console.error);
+    }
+  }
+
+  const bookmarkCallback = () => {
+    if (!recipe) {
+      return;
+    }
+
+    if (recipe.bookmarked) {
+      unbookmarkRecipe(recipe.id)
+        .then(() => loadRecipes())
+        .catch(console.error);
+    } else {
+      bookmarkRecipe(recipe.id)
+        .then(() => loadRecipes())
+        .catch(console.error);
+    }
+  }
+
   const handleSeeMore = () => {
     const id = recipe.id;
 
@@ -29,7 +66,7 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
   return (
     <Card.Root width="370px" maxH="500px" overflow="hidden" borderRadius="20px">
         <Image 
-        src={"/fallback.png"}
+        src={recipe.image ? recipe.image : '/fallback.png'}
         alt="Default Recipe Image" 
         maxW="100vw" 
         height="25vh" 
@@ -37,20 +74,21 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
         />
       <Card.Body gap="2">
         <Card.Title>
-            <Text textStyle="xl" fontWeight="medium" letterSpacing="tight"> 
-                {recipe.title}
-            </Text>
+          <Text textStyle="xl" fontWeight="medium" letterSpacing="tight"> 
+            {recipe.title}
+          </Text>
         </Card.Title>
-        <Card.Description>
+        <Box display="flex" alignItems="center" gap="2">
           <AvatarGroup>
             <Avatar.Root size="xs" variant="subtle">
               <Avatar.Fallback name={`${recipe.author ? recipe.author.name : 'You'}`} />
               <Avatar.Image />
             </Avatar.Root>
           </AvatarGroup>
-            {recipe.author ? `${recipe.author.name}` : "You"}
-        </Card.Description>
-        <Card.Description>
+          <Text>{recipe.author ? `${recipe.author.name}` : "You"}</Text>
+        </Box>
+
+        <Box>
             <Text lineClamp="3">
             {recipe.description}
             </Text>
@@ -81,14 +119,34 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
                 )}
             </Box>
         
-        </Card.Description>
+        </Box>
       </Card.Body>
       <Card.Footer>
-        <Button 
-          variant="ghost" 
-          onClick={handleSeeMore}>
-          See More
-        </Button>
+        <HStack justify='space-between' alignItems='center' w='full'>
+          <Button 
+            variant="ghost" 
+            onClick={handleSeeMore}>
+            See More
+          </Button>
+
+          <HStack>
+            <Button
+              variant='ghost'
+              color={recipe.liked ? 'red.400' : 'gray.600'}
+              onClick={likeCallback}
+            >
+              {recipe.likes} <Heart />
+            </Button>
+
+            <Button
+              variant='ghost'
+              color={recipe.bookmarked ? 'blue.400' : 'gray.600'}
+              onClick={bookmarkCallback}
+            >
+              <Bookmark />
+            </Button>
+          </HStack>
+        </HStack>
       </Card.Footer>
     </Card.Root>
   );

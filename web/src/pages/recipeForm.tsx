@@ -7,16 +7,16 @@ import { InputGroup } from "@/components/ui/input-group";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import { $router } from "@/lib/router";
 import { Button, ButtonGroup, Flex, IconButton, Input, Text, Textarea, Image, VStack, RadioGroup, Spinner } from "@chakra-ui/react";
-import {
-  FileUploadList,
-  FileUploadRoot,
-  FileUploadTrigger,
-} from "@/components/ui/file-upload"
+// import {
+//   FileUploadList,
+//   FileUploadRoot,
+//   FileUploadTrigger,
+// } from "@/components/ui/file-upload"
 import { redirectPage } from "@nanostores/router";
 import { Trash } from "lucide-react";
-import { useEffect, useState } from "react";
-import { HiUpload } from "react-icons/hi";
-import { FileAcceptDetails } from "node_modules/@chakra-ui/react/dist/types/components/file-upload/namespace";
+import { KeyboardEvent, useEffect, useState } from "react";
+// import { HiUpload } from "react-icons/hi";
+// import { FileAcceptDetails } from "node_modules/@chakra-ui/react/dist/types/components/file-upload/namespace";
 import { Cuisine, Difficulty, Price } from "@/data/types";
 import TagInput from "@/components/recipie/tagInput";
 import { Separator } from '@chakra-ui/react'
@@ -45,10 +45,13 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
   const [ sources, setSources ] = useState<string[]>([]);
   const [ currIndex, setCurrindex ] = useState<number>(0);
   const [ empty, setEmpty ] = useState<boolean>(false);
-  const [ img, setImage ] = useState<string>("img_placeholder.jpg");
+  const [ img, setImage ] = useState<string>("/img_placeholder.jpg");
   const [ showAdditionalInfo, setShowAdditionalInfo] = useState<boolean>(false);
   const [ loading, setLoading ] = useState<boolean>(false);
   const [ editableAllergen, setEditable] = useState<string[]>([]);
+  const [ url, setUrl ] = useState<string>('');
+  const [ mealType, setMealType ] = useState<string[]>([]);  
+
   const allergyTable = useStore($allergenTable);
 
   const allergyList = allergyTable.map(allergen => allergen.name);
@@ -96,13 +99,13 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
     }
   }
 
-  const handleImageFile = (e: FileAcceptDetails) => {
-    if (e.files.length > 0) {
-      const file = e.files[0];
-      const imageUrl = URL.createObjectURL(file); // Generate temporary URL
-      setImage(imageUrl); // Store the image URL in state
-    }
-  }
+  // const handleImageFile = (e: FileAcceptDetails) => {
+  //   if (e.files.length > 0) {
+  //     const file = e.files[0];
+  //     const imageUrl = URL.createObjectURL(file); // Generate temporary URL
+  //     setImage(imageUrl); // Store the image URL in state
+  //   }
+  // }
 
   // tag input logic
   let priceValue = "CHEAP";
@@ -150,13 +153,14 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
     setLoading(true);
     try {
       const response = await fetchTags(title, description, instructions);
-      const { cuisine: gptCuisine, difficulty: gptDifficulty, prepTime: gptPrepTime, price: gptPrice, ingredients: gptIngredients } = response.response;
+      const { cuisine: gptCuisine, difficulty: gptDifficulty, prepTime: gptPrepTime, price: gptPrice, ingredients: gptIngredients, mealTypes: gptMealTypes } = response.response;
 
       gptCuisine && setCuisine(gptCuisine);
       gptDifficulty && setDiff(gptDifficulty);
       gptPrepTime && setCookTime(gptPrepTime.toString());
       gptPrice && setSelectedPrice(gptPrice);
       gptIngredients && setIngredients(gptIngredients);
+      gptMealTypes && setMealType(gptMealTypes)
       matchAllergens(allergyList, gptIngredients);          // match allergies to ingredients list
 
       setTimeout(() => {
@@ -183,6 +187,12 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
       setAllergens(matchedAllergens); // Update state with matched allergens
   };
 
+  const handleImageFile = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setImage(url);
+      setUrl(url);
+    }
+  }
 
   return (
     <Flex gap='4' flexDir='column' minW='100vw' align='center' justify='center'>
@@ -202,14 +212,25 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
             {/* Image Upload */}
             <Image rounded="md" src={img} w="30vw"/>
 
-            <FileUploadRoot accept={["image/png"]} onFileAccept={handleImageFile}>
+            {/* <FileUploadRoot accept={["image/png"]} onFileAccept={handleImageFile}>
               <FileUploadTrigger asChild>
                 <Button variant="outline" size="sm">
                   <HiUpload /> Upload file
                 </Button>
               </FileUploadTrigger>
               <FileUploadList />
-            </FileUploadRoot>
+            </FileUploadRoot> */}
+            <Field label="Image Url">
+              <Input
+                bg="white"
+                color="black"
+                placeholder="Enter an image url"
+                onKeyDown={(e) => handleImageFile(e)}
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              >
+              </Input>
+            </Field>
 
             {/* Ingredients */}
             {showAdditionalInfo && <Field label='Ingredients' required>
@@ -356,7 +377,18 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
                     width="20rem"
                     tags={sources} 
                     setTags={setSources}/>
+
+                  {/* Meal Type */}
+                  <TagInput 
+                      title="Meal Type"
+                      placeholder="Snack, Lunch, Dinner"
+                      width="20rem"
+                      tags={mealType}
+                      setTags={setMealType}
+                    />
                 </Flex>
+
+                    
                 
                 {/* Difficulty & Cuisine */}
                 <Flex direction="row" mt="2">      
@@ -426,28 +458,32 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
             {showAdditionalInfo && <DraftButton
               title={title}
               description={description}
-              ingredients={ingredients}
+              ingredients={ingredients.map((item) => item.toLowerCase())}
               instructions={instructions}
               price={Price[priceValue as keyof typeof Price]}
               prepTime={Number(cookTime)}
               cuisine={Cuisine[cuisine as keyof typeof Cuisine]}
               difficulty={Difficulty[diff as keyof typeof Difficulty]}
-              allergens={allergens}
-              sources={sources}
+              allergens={allergens.map((item) => item.toLowerCase())}
+              sources={sources.map((item) => item.toLowerCase())}
+              mealTypes={mealType.map((item) => item.toLowerCase())}
+              image={url}
             />}
 
             {showAdditionalInfo && <PublishRecipeButton
               title={title}
               description={description}
-              ingredients={ingredients}
+              ingredients={ingredients.map((ing) => ing.toLowerCase())}
               instructions={instructions}
               draft_id={draft?.id}
               price={Price[priceValue as keyof typeof Price]}
               prepTime={Number(cookTime)}
               cuisine={Cuisine[cuisine as keyof typeof Cuisine]}
               difficulty={Difficulty[diff as keyof typeof Difficulty]}
-              allergens={allergens}
-              sources={sources}
+              allergens={allergens.map((item) => item.toLowerCase())}
+              sources={sources.map((item) => item.toLowerCase())}
+              image={url}
+              mealTypes={mealType.map((item) => item.toLowerCase())}
             />}
           </ButtonGroup>
       </Flex>

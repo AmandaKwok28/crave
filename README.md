@@ -17,16 +17,21 @@ Next, clone the repository and navigate to the `web/` folder and run `pnpm insta
 
 Then, navigate to the `api/` folder and run `pnpm install`
 
-For a database, you can either use a local PostgreSQL instance, or you can create an external one with [prisma](https://console.prisma.io/cm76k5lgv04fom2dzj2ohv0rm/overview). Either way, you'll have a database URL you should save in a `.env` file within the `api/` directory with the following schema:
+For a database, you can either use a local PostgreSQL instance, or you can create an external one with [prisma](https://console.prisma.io/cm76k5lgv04fom2dzj2ohv0rm/overview). Either way, you'll have a database URL you should save in a `.env` file. 
+
+Furthermore, you need to provide your own OpenAI API key to use our AI-powered features. If you don’t have one, you can get it from OpenAI's API key page. If you're testing the app without using AI features, you can leave OPEN_AI_KEY empty or use a placeholder value.
+
+Within the `api/` directory, save a `.env` file with the following schema:
 
 ```json
 DATABASE_URL=<YOUR_URL_HERE>
+OPEN_AI_KEY=<YOUR_OPENAI_API_KEY_HERE>
 ```
 
 ## Developing
 
 Starting from the root folder, you can run these commands:
- 
+
 ```bash
 cd ./api
 pnpm install
@@ -43,15 +48,61 @@ Additionally, in the api folder, create a .env file with the following:
 
 ```DATABASE_URL=<database_api_url>```
 
+## Seeding
+
+WARNING: if you seed the database it will remove all current users to avoid unique email conflicts. If you don't want to get rid of the current database values don't
+run the seed comand.
+
+from the api folder after setting up the development backend you can run this command to seed the database with some test data
+
+
+```bash
+pnpm prisma db seed
+```
+
+There are 10 recipes to start with in the seed data. 2 categories of 5 recipies where within each category recipes are increasingly less similar.
+
+## Testing
+
+Normally, testing is ran automatically on any pull request to `dev` or `master`. For the time being, this functionality is restricted and testing must be done locally.
+
+### Backend Testing
+
+Backend tests are run using [Vitest](https://vitest.dev/). Simply navigate to the `api/` directory and (assuming all development prerequisites are currently installed) run the following:
+
+```bash
+pnpm test
+```
+
+Adding additional backend tests is extremely easy. Simply create a new file in the `api/src/__tests__/` directory that ends in `.test.ts` and it will automatically be detected by Vitest. At the top of the file, make sure you copy the Mock Prisma client initialization code:
+
+```typescript
+vi.mock('../../prisma/db', async () => {
+  return {
+    ...await vi.importActual<typeof import('../lib/__mocks__/prisma')>('../lib/__mocks__/prisma')
+  };
+});
+```
+
+Otherwise, tests can be written according to Vitest docs.
+
+### Frontend & E2E Testing
+
+Frontend & E2E tests are run using [Cypress](https://www.cypress.io/). First, both the backend and frontend servers must be running (refer back to `## Developing`). Then, simply navigate to the `web/` directory and (assuming all development prerequisites are currently installed) run the following:
+
+```bash
+pnpm test
+```
+
+Adding additional frontend & E2E tests is also easy. Navigate to the `web/cypress/e2e/` directory and create a file ending in `.cy.js`. From there, tests can be constructed according to Cypress docs. Some global Cypress helper functions are provided and documented in the `web/cypress/support/commands.ts` file.
+
 ## Deployment
 
-To build a release version of the frontend, run ```pnpm build``` within the `web/` directory.
+To build a release version of the frontend, run ```pnpm build``` within the `web/` directory, and then run `pnpm preview` to check out the build before deployment.
 
-frontend deployment:
-https://crave-v3pt.onrender.com
+frontend deployment: <https://crave-v3pt.onrender.com>
 
-backend deployment:
-https://team-05-db.onrender.com
+backend deployment: <https://team-05-db.onrender.com>
 
 ## Contributing
 

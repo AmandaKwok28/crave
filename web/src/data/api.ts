@@ -3,7 +3,9 @@ import { API_URL } from "@/env";
 
 // Fetch all users
 export const fetchUsers = async (): Promise<UserType[]> => {
-  const response = await fetch(`${API_URL}/users`);
+  const response = await fetch(`${API_URL}/users`, {
+    credentials: 'include'
+  });
   if (!response.ok) {
     throw new Error(`API request failed! with status: ${response.status}`);
   }
@@ -55,7 +57,9 @@ export const fetchRecipes = async (
   }
 
   const queryString = filterParams.length > 0 ? `?${filterParams.join("&")}` : '';
-  const response = await fetch(`${API_URL}/feed${queryString}`);
+  const response = await fetch(`${API_URL}/feed${queryString}`, {
+    credentials: 'include'
+  });
   
   if (!response.ok) {
     throw new Error(`API request failed! with status: ${response.status}`);
@@ -205,12 +209,14 @@ export const createRecipe = async (
   allergens: string[],
   difficulty: Difficulty,
   sources: string[],
-  prepTime: number
+  prepTime: number,
+  image?: string
 ): Promise<RecipeType> => {
 
     const response = await fetch(`${API_URL}/recipe`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: 'include',
       body: JSON.stringify({
         title,
         ingredients,
@@ -224,6 +230,7 @@ export const createRecipe = async (
         difficulty,
         sources,
         prepTime,
+        image
       }),
     });
     console.log(response)
@@ -248,7 +255,8 @@ export const patchRecipe = async (
   allergens: string[],
   difficulty: Difficulty,
   sources: string[],
-  prepTime: number
+  prepTime: number,
+  image?: string
 ): Promise<RecipeType> => {
     const response = await fetch(`${API_URL}/recipe/${id}`, {
       method: "PATCH",
@@ -267,6 +275,7 @@ export const patchRecipe = async (
         difficulty,
         sources,
         prepTime,
+        image
       }),
     });
     if (!response.ok) {
@@ -307,7 +316,9 @@ export const login = async ( email: string, password: string ): Promise<UserType
 
 // get the allergens
 export const fetchAllergen = async () => {
-  const res = await fetch(`${API_URL}/allergens`);
+  const res = await fetch(`${API_URL}/allergens`, {
+    credentials: 'include'
+  });
   if (!res.ok) {
     throw new Error(`API request failed! with status: ${res.status}`);
   }
@@ -319,6 +330,7 @@ export const fetchAllergen = async () => {
 export const fetchTags = async (title: string, description: string, instructions: string[]): Promise<TagsResponse> => {
   const response = await fetch(`${API_URL}/gpt`, {
     method: "POST",
+    credentials: 'include',
     headers: {
       "Content-Type": "application/json",
     },
@@ -340,7 +352,9 @@ export const fetchTags = async (title: string, description: string, instructions
 
 // Fetch similar recipes for a recipe
 export const fetchSimilarRecipes = async (recipeId: number, limit: number = 3): Promise<RecipeType[]> => {
-  const res = await fetch(`${API_URL}/recipe/${recipeId}/similar?limit=${limit}`);
+  const res = await fetch(`${API_URL}/recipe/${recipeId}/similar?limit=${limit}`, {
+    credentials: 'include'
+  });
   
   if (!res.ok) {
     throw new Error(`API request failed! with status: ${res.status}`);
@@ -349,3 +363,27 @@ export const fetchSimilarRecipes = async (recipeId: number, limit: number = 3): 
   const data: RecipeType[] = await res.json();
   return data;
 };
+
+
+// update the avatar url
+export const editAvatarUrl = async (email: string, url: string): Promise<UserType> => {
+  const res = await fetch(`${API_URL}/user/avatar`, {
+    method: 'PATCH',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email,
+      url,
+    })
+  });
+
+  if (!res.ok) {
+    throw new Error(`API request failed! with status: ${res.status}`);
+  }
+
+  const user: UserType = await res.json();
+  return user;
+
+}

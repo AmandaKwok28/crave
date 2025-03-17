@@ -32,6 +32,7 @@ type PublishRecipeProps = {
     difficulty: Difficulty,
     sources?: string[],
     prepTime: number,
+    image?: string
 }
 
 const PublishRecipeButton = ({ 
@@ -46,7 +47,8 @@ const PublishRecipeButton = ({
     allergens,
     difficulty,
     sources,
-    prepTime 
+    prepTime,
+    image, 
 }: PublishRecipeProps ) => {
     const { user } = useAuth();
     const { addNewRecipe, editRecipe } = useMutationRecipes();
@@ -86,7 +88,8 @@ const PublishRecipeButton = ({
                 allergens,
                 difficulty,
                 sources ? sources : [],
-                prepTime
+                prepTime,
+                image 
             );
             await publishRecipe(id);    
             redirectPage($router, `recipe`, { recipe_id: id });

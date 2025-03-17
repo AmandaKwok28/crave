@@ -43,6 +43,7 @@ router.post('/', async (req, res) => {
 
     res.json(recipe);
   } catch(error) {
+    console.log(error);
     res.status(500).json({
       message: 'An unknown error occurred'
     })
@@ -77,7 +78,7 @@ router.patch('/:id/', authGuard, async (req, res) => {
     return;
   }
 
-  if (validate.authorId !== res.locals.user.id) {
+  if (validate.authorId !== res.locals.user!.id) {
     res.status(401).json({
       message: 'Unauthorized'
     });
@@ -171,6 +172,14 @@ router.put('/:id/publish', async (req, res) => {
 // Delete recipe
 router.delete('/:recipe_id', async (req, res) => {
   const { recipe_id } = req.params;
+
+  if (!res.locals.user) {
+    res.status(500).json({
+      message: 'Error deleting recipe'
+    });
+    
+    return;
+  }
 
   try {
     const recipe = await prisma.recipe.delete({
