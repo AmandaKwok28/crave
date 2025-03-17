@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
-    "outDir": "dist",
-    "strict": true,
-    "lib": ["esnext"],
-    "esModuleInterop": true
+    "target": "ESNext",
+    "module": "NodeNext",
+    "strict": false,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "types": [ "node" ],
+    "outDir": "dist"
   }
 }

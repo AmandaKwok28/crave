@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { processUnvectorizedRecipes } from './background-vector-update';
+import { processUnvectorizedRecipes } from './background-vector-update.js';
 
 export function startBackgroundJobs() {
   // Run every 5 min to check for unvectorized recipes

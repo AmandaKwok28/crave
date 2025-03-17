@@ -1,13 +1,13 @@
 import { test, expect, vi, describe, beforeEach } from 'vitest';
 import request from 'supertest';
-import { app } from '../index';
-import { hashPassword } from '../lib/password';
-import { prisma } from '../lib/__mocks__/prisma';
-import { Bookmark, Like } from '@prisma/client';
+import { app } from '../index.js';
+import { hashPassword } from '../lib/password.js';
+import { prisma } from '../lib/__mocks__/prisma.js';
+import type { Bookmark, Like } from '@prisma/client';
 
 vi.mock('../../prisma/db', async () => {
   return {
-    ...await vi.importActual<typeof import('../lib/__mocks__/prisma')>('../lib/__mocks__/prisma')
+    ...await vi.importActual<typeof import('../lib/__mocks__/prisma.js')>('../lib/__mocks__/prisma.js')
   };
 });
 
@@ -190,29 +190,22 @@ describe('fetch like tests for current user and recipes', () => {
     beforeEach(async () => {
         // adding users for testing
         prisma.user.findUnique.mockResolvedValue({
-        ...exampleUser2,
-        passwordHash: await hashPassword('password')
+          ...exampleUser2,
+          passwordHash: await hashPassword('password')
         });
+
         prisma.user.findUnique.mockResolvedValue({
           ...exampleUser1,
           passwordHash: await hashPassword('password')
         });
         
         // adding recipes for testing
-        prisma.recipe.findUnique.mockResolvedValue({
-            ...exampleRecipe1,
-        });
-        prisma.recipe.findUnique.mockResolvedValue({
-          ...exampleRecipe2,
-      });
+        prisma.recipe.findUnique.mockResolvedValue(exampleRecipe1);
+        prisma.recipe.findUnique.mockResolvedValue(exampleRecipe2);
 
         // adding likes for testing
-        prisma.like.findUnique.mockResolvedValue({
-            ...exampleLike1
-        }); 
-        prisma.like.findUnique.mockResolvedValue({
-          ...exampleLike2
-      }); 
+        prisma.like.findUnique.mockResolvedValue(exampleLike1); 
+        prisma.like.findUnique.mockResolvedValue(exampleLike2); 
     }); 
 
     test('Checking get all likes for a given user when they do have likes', async () => {
@@ -326,19 +319,15 @@ describe('Create and delete bookmark tests', () => {
   beforeEach(async () => {
       // adding user for testing
       prisma.user.findUnique.mockResolvedValue({
-      ...exampleUser2,
-      passwordHash: await hashPassword('password')
+        ...exampleUser2,
+        passwordHash: await hashPassword('password')
       });
 
       // adding recipe for testing
-      prisma.recipe.findUnique.mockResolvedValue({
-        ...exampleRecipe2
-      });
+      prisma.recipe.findUnique.mockResolvedValue(exampleRecipe2);
 
       // adding bookmark for testing
-      prisma.bookmark.findUnique.mockResolvedValue({
-          ...exampleBookmark1
-      }); 
+      prisma.bookmark.findUnique.mockResolvedValue(exampleBookmark1); 
   });
 
   test('Adding a bookmark to a recipe for a user', async () => {

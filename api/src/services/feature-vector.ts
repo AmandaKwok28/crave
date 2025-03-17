@@ -1,4 +1,4 @@
-import { prisma } from '../../prisma/db';
+import { prisma } from '../../prisma/db.js';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';

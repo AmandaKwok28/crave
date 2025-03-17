@@ -1,16 +1,16 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import { auth } from './middleware/auth';
-import auth_route from './routes/auth';
-import recipeRoutes from './routes/recipe.routes'
-import userRoutes from './routes/user.routes'
-import feedRoutes from './routes/feed.routes'
-import likeRoutes from './routes/like.routes';
-import bookmarkRoutes from './routes/bookmark.routes';
-import gptRoutes from './routes/gpt.routes';
-import allergen_route from './routes/allergens';
-import { startBackgroundJobs } from './services/scheduler';
+import { auth } from './middleware/auth.js';
+import auth_route from './routes/auth.js';
+import recipeRoutes from './routes/recipe.routes.js'
+import userRoutes from './routes/user.routes.js'
+import feedRoutes from './routes/feed.routes.js'
+import likeRoutes from './routes/like.routes.js';
+import bookmarkRoutes from './routes/bookmark.routes.js';
+import gptRoutes from './routes/gpt.routes.js';
+import allergen_route from './routes/allergens.js';
+import { startBackgroundJobs } from './services/scheduler.js';
 
 export const app = express();
 

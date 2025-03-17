@@ -3,8 +3,8 @@
 import type { User, Session } from "@prisma/client";
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
 import { sha256 } from '@oslojs/crypto/sha2';
-import { prisma } from "../../prisma/db";
-import { Response } from "express";
+import { prisma } from "../../prisma/db.js";
+import type { Response } from "express";
 
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20);

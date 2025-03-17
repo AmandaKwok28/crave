@@ -1,6 +1,6 @@
-import { prisma } from '../../prisma/db';
-import { generateBatchFeatureVectors } from './feature-vector';
-import { batchProcessRecipeSimilarities } from './recipe-similarity';
+import { prisma } from '../../prisma/db.js';
+import { generateBatchFeatureVectors } from './feature-vector.js';
+import { batchProcessRecipeSimilarities } from './recipe-similarity.js';
 
 export async function processUnvectorizedRecipes(batchSize = 10, maxSimilarities = 10) {
   console.log('Starting vector generation for recipes without vectors');
