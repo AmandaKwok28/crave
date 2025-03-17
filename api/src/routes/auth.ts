@@ -1,10 +1,10 @@
 import express from 'express'
 import { z } from 'zod';
-import { hashPassword, verifyPassword } from '../lib/password';
-import { prisma } from '../../prisma/db';
-import { createSession, deleteSessionTokenCookie, generateSessionToken, setSessionTokenCookie, validateSessionToken } from '../lib/session';
-import { authGuard } from '../middleware/auth';
-import { User } from '@prisma/client';
+import { hashPassword, verifyPassword } from '../lib/password.js';
+import { prisma } from '../../prisma/db.js';
+import { createSession, deleteSessionTokenCookie, generateSessionToken, setSessionTokenCookie, validateSessionToken } from '../lib/session.js';
+import { authGuard } from '../middleware/auth.js';
+import type { User } from '@prisma/client';
 
 const auth_route = express.Router();
 

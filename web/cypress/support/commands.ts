@@ -38,7 +38,9 @@
 
 // Resets DB and sessions (run before each test)
 Cypress.Commands.add('reset_db', () => {
+  // @ts-expect-error Process is in the node std
   if (process.env.DATABASE_URL) {
+    // @ts-expect-error Process is in the node std
     cy.exec(`cd ../api && export DATABASE_URL="${process.env.DATABASE_URL}" && pnpm prisma migrate reset --force --skip-seed`);
   } else {
     cy.exec('cd ../api && pnpm prisma migrate reset --force --skip-seed');

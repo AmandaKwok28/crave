@@ -1,12 +1,12 @@
 import { test, expect, vi, describe, beforeEach } from 'vitest';
 import request from 'supertest';
-import { app } from '../index';
-import { prisma } from '../lib/__mocks__/prisma';
-import { Like } from '@prisma/client';
+import { app } from '../index.js';
+import { prisma } from '../lib/__mocks__/prisma.js';
+import type { Like } from '@prisma/client';
 
 vi.mock('../../prisma/db', async () => {
   return {
-    ...await vi.importActual<typeof import('../lib/__mocks__/prisma')>('../lib/__mocks__/prisma')
+    ...await vi.importActual<typeof import('../lib/__mocks__/prisma.js')>('../lib/__mocks__/prisma.js')
   };
 });
 

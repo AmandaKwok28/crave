@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { prisma } from '../../prisma/db';
-import { authGuard } from '../middleware/auth';
+import { prisma } from '../../prisma/db.js';
+import { authGuard } from '../middleware/auth.js';
 import { z } from 'zod';
 
 const router = Router();
@@ -77,6 +77,7 @@ router.patch('/avatar', async (req, res) => {
   try {
     const updatedUser = await prisma.user.update({
       where: { email: data.email },
+      // @ts-ignore
       data: { avatarImage: data.url },  // update the avatarImage URL
     });
     res.status(200).json(updatedUser);

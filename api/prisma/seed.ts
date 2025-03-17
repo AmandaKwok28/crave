@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
-import { hashPassword } from '../src/lib/password';
-import testRecipesTextData from '../src/seed_helpers/generate_recipe_data';
+import { hashPassword } from '../src/lib/password.js';
+import testRecipesTextData from '../src/seed_helpers/generate_recipe_data.js';
 
 const prisma = new PrismaClient()
 
