@@ -102,6 +102,18 @@ Public Frontend deployment: <https://crave-v3pt.onrender.com>
 
 Public Backend deployment: <https://team-05-db.onrender.com>
 
+## Deployment
+
+To build a docker image for deployment, run ```docker build --platform linux/amd64 -t <image_name> .``` at the root directory.
+To deploy, push the docker image to docker hub, ssh to the gcp-vm and pull it down, run:
+
+```sudo docker run -d -p 3000:3000 --name <container_name> <repository>/<image_name>:<tag>``` 
+
+e.g. : ```sudo docker run -d -p 3000:3000 --name Crave-container lllllaplus/team05-app_amd64:latest```
+
+And the app will be deployed at <https://team05.zapto.org/>.
+
+
 ## Contributing
 
 Refer to the [Contributing Guidelines](./CONTRIBUTING.md) for information on how to contribute to the project.
