@@ -104,6 +104,10 @@ frontend deployment: <https://crave-v3pt.onrender.com>
 
 backend deployment: <https://team-05-db.onrender.com>
 
+## Deployment
+
+To build a docker image for deployment, run ```docker build --platform linux/amd64 -t <image name> .```
+
 ## Contributing
 
 Refer to the [Contributing Guidelines](./CONTRIBUTING.md) for information on how to contribute to the project.
