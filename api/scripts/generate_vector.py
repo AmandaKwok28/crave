@@ -6,9 +6,12 @@ import time
 
 
 try:
-    # Parse the JSON batch input
-    recipes_json = sys.argv[1]
-    recipes = json.loads(recipes_json)
+    # Get the file path from command line argument
+    json_file_path = sys.argv[1]
+    
+    # Read the JSON data from the file
+    with open(json_file_path, 'r') as file:
+        recipes = json.load(file)
 
     # Import and initialize the model only once
     from sentence_transformers import SentenceTransformer

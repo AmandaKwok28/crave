@@ -2,10 +2,14 @@ import { prisma } from '../../prisma/db';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
+import fs from 'fs';
+import os from 'os';
 
 const execAsync = promisify(exec);
 
 export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<Map<number, number[]>> {
+  let tempFile = '';
+  
   try {
     // Fetch all recipes in one database query
     const recipes = await prisma.recipe.findMany({
@@ -24,16 +28,16 @@ export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<
     if (recipes.length === 0) {
       throw new Error(`No recipes found with the provided IDs`);
     }
-
-    // Build a map of id -> recipe for later reference
-    const recipeMap = new Map(recipes.map(r => [r.id, r]));
     
-    // Create batch payload
-    const batchData = JSON.stringify(recipes);
+    // Remove 'const' to update the outer variable instead of creating a new one
+    tempFile = path.join(os.tmpdir(), `recipes_${Date.now()}.json`);
+    fs.writeFileSync(tempFile, JSON.stringify(recipes), 'utf8');
+    console.log(`Wrote recipe data to temporary file: ${tempFile}`);
+    
     const scriptPath = path.join(__dirname, '../../scripts/generate_vector.py');
     
     // Run the Python script with the batch of recipes
-    const { stdout, stderr } = await execAsync(`python3 ${scriptPath} '${batchData}'`);
+    const { stdout, stderr } = await execAsync(`python3 ${scriptPath} "${tempFile}"`);
     
     if (stderr) {
       console.log('Python:', stderr);
@@ -62,6 +66,16 @@ export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<
   } catch (error) {
     console.error('Error generating batch feature vectors:', error);
     throw error;
+  } finally {
+    // Clean up the temporary file
+    if (tempFile) {
+      try {
+        fs.unlinkSync(tempFile);
+        console.log(`Cleaned up temporary file: ${tempFile}`);
+      } catch (cleanupErr) {
+        console.warn(`Could not delete temporary file ${tempFile}:`, cleanupErr);
+      }
+    }
   }
 }
 

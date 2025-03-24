@@ -1,9 +1,9 @@
 import cron from 'node-cron';
-import { processUnvectorizedRecipes } from './background-vector-update';
+import { processUnvectorizedRecipes } from './background-vector-update.js';
 
 export function startBackgroundJobs() {
   // Run every 10 min to check for unvectorized recipes
-  cron.schedule('*/10 * * * *', async () => {
+  cron.schedule('*/30 * * * *', async () => {
     try {
       await processUnvectorizedRecipes(50, 10); // 50 recipes at a time, 10 similarities kept for each recipe
     } catch (error) {
