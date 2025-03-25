@@ -63,8 +63,12 @@ RUN pnpm build
 WORKDIR /usr/src/app/api
 RUN pnpm build
 
+# Copy start script to api directory and make it executable
+COPY api/scripts/start.sh ./start.sh
+RUN chmod +x ./start.sh
+
 # Expose backend port
 EXPOSE 3000
 
 WORKDIR /usr/src/app/api
-CMD ["pnpm", "start"]
+CMD ["./start.sh"]
