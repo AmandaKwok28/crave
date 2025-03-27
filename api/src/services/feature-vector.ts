@@ -4,6 +4,7 @@ import { promisify } from 'util';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
+import { fileURLToPath } from 'url';
 
 const execAsync = promisify(exec);
 
@@ -34,6 +35,9 @@ export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<
     fs.writeFileSync(tempFile, JSON.stringify(recipes), 'utf8');
     console.log(`Wrote recipe data to temporary file: ${tempFile}`);
     
+    // Define __dirname for ES module
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
     const scriptPath = path.join(__dirname, '../../scripts/generate_vector.py');
     
     // Run the Python script with the batch of recipes
