@@ -1,8 +1,7 @@
 import express from 'express'
+import { prisma } from '../../prisma/db.js';
 
 const allergen_route = express.Router();
-
-import { prisma } from '../../prisma/db';
 
 // has 105 allerens listed by chat
 allergen_route.get('/allergens', async (req, res) => {

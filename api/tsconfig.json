@@ -5,12 +5,14 @@
     "strict": true,
     "lib": ["esnext"],
     "esModuleInterop": true,
-    "moduleResolution": "Node",
-    "module": "CommonJS",
-    "target": "ES2020",
+    // "moduleResolution": "Node",
+    "module": "NodeNext", // Chose NodeNext for modern module support
+    "target": "ESNext", // Chose ESNext for the latest JavaScript features
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true, // Included from the 'dev' branch
+    "types": ["node"] // Included from the 'dev' branch
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "src/__tests__/**/*", "src/**/__mocks__/**/*"]

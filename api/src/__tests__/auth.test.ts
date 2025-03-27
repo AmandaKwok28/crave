@@ -1,12 +1,12 @@
 import { test, expect, vi, describe, beforeEach } from 'vitest';
 import request from 'supertest';
-import { app } from '../index';
-import { hashPassword } from '../lib/password';
-import { prisma } from '../lib/__mocks__/prisma';
+import { app } from '../index.js';
+import { hashPassword } from '../lib/password.js';
+import { prisma } from '../lib/__mocks__/prisma.js';
 
 vi.mock('../../prisma/db', async () => {
   return {
-    ...await vi.importActual<typeof import('../lib/__mocks__/prisma')>('../lib/__mocks__/prisma')
+    ...await vi.importActual<typeof import('../lib/__mocks__/prisma.js')>('../lib/__mocks__/prisma.js')
   };
 });
 
@@ -17,7 +17,8 @@ const exampleUser = {
   school: 'Example University',
   major: 'Example Major',
   likes: [],
-  bookmarks: []
+  bookmarks: [],
+  avatarImage: ''
 };
 
 describe('Account registration', () => {

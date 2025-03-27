@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Cuisine, Difficulty, Price, Prisma } from '@prisma/client';
-import { prisma } from '../../prisma/db';
+import { prisma } from '../../prisma/db.js';
 
 const router = Router();
 

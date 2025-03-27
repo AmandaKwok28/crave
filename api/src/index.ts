@@ -1,17 +1,18 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import { auth } from './middleware/auth';
-import auth_route from './routes/auth';
-import recipeRoutes from './routes/recipe.routes'
-import userRoutes from './routes/user.routes'
-import feedRoutes from './routes/feed.routes'
-import likeRoutes from './routes/like.routes';
-import bookmarkRoutes from './routes/bookmark.routes';
-import gptRoutes from './routes/gpt.routes';
-import allergen_route from './routes/allergens';
-import { startBackgroundJobs } from './services/scheduler';
+import { auth } from './middleware/auth.js';
+import auth_route from './routes/auth.js';
+import recipeRoutes from './routes/recipe.routes.js'
+import userRoutes from './routes/user.routes.js'
+import feedRoutes from './routes/feed.routes.js'
+import likeRoutes from './routes/like.routes.js';
+import bookmarkRoutes from './routes/bookmark.routes.js';
+import gptRoutes from './routes/gpt.routes.js';
+import allergen_route from './routes/allergens.js';
+import { startBackgroundJobs } from './services/scheduler.js';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 export const app = express();
 
@@ -39,11 +40,12 @@ app.use('/like', likeRoutes);
 app.use('/bookmark', bookmarkRoutes);
 app.use('/gpt', gptRoutes);
 
-// Add these lines after your API routes
-// Serve static files from the React/Vue build directory
+// Define __dirname for ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use(express.static(path.join(__dirname, '../../../web/dist')));
 
-// For any route not found in API, serve the index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../../web/dist/index.html'));
 });
