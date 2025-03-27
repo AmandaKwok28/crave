@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc && npm run copy-assets",
+    "build": "tsc && pnpm run copy-assets",
     "copy-assets": "copyfiles -u 0 \"scripts/**/*\" dist/",
     "start": "node dist/src/index.js",
     "test": "API_PORT=0 pnpm vitest"
