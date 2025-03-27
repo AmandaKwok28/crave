@@ -11,6 +11,8 @@ import bookmarkRoutes from './routes/bookmark.routes.js';
 import gptRoutes from './routes/gpt.routes.js';
 import allergen_route from './routes/allergens.js';
 import { startBackgroundJobs } from './services/scheduler.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 export const app = express();
 
@@ -38,9 +40,18 @@ app.use('/like', likeRoutes);
 app.use('/bookmark', bookmarkRoutes);
 app.use('/gpt', gptRoutes);
 
-const port = process.env.API_PORT ?? 3000;
-app.listen(port, () => {
-  console.log(`Listening @ http://localhost:3000`);
+// Define __dirname for ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, '../../../web/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../../web/dist/index.html'));
 });
 
 startBackgroundJobs();
+
+const server = app.listen(3000, () => {
+  console.log(`Listening @ http://localhost:3000`);
+});

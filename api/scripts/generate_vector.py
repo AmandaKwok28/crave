@@ -1,11 +1,17 @@
 import os
 import sys
 import json
+import time
+
+
 
 try:
-    # Parse the JSON batch input
-    recipes_json = sys.argv[1]
-    recipes = json.loads(recipes_json)
+    # Get the file path from command line argument
+    json_file_path = sys.argv[1]
+    
+    # Read the JSON data from the file
+    with open(json_file_path, 'r') as file:
+        recipes = json.load(file)
 
     # Import and initialize the model only once
     from sentence_transformers import SentenceTransformer
@@ -13,7 +19,10 @@ try:
     os.makedirs(cache_dir, exist_ok=True)
     print(f"Using model cache at: {cache_dir}", file=sys.stderr)
 
-    model = SentenceTransformer('all-MiniLM-L6-v2', cache_folder=cache_dir) 
+
+    # model = SentenceTransformer('sentence-transformers/paraphrase-TinyBERT-L4-v2', cache_folder=cache_dir) 
+    model = SentenceTransformer('paraphrase-MiniLM-L3-v2', cache_folder=cache_dir) 
+    # model = SentenceTransformer('all-MiniLM-L6-v2', cache_folder=cache_dir) 
     # model = SentenceTransformers('all-mpnet-base-v2')  # More accurate, slower
 
     # Process all recipes in batch
