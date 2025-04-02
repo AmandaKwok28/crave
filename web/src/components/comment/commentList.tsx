@@ -10,6 +10,7 @@ const CommentList = ({recipe_id} : {recipe_id : number}) => {
     const [open, setOpen] = useState(false);
     const [comments, setComments] = useState<CommentType[] | null>();
     const [commentText, setCommentText] = useState('');
+    const user = useAuth();
 
     useEffect(() => {
         fetchComments(recipe_id)
@@ -20,8 +21,10 @@ const CommentList = ({recipe_id} : {recipe_id : number}) => {
     const handleCreateComment = async () => {
       if (commentText.trim()) {
         try {
-          await createComment(recipe_id, commentText);
+          await createComment(recipe_id, commentText, user.user.id);
           setCommentText('');
+          const updatedComments = await fetchComments(recipe_id);
+          setComments(updatedComments);
         } catch (error) {
           console.error('Error creating comment:', error);
         }
@@ -34,17 +37,6 @@ const CommentList = ({recipe_id} : {recipe_id : number}) => {
         handleCreateComment();
       }
     };
-    
-    const fakeAuthor = {
-      id: "author1",
-      email: "author1@example.com",
-      name: "John Doe",
-      school: "Harvard University",
-      major: "Computer Science",
-    }
-    const user = useAuth();
-    const fakeComment = { id: "1", recipeId: "101", author: fakeAuthor, content: "This is a great post!" }
-    const anotherFakeComment = { id: "1", recipeId: "101", author: user.user, content: "This is a great post!" }
 
     return (
     <Drawer.Root open={open} onOpenChange={(e) => setOpen(e.open)} size="sm">
@@ -67,8 +59,6 @@ const CommentList = ({recipe_id} : {recipe_id : number}) => {
             </Drawer.Header>
             <Drawer.Body display="flex" flexDirection="column" justifyContent="space-between" height="full">
               <Flex direction="column">
-                <Comment key={1} comment={fakeComment}/>
-                <Comment key={2} comment={anotherFakeComment}/>
                 {comments && comments.length > 0 ? (
                   comments.map((comment) => (
                     <Comment key={comment.id} comment={comment} />
