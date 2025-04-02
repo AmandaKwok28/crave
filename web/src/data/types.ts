@@ -79,9 +79,9 @@ export interface TagsResponse {
 }
 
 export interface CommentType {
-  id: string;
+  id: number;
   createdAt: string;
-  recipeId: string;
+  recipeId: number;
   author: AuthorType;
   content: string;
 };

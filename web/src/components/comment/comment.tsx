@@ -3,11 +3,31 @@ import { CommentType } from "@/data/types";
 import { Trash } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { formatTimestamp } from "@/lib/utils";
+import { useState } from "react";
+import useMutationComment from "@/hooks/comments/use-mutation-comments";
+import useQueryComments from "@/hooks/comments/use-query-comments";
 
 
 const Comment = ( { comment }: { comment: CommentType }) => {
 
   const { user } = useAuth();
+  const { removeComment } = useMutationComment(comment.recipeId);
+  const { loadComments } = useQueryComments(comment.recipeId);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this comment?")) return;
+
+    try {
+      setIsDeleting(true);
+      await removeComment(comment.id);
+      // loadComments(); // TODO refresh recipes
+    } catch (error) {
+      console.error("Failed to delete comment:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
     return (
         <Card.Root mb="2" borderRadius="md">
@@ -22,7 +42,13 @@ const Comment = ( { comment }: { comment: CommentType }) => {
                     </Flex>
                     <Flex>
                         {comment.author?.id == user.id && (
-                            <Button variant="ghost" size="xs" mt="2" color="red.400">
+                            <Button 
+                                variant="ghost" 
+                                size="xs" 
+                                mt="2" 
+                                color="red.400"
+                                onClick={handleDelete}
+                                loading={isDeleting}>
                                 <Trash />
                             </Button>
                             )

@@ -7,6 +7,9 @@ import { createComment, fetchComments } from "@/data/api";
 import { useAuth } from "@/hooks/use-auth";
 
 const CommentList = ({recipe_id} : {recipe_id : number}) => {
+
+    // TODO: Use global store
+
     const [open, setOpen] = useState(false);
     const [comments, setComments] = useState<CommentType[] | null>();
     const [commentText, setCommentText] = useState('');

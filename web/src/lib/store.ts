@@ -149,7 +149,7 @@ export function setComments(comments: CommentType[]) {
     $comments.set(comments)
 }
 
-export function removeComment(commentId: string) {
+export function removeComment(commentId: number) {
     $comments.set($comments.get().filter((comment) => comment.id !== commentId));
 }
 
