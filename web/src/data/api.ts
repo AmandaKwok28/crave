@@ -415,3 +415,18 @@ export const createComment = async (recipe_id: string | number, content: string)
   const comment: CommentType = await response.json();
   return comment;
 };
+
+// Delete comment on a recipe
+export const deleteComment = async (recipe_id: string | number, commentId: number) : Promise<boolean> => {
+  const response = await fetch(`${API_URL}/recipe/${recipe_id}/comments/${commentId}`, {
+    credentials: 'include',
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  return true;
+};
+

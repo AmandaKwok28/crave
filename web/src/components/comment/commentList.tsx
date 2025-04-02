@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { CommentType } from "@/data/types";
 import Comment from "./comment";
 import { createComment, fetchComments } from "@/data/api";
+import { useAuth } from "@/hooks/use-auth";
 
 const CommentList = ({recipe_id} : {recipe_id : number}) => {
     const [open, setOpen] = useState(false);
@@ -33,6 +34,17 @@ const CommentList = ({recipe_id} : {recipe_id : number}) => {
         handleCreateComment();
       }
     };
+    
+    const fakeAuthor = {
+      id: "author1",
+      email: "author1@example.com",
+      name: "John Doe",
+      school: "Harvard University",
+      major: "Computer Science",
+    }
+    const user = useAuth();
+    const fakeComment = { id: "1", recipeId: "101", author: fakeAuthor, content: "This is a great post!" }
+    const anotherFakeComment = { id: "1", recipeId: "101", author: user.user, content: "This is a great post!" }
 
     return (
     <Drawer.Root open={open} onOpenChange={(e) => setOpen(e.open)} size="sm">
@@ -53,14 +65,18 @@ const CommentList = ({recipe_id} : {recipe_id : number}) => {
                 </Drawer.CloseTrigger>
               </Flex>
             </Drawer.Header>
-            <Drawer.Body display="flex" flexDirection="column" justifyContent="space-between" height="full"> 
-              {comments && comments.length > 0 ? (
-                comments.map((comment) => (
-                  <Comment key={comment.id} comment={comment} />
-                ))
-              ) : (
-                <Text>No comments yet.</Text>
-              )}
+            <Drawer.Body display="flex" flexDirection="column" justifyContent="space-between" height="full">
+              <Flex direction="column">
+                <Comment key={1} comment={fakeComment}/>
+                <Comment key={2} comment={anotherFakeComment}/>
+                {comments && comments.length > 0 ? (
+                  comments.map((comment) => (
+                    <Comment key={comment.id} comment={comment} />
+                  ))
+                ) : (
+                  <Text>No comments yet.</Text>
+                )}
+              </Flex>
               <Input 
                 mt="4" 
                 placeholder="Add a comment..."
