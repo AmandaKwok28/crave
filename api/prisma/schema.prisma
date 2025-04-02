@@ -111,6 +111,9 @@ model Recipe {
  
   // New relation to feature vector
   featureVector RecipeFeatureVector?
+
+  // comments
+  comments   Comment[] @relation("RecipeComments")
 }
 
 model Allergen {
@@ -133,3 +136,12 @@ model RecipeSimilarity {
   @@unique([baseRecipeId, similarRecipeId])
   @@index([baseRecipeId, similarityScore(sort: Desc)])
 }
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  content   String
+  recipeId  Int
+  recipe    Recipe   @relation("RecipeComments", fields: [recipeId], references: [id], onDelete: Cascade)
+}
+
