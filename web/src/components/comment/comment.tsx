@@ -14,13 +14,13 @@ const Comment = ( { comment }: { comment: CommentType }) => {
                 <Flex direction="row" justifyContent="space-between">
                     <Flex direction="column">
                         <Box display="flex" alignItems="center" gap="2" mb="1">
-                            <Text>{comment.author.name}</Text>
+                            <Text>{comment.author?.name}</Text>
                         </Box>
                         <Card.Title>
                             <Text fontSize="sm">{comment.content}</Text>
                         </Card.Title>
                     </Flex>
-                    {comment.author.id == user.id && (
+                    {comment.author?.id == user.id && (
                         <Button variant="ghost" size="xs" mt="2" color="red.400">
                             <Trash />
                         </Button>
