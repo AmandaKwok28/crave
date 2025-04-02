@@ -76,7 +76,7 @@ const SimilarRecipesSlider = ({ recipes }: SimilarRecipesSliderProps) => {
         maxWidth="100%"
         mx="auto"
         px={10}
-        sx={{
+        css={{
           ".slick-slider": {
             width: "100%",
             maxWidth: "100%",
