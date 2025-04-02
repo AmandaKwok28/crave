@@ -258,8 +258,8 @@ packages:
   '@jridgewell/sourcemap-codec@1.5.0':
     resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
 
-  '@napi-rs/wasm-runtime@0.2.7':
-    resolution: {integrity: sha512-5yximcFK5FNompXfJFoWanu5l8v1hNGqNHh9du1xETp9HWk/B/PzvchX55WYOPaIeNglG8++68AAiauBAtbnzw==}
+  '@napi-rs/wasm-runtime@0.2.8':
+    resolution: {integrity: sha512-OBlgKdX7gin7OIq4fadsjpg+cp2ZphvAIKucHsNfTdJiqdOmOEwQd/bHi0VwNrcw5xpBJyUw6cK/QilCqy1BSg==}
 
   '@node-rs/argon2-android-arm-eabi@2.0.2':
     resolution: {integrity: sha512-DV/H8p/jt40lrao5z5g6nM9dPNPGEHL+aK6Iy/og+dbL503Uj0AHLqj1Hk9aVUSCNnsDdUEKp4TVMi0YakDYKw==}
@@ -2259,7 +2259,7 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.0': {}
 
-  '@napi-rs/wasm-runtime@0.2.7':
+  '@napi-rs/wasm-runtime@0.2.8':
     dependencies:
       '@emnapi/core': 1.4.0
       '@emnapi/runtime': 1.4.0
@@ -2298,7 +2298,7 @@ snapshots:
 
   '@node-rs/argon2-wasm32-wasi@2.0.2':
     dependencies:
-      '@napi-rs/wasm-runtime': 0.2.7
+      '@napi-rs/wasm-runtime': 0.2.8
     optional: true
 
   '@node-rs/argon2-win32-arm64-msvc@2.0.2':
