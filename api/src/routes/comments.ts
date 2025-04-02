@@ -8,7 +8,7 @@ const comments_route = express.Router();
 
 // validation schemas
 const getSchema = z.object({
-    id: z.number()
+    recipeId: z.number()
 });
 
 const createSchema = z.object({
@@ -17,14 +17,14 @@ const createSchema = z.object({
 });
 
 const deleteSchema = z.object({
-    commentId: z.number(),
-    recipeId: z.number()
+    commentId: z.string(),
+    recipeId: z.string()
 });
 
 // get
 comments_route.get('/:recipeId/comments', async(req, res) => {    // has to take a recipe id since each recipe has many comments
 
-    const result = getSchema.safeParse(req);
+    const result = getSchema.safeParse({ recipeId: parseInt(req.params.recipeId) });
     if (!result.success) {
         res.status(400).json({
             message: "invalid id",
@@ -36,7 +36,7 @@ comments_route.get('/:recipeId/comments', async(req, res) => {    // has to take
 
     const data = result.data;
     const comments = await prisma.comment.findMany({
-        where: { recipeId: data.id }, 
+        where: { recipeId: data.recipeId }, 
     });
 
     if (!comments) {
@@ -48,8 +48,8 @@ comments_route.get('/:recipeId/comments', async(req, res) => {    // has to take
 })
 
 // create
-comments_route.post('/:recipeId/', async(req, res) => {
-    const request = createSchema.safeParse(req);
+comments_route.post('/:recipeId', async(req, res) => {
+    const request = createSchema.safeParse(req.body);
     if (!request.success) {
         res.status(400).json({
             message: "invalid id",
@@ -87,7 +87,8 @@ comments_route.post('/:recipeId/', async(req, res) => {
 
 // delete
 comments_route.delete('/:recipeId/:commentId', authGuard, async(req, res) => {
-    const request = deleteSchema.safeParse(req);
+
+    const request = deleteSchema.safeParse(req.params);
     if (!request.success) {
         res.status(400).json({
             message: "invalid id",
@@ -100,7 +101,7 @@ comments_route.delete('/:recipeId/:commentId', authGuard, async(req, res) => {
     const { commentId, recipeId } = request.data;
 
     const recipe = await prisma.recipe.findUnique({
-        where: { id: recipeId }
+        where: { id: parseInt(recipeId) }
     });
 
     // make sure recipe exists
@@ -110,7 +111,7 @@ comments_route.delete('/:recipeId/:commentId', authGuard, async(req, res) => {
     }
 
     const comment = await prisma.comment.findUnique({
-        where: { id: commentId },
+        where: { id: parseInt(commentId) },
         include: { recipe: true } // We also check if the comment is related to the correct recipe
     });
 
@@ -119,17 +120,20 @@ comments_route.delete('/:recipeId/:commentId', authGuard, async(req, res) => {
         return;
     }
 
-    if (comment.recipe.id !== recipeId) {
+    if (comment.recipe.id !== parseInt(recipeId)) {
         res.status(400).json({ message: "Comment does not belong to this recipe" });
         return;
     }
 
     // delete the comment
     await prisma.comment.delete({
-        where: { id: commentId }
+        where: { id: parseInt(commentId) }
     });
 
-    res.status(200).json({ message: "Comment deleted successfully" });
+    res.status(200).json({ 
+        message: "Comment deleted successfully", 
+        data: comment
+    });
 
 })
 
