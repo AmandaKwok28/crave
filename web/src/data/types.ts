@@ -80,6 +80,7 @@ export interface TagsResponse {
 
 export interface CommentType {
   id: string;
+  createdAt: string;
   recipeId: string;
   author: AuthorType;
   content: string;

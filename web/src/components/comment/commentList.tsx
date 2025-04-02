@@ -58,15 +58,15 @@ const CommentList = ({recipe_id} : {recipe_id : number}) => {
               </Flex>
             </Drawer.Header>
             <Drawer.Body display="flex" flexDirection="column" justifyContent="space-between" height="full">
-              <Flex direction="column">
+            <Flex direction="column">
                 {comments && comments.length > 0 ? (
-                  comments.map((comment) => (
-                    <Comment key={comment.id} comment={comment} />
-                  ))
+                  comments
+                    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                    .map((comment) => <Comment key={comment.id} comment={comment} />)
                 ) : (
                   <Text>No comments yet.</Text>
                 )}
-              </Flex>
+            </Flex>
               <Input 
                 mt="4" 
                 placeholder="Add a comment..."
