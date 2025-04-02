@@ -1,3 +1,4 @@
+import CommentList from "@/components/comment/commentList";
 import NavBar from "@/components/layout/navBar";
 import DeleteRecipe from "@/components/recipie/deleteRecipe";
 import DisplayIngredients from "@/components/recipie/displayIngredients";
@@ -330,13 +331,16 @@ const ViewRecipe = ({ recipe_id }: {
         )}
       </Box>
       
+      
       {
-        recipe.authorId === user.id && (
-          <ButtonGroup m="8" position="fixed" bottom="0%" right="0%">
-            <DeleteRecipe recipe_id={recipe.id} />
-          </ButtonGroup>  
-        )
-      }
+      recipe.authorId === user.id && (
+        <ButtonGroup m="8" position="fixed" bottom="0%" right="0%" gap="4">
+          <DeleteRecipe recipe_id={recipe.id} />
+          <CommentList comments={recipe.comments}/>
+        </ButtonGroup>  
+      )
+    }
+
     </Flex>
   )
 }

@@ -50,7 +50,8 @@ export interface RecipeType {
   difficulty: Difficulty;
   sources: string[];
   prepTime: number;
-  image?: string
+  image?: string;
+  comments: CommentType[];
 }
 
 export interface AuthorType {
@@ -80,7 +81,7 @@ export interface TagsResponse {
 
 export interface CommentType {
   id: string;
-  postId: string;
-  userId: string;
+  recipeId: string;
+  author: AuthorType;
   content: string;
 };
