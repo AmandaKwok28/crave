@@ -77,3 +77,10 @@ export interface TagsResponse {
     mealTypes: string[]
   }
 }
+
+export interface CommentType {
+  id: string;
+  postId: string;
+  userId: string;
+  content: string;
+};
