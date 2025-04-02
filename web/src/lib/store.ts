@@ -1,4 +1,4 @@
-import { AllergenType, RecipeType, UserType } from "@/data/types";
+import { AllergenType, CommentType, RecipeType, UserType } from "@/data/types";
 import { persistentAtom } from "@nanostores/persistent";
 import { atom } from "nanostores";
 
@@ -140,4 +140,19 @@ export function setSearchTerm(term: string) {
 export const $allergenTable = atom<AllergenType[]>([]);
 export function setAllergenTable(allergens: AllergenType[]) {
   $allergenTable.set(allergens);
+}
+
+// Comments Store
+export const $comments = atom<CommentType[]>([]);
+
+export function setComments(comments: CommentType[]) {
+    $comments.set(comments)
+}
+
+export function removeComment(commentId: string) {
+    $comments.set($comments.get().filter((comment) => comment.id !== commentId));
+}
+
+export function addComment(comment: CommentType) {
+    $comments.set([...$comments.get(), comment]);
 }
