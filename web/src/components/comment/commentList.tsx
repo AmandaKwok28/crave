@@ -67,14 +67,14 @@ const CommentList = ({recipe_id} : {recipe_id : number}) => {
                   <Text>No comments yet.</Text>
                 )}
             </Flex>
-              <Input 
-                mt="4" 
-                placeholder="Add a comment..."
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-                onKeyDown={handleKeyPress}/>
             </Drawer.Body>
             <Drawer.Footer>
+              <Input 
+                  mt="4" 
+                  placeholder="Add a comment..."
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  onKeyDown={handleKeyPress}/>
             </Drawer.Footer>
           </Drawer.Content>
         </Drawer.Positioner>

@@ -1,4 +1,4 @@
-import { Card, Text, Box, Button, Flex, Spacer } from "@chakra-ui/react";
+import { Card, Text, Button, Flex } from "@chakra-ui/react";
 import { CommentType } from "@/data/types";
 import { Trash } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
