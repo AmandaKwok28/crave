@@ -76,7 +76,7 @@ const SimilarRecipesSlider = ({ recipes }: SimilarRecipesSliderProps) => {
         maxWidth="100%"
         mx="auto"
         px={10}
-        css={{
+        sx={{
           ".slick-slider": {
             width: "100%",
             maxWidth: "100%",
@@ -167,8 +167,8 @@ const SimilarRecipesSlider = ({ recipes }: SimilarRecipesSliderProps) => {
           <Slider ref={sliderRef} {...slickSettings}>
 
             {similarRecipes.map((recipe:RecipeType) => (
-              <Box padding={2} maxWidth="100%" height="100%">
-                <RecipeCard key={recipe.id} recipe={recipe} />
+              <Box key={recipe.id} padding={2} maxWidth="100%" height="100%">
+                <RecipeCard recipe={recipe} />
               </Box>
             ))}
           </Slider>
