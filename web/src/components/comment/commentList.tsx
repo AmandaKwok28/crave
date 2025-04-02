@@ -1,42 +1,38 @@
-import { Button, Text, CloseButton, Drawer, Portal, Card } from "@chakra-ui/react";
+import { Button, Text, CloseButton, Drawer, Portal, Input, Flex } from "@chakra-ui/react";
 import { FaComment } from "react-icons/fa";
-import { useState } from "react";
-import { AuthorType, CommentType } from "@/data/types";
+import { useEffect, useState } from "react";
+import { CommentType } from "@/data/types";
 import Comment from "./comment";
+import { createComment, fetchComments } from "@/data/api";
 
-// export const fakeAuthors: AuthorType[] = [
-//   {
-//     id: "author1",
-//     email: "author1@example.com",
-//     name: "John Doe",
-//     school: "Harvard University",
-//     major: "Computer Science",
-//   },
-//   {
-//     id: "author2",
-//     email: "author2@example.com",
-//     name: "Jane Smith",
-//     school: "Stanford University",
-//     major: "Electrical Engineering",
-//   },
-//   {
-//     id: "author3",
-//     email: "author3@example.com",
-//     name: "Alice Johnson",
-//     school: "Massachusetts Institute of Technology",
-//     major: "Mechanical Engineering",
-//   },
-// ];
-
-// const fakeComments: CommentType[] = [
-//   { id: "1", recipeId: "101", author: fakeAuthors[0], content: "Great post." },
-//   { id: "2", recipeId: "101", author: fakeAuthors[1], content: "Thanks for sharing this." },
-//   { id: "3", recipeId: "101", author: fakeAuthors[2], content: "I found this really helpful!" }
-// ];
-
-
-const CommentList = ({comments} : {comments : CommentType[]}) => {
+const CommentList = ({recipe_id} : {recipe_id : number}) => {
     const [open, setOpen] = useState(false);
+    const [comments, setComments] = useState<CommentType[] | null>();
+    const [commentText, setCommentText] = useState('');
+
+    useEffect(() => {
+        fetchComments(recipe_id)
+          .then((rec) => setComments(rec))
+          .catch(console.error);
+    }, [recipe_id]);
+
+    const handleCreateComment = async () => {
+      if (commentText.trim()) {
+        try {
+          await createComment(recipe_id, commentText);
+          setCommentText('');
+        } catch (error) {
+          console.error('Error creating comment:', error);
+        }
+      }
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleCreateComment();
+      }
+    };
 
     return (
     <Drawer.Root open={open} onOpenChange={(e) => setOpen(e.open)} size="sm">
@@ -50,9 +46,14 @@ const CommentList = ({comments} : {comments : CommentType[]}) => {
         <Drawer.Positioner>
           <Drawer.Content>
             <Drawer.Header>
-              <Drawer.Title>Comments</Drawer.Title>
+              <Flex direction="row" justifyContent="space-between">
+                <Drawer.Title>Comments</Drawer.Title>
+                <Drawer.CloseTrigger asChild>
+                  <CloseButton size="sm" />
+                </Drawer.CloseTrigger>
+              </Flex>
             </Drawer.Header>
-            <Drawer.Body>
+            <Drawer.Body display="flex" flexDirection="column" justifyContent="space-between" height="full"> 
               {comments && comments.length > 0 ? (
                 comments.map((comment) => (
                   <Comment key={comment.id} comment={comment} />
@@ -60,12 +61,15 @@ const CommentList = ({comments} : {comments : CommentType[]}) => {
               ) : (
                 <Text>No comments yet.</Text>
               )}
+              <Input 
+                mt="4" 
+                placeholder="Add a comment..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                onKeyDown={handleKeyPress}/>
             </Drawer.Body>
             <Drawer.Footer>
             </Drawer.Footer>
-            <Drawer.CloseTrigger asChild>
-              <CloseButton size="sm" />
-            </Drawer.CloseTrigger>
           </Drawer.Content>
         </Drawer.Positioner>
       </Portal>

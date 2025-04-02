@@ -332,14 +332,12 @@ const ViewRecipe = ({ recipe_id }: {
       </Box>
       
       
-      {
-      recipe.authorId === user.id && (
-        <ButtonGroup m="8" position="fixed" bottom="0%" right="0%" gap="4">
+      <ButtonGroup m="8" position="fixed" bottom="0%" right="0%" gap="4">
+        {recipe.authorId === user.id && (
           <DeleteRecipe recipe_id={recipe.id} />
-          <CommentList comments={recipe.comments}/>
-        </ButtonGroup>  
-      )
-    }
+        )}
+         <CommentList recipe_id={recipe.id} />
+      </ButtonGroup>
 
     </Flex>
   )

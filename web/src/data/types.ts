@@ -51,7 +51,6 @@ export interface RecipeType {
   sources: string[];
   prepTime: number;
   image?: string;
-  comments: CommentType[];
 }
 
 export interface AuthorType {
