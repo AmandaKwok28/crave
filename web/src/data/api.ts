@@ -387,3 +387,29 @@ export const editAvatarUrl = async (email: string, url: string): Promise<UserTyp
   return user;
 
 }
+
+// Mark a recipe as recently viewed
+export const markRecipeAsViewed = async (recipeId: number): Promise<void> => {
+  const response = await fetch(`${API_URL}/user/recently-viewed/${recipeId}`, {
+    method: 'POST',
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+};
+
+// Fetch recently viewed recipes
+export const fetchRecentlyViewed = async (): Promise<RecipeType[]> => {
+  const response = await fetch(`${API_URL}/user/recently-viewed`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const recentlyViewed: RecipeType[] = await response.json();
+  return recentlyViewed;
+};
