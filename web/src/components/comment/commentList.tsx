@@ -1,33 +1,28 @@
 import { Button, Text, CloseButton, Drawer, Portal, Input, Flex } from "@chakra-ui/react";
 import { FaComment } from "react-icons/fa";
-import { useEffect, useState } from "react";
-import { CommentType } from "@/data/types";
+import { useState } from "react";
 import Comment from "./comment";
-import { createComment, fetchComments } from "@/data/api";
 import { useAuth } from "@/hooks/use-auth";
+import useMutationComment from "@/hooks/comments/use-mutation-comments";
+import useQueryComments from "@/hooks/comments/use-query-comments";
+import { fetchComments } from "@/data/api";
+import { setComments } from "@/lib/store";
 
 const CommentList = ({recipe_id} : {recipe_id : number}) => {
 
-    // TODO: Use global store
-
     const [open, setOpen] = useState(false);
-    const [comments, setComments] = useState<CommentType[] | null>();
     const [commentText, setCommentText] = useState('');
+    const { addComment } = useMutationComment(recipe_id);
+    const { comments } = useQueryComments(recipe_id);
     const user = useAuth();
-
-    useEffect(() => {
-        fetchComments(recipe_id)
-          .then((rec) => setComments(rec))
-          .catch(console.error);
-    }, [recipe_id]);
 
     const handleCreateComment = async () => {
       if (commentText.trim()) {
         try {
-          await createComment(recipe_id, commentText, user.user.id);
-          setCommentText('');
+          await addComment(commentText, user.user.id);
           const updatedComments = await fetchComments(recipe_id);
           setComments(updatedComments);
+          setCommentText('');
         } catch (error) {
           console.error('Error creating comment:', error);
         }

@@ -10,7 +10,7 @@ const useMutationComment = (recipeId: number) => {
 
     try {
       const newComment = await createComment(recipeId, content, userId);
-      setComments([...comments, newComment]);
+      setComments([newComment, ...comments]);
     } catch (error) {
       console.error("Error creating comment:", error);
     }

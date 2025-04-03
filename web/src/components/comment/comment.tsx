@@ -5,14 +5,12 @@ import { useAuth } from "@/hooks/use-auth";
 import { formatTimestamp } from "@/lib/utils";
 import { useState } from "react";
 import useMutationComment from "@/hooks/comments/use-mutation-comments";
-import useQueryComments from "@/hooks/comments/use-query-comments";
 
 
 const Comment = ( { comment }: { comment: CommentType }) => {
 
   const { user } = useAuth();
   const { removeComment } = useMutationComment(comment.recipeId);
-  const { loadComments } = useQueryComments(comment.recipeId);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -21,7 +19,6 @@ const Comment = ( { comment }: { comment: CommentType }) => {
     try {
       setIsDeleting(true);
       await removeComment(comment.id);
-      // loadComments(); // TODO refresh recipes
     } catch (error) {
       console.error("Failed to delete comment:", error);
     } finally {

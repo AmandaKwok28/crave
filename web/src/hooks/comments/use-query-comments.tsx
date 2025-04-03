@@ -1,29 +1,26 @@
 import { fetchComments } from "@/data/api";
 import { $comments, setComments } from "@/lib/store";
 import { useStore } from "@nanostores/react";
-import { useEffect, useCallback } from "react";
+import { useEffect } from "react";
 
 const useQueryComments = (recipeId: number) => {
   const comments = useStore($comments);
 
-  const loadComments = useCallback(async () => {
-    if (!recipeId) return;
-
-    setComments([]);
-
+  const loadComments = async () => {
     try {
       const fetchedComments = await fetchComments(recipeId);
       setComments(fetchedComments);
     } catch {
       setComments([]);
     }
-  }, [recipeId]);
+  };
 
   useEffect(() => {
+    if (!recipeId) return;    
     loadComments();
-  }, [loadComments]);
+  }, [recipeId]);
 
-  return { comments, loadComments }; // Export loadComments
+  return { comments };
 };
 
 export default useQueryComments;
