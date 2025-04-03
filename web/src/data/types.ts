@@ -39,6 +39,7 @@ export interface RecipeType {
   description: string;
   authorId: string;
   published: boolean;
+  likesList: LikeType[];
   likes: number;
   liked: boolean;
   bookmarked: boolean;
@@ -76,4 +77,11 @@ export interface TagsResponse {
     tags: string[];
     mealTypes: string[]
   }
+}
+
+export interface LikeType {
+  id: number;
+  recipeId: number;
+  userId: string;
+  date: string;
 }

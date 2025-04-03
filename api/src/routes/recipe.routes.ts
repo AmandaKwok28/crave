@@ -220,6 +220,7 @@ router.get(`/:id`, async (req, res) => {
   res.json({
     ...recipe,
     likes: recipe.likes.length,
+    likesList: recipe.likes,
     liked: !!recipe.likes.find((l) => l.userId === res.locals.user?.id),
     bookmarks: undefined, // Do not share bookmarks with everyone
     bookmarked: !!recipe.bookmarks.find((b) => b.userId === res.locals.user?.id)
