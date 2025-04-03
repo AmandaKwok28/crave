@@ -76,7 +76,7 @@ async function calculateBasicSimilarity(recipe1Id: number, recipe2Id: number): P
 /**
  * Calculate cosine similarity between two vectors
  */
-function calculateCosineSimilarity(v1: number[], v2: number[]): number {
+export function calculateCosineSimilarity(v1: number[], v2: number[]): number {
   // Dot product
   const dotProduct = v1.reduce((sum, v, i) => sum + v * v2[i], 0);
   
