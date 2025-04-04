@@ -54,24 +54,28 @@ export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
       const recentlyViewed = await prisma.recentlyViewed.findMany({   
         where: { userId: user.id },
         orderBy: { viewedAt: "desc" },
-        take: batchSize
-      }); 
+        take: batchSize,
+        select: { recipeId: true },
+      });
 
-      if (recentlyViewed.length === 0) return;
+      // console.log(recentlyViewed)
+
+      if (recentlyViewed.length === 0) continue;
       console.log('Recently viewed recipes fetched!')
 
       // get the average feature vector
       console.log('Creating average feature vector')
-      const recipeIds = recentlyViewed.map(recipe => recipe.id);
+      const recipeIds = recentlyViewed.map(recipe => recipe.recipeId);
       const featureVectors = await prisma.recipeFeatureVector.findMany({              
         where: { recipeId: { in: recipeIds } }
       });
 
-      if (featureVectors.length < recentlyViewed.length) { // find a more elegant way to deal with this later
+      if (featureVectors.length === 0) { // find a more elegant way to deal with this later
         console.log('Failed to get feature vectors for recently viewed recipes') 
-        return;
+        continue;
       }           
 
+      console.log('Creating average feature vector');
       const vectorSize = featureVectors[0].vector.length;
       const averagedVector = new Array(vectorSize).fill(0);
       for (const { vector } of featureVectors) {
@@ -86,29 +90,56 @@ export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
         select: { recipeId: true, vector: true },
       });
 
+      if (otherRecipes.length === 0) {
+        console.log('Not enough recipes to generate recommended')
+        continue;
+      }
+
+
       // calculate similarity between the averaged vector and all other recipes
-      const similarityScores = otherRecipes.map(({ recipeId, vector }) => ({
-        recipeId,
-        similarity: calculateCosineSimilarity(averagedVector, vector),
-      }));
+      const similarityScores = otherRecipes
+        .map(({ recipeId, vector }) => ({
+          recipeId,
+          similarity: calculateCosineSimilarity(averagedVector, vector),
+        }))
+        .filter(({ similarity }) => !isNaN(similarity)); // Only valid scores
+
 
       // sort by similarity and return the top recommended recipes
       similarityScores.sort((a, b) => b.similarity - a.similarity);
       const topRecommended = similarityScores.slice(0, maxSimilarities);
+      console.log(topRecommended)
 
 
-      // delete the recommended, add new ones
-      await prisma.recommendedRecipe.deleteMany({where: { userId: user.id }});
+      // get current recommendations
+      const existingRecs = await prisma.recommendedRecipe.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: 'asc' },
+      });
 
+      // remove the oldest recommendations to make room
+      if (existingRecs.length + topRecommended.length > 10) {
+        const overflow = existingRecs.length + topRecommended.length - 10;
+        const idsToRemove = existingRecs.slice(0, overflow).map(rec => rec.recipeId);
+
+        await prisma.recommendedRecipe.deleteMany({
+          where: {
+            userId: user.id,
+            recipeId: { in: idsToRemove }
+          }
+        });
+      }
+
+      // Add the new recommended recipes
       await prisma.recommendedRecipe.createMany({
         data: topRecommended.map(rec => ({
-          userId: user.id,   
-          recipeId: rec.recipeId, 
-          similarityScore: rec.similarity,    // has the similarity score
+          userId: user.id,
+          recipeId: rec.recipeId,
+          similarityScore: rec.similarity,
         }))
       });
 
-      console.log('Finsihed generating recommended recipes!')
+      console.log('Finished generating recommended recipes!')
 
     }
 

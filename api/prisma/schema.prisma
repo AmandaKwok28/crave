@@ -168,6 +168,7 @@ model RecommendedRecipe {
   userId           String  
   recipeId         Int
   similarityScore  Float
+  createdAt        DateTime @default(now())
 
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Relation to User
   recipe           Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade) // Relation to Recipe
