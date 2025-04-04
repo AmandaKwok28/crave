@@ -183,4 +183,45 @@ router.get('/recently-viewed', authGuard, async (req, res) => {
   }
 });
 
+// Update the route to use the authenticated user
+router.get('/recommended', authGuard, async(req, res) => {
+  const userId = res.locals.user!.id; // Get authenticated user's ID
+  const limit = parseInt(req.query.limit as string) || 10
+  try {
+    const recommended = await prisma.recommendedRecipe.findMany({
+      where: { userId },
+      orderBy: { similarityScore: 'desc' },
+      take: limit
+    })
+    
+    const recommendedRecipes = recommended.map(recipe => recipe.recipeId)
+    const recipes = await prisma.recipe.findMany({
+      where: {
+        id: {
+          in: recommendedRecipes, // Filter recipes by the recommended recipe IDs
+        },
+        published: true, // Only return published recipes
+      },
+      include: {
+        author: true,
+        likes: true,
+        bookmarks: true
+      }
+    });
+
+    // // Format the response similarly to other endpoints
+    // const formattedRecipes = recipes.map(recipe => ({
+    //   ...recipe,
+    //   likes: recipe.likes.length,
+    //   liked: !!recipe.likes.find(l => l.userId === res.locals.user!.id),
+    //   bookmarks: undefined, // Don't expose all bookmarks
+    //   bookmarked: !!recipe.bookmarks.find(b => b.userId === res.locals.user!.id)
+    // }));
+
+    res.json(recipes);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch similar recipes' })
+  }
+})
+
 export default router;

@@ -23,8 +23,8 @@ import { $router } from "@/lib/router";
 
 const Home = () => {
     const { recipes } = useQueryRecipes(true);
-    const { recommendedRecipes, isLoading, error } = useRecommendedRecipes();
-
+    const { recommendedRecipes, isLoading, error } = useRecommendedRecipes(10);
+    console.log(`Recommended recipes length: ${recommendedRecipes?.length || 0}`);
     const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
     const handleCookTimeChange = (details: { value: [number, number] }) => {
         setCookTime(details.value);

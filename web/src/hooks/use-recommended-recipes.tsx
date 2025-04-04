@@ -9,7 +9,7 @@ interface UseRecommendedRecipesReturn {
   refreshRecommendations: () => Promise<void>;
 }
 
-export default function useRecommendedRecipes(): UseRecommendedRecipesReturn {
+export default function useRecommendedRecipes(limit: number = 10): UseRecommendedRecipesReturn {
   const [recommendedRecipes, setRecommendedRecipes] = useState<RecipeType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
@@ -18,7 +18,7 @@ export default function useRecommendedRecipes(): UseRecommendedRecipesReturn {
     try {
       setIsLoading(true);
       setError(null);
-      const recipes = await fetchUserRecommendedRecipes();
+      const recipes = await fetchUserRecommendedRecipes(limit);
       setRecommendedRecipes(recipes);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch recommended recipes'));
@@ -26,7 +26,7 @@ export default function useRecommendedRecipes(): UseRecommendedRecipesReturn {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [limit]);
 
   useEffect(() => {
     fetchRecommendations();

@@ -137,32 +137,6 @@ router.get('/:id/similar', async (req, res) => {
   }
 })
 
-
-router.get('/:id/recommended', async(req, res) => {
-  const { id } = req.params;
-  const limit = parseInt(req.query.limit as string) || 3
-  try {
-    const recommended = await prisma.recommendedRecipe.findMany({
-      where: { userId: id },
-      orderBy: { similarityScore: 'desc' },
-      take: limit
-    })
-    
-    // Map to just the similar recipes
-    const recommendedRecipes = recommended.map(recipe => recipe.recipeId)
-    const recipes = await prisma.recipe.findMany({
-      where: {
-        id: {
-          in: recommendedRecipes, // Filter recipes by the recommended recipe IDs
-        },
-      },
-    });
-    res.json(recipes);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch similar recipes' })
-  }
-})
-
 // Update recipe views
 router.put('/:id/views', async (req, res) => {
     const { id } = req.params

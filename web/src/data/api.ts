@@ -415,8 +415,11 @@ export const fetchRecentlyViewed = async (): Promise<RecipeType[]> => {
 };
 
 // Fetch user recommended recipes
-export const fetchUserRecommendedRecipes = async (): Promise<RecipeType[]> => {
-  const response = await fetch(`${API_URL}/user/recommended`, {
+export const fetchUserRecommendedRecipes = async (limit?: number): Promise<RecipeType[]> => {
+  // Add the limit as a query parameter if provided
+  const queryParams = limit ? `?limit=${limit}` : '';
+  
+  const response = await fetch(`${API_URL}/user/recommended${queryParams}`, {
     credentials: 'include'
   });
 
