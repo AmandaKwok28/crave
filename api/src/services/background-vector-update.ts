@@ -108,8 +108,6 @@ export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
       // sort by similarity and return the top recommended recipes
       similarityScores.sort((a, b) => b.similarity - a.similarity);
       const topRecommended = similarityScores.slice(0, maxSimilarities);
-      console.log(topRecommended)
-
 
       // get current recommendations
       const existingRecs = await prisma.recommendedRecipe.findMany({
