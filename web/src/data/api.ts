@@ -413,3 +413,17 @@ export const fetchRecentlyViewed = async (): Promise<RecipeType[]> => {
   const recentlyViewed: RecipeType[] = await response.json();
   return recentlyViewed;
 };
+
+// Fetch user recommended recipes
+export const fetchUserRecommendedRecipes = async (): Promise<RecipeType[]> => {
+  const response = await fetch(`${API_URL}/user/recommended`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const recommendedRecipes: RecipeType[] = await response.json();
+  return recommendedRecipes;
+}

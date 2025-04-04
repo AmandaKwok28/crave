@@ -4,8 +4,12 @@ import {Box,
         Flex, 
         Input, 
         Spacer, 
-        Text } from "@chakra-ui/react";
+        Text,
+        Spinner,
+        Center
+} from "@chakra-ui/react";
 import useQueryRecipes from "@/hooks/use-query-recipes";
+import useRecommendedRecipes from "@/hooks/use-recommended-recipes";
 import Recipes from "@/components/recipie/recipes";
 import { SearchIcon } from "lucide-react";
 import { setFilters, setSearchTerm } from "@/lib/store";
@@ -19,7 +23,8 @@ import { $router } from "@/lib/router";
 
 const Home = () => {
     const { recipes } = useQueryRecipes(true);
-    
+    const { recommendedRecipes, isLoading, error } = useRecommendedRecipes();
+
     const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
     const handleCookTimeChange = (details: { value: [number, number] }) => {
         setCookTime(details.value);
@@ -141,6 +146,51 @@ const Home = () => {
                     </Button>
                 </Flex>
             </Flex>
+
+            {/* Recommended Section */}
+            <Flex 
+                bg="white" 
+                w="100vw"
+                direction="column"
+                pt="8"
+            >
+                <Text 
+                    textStyle="2xl"
+                    color="black"
+                    fontWeight="bold"
+                    m="4"
+                > 
+                    Recommended For You
+                </Text>
+                {isLoading ? (
+                    <Center py="8">
+                        <Spinner size="xl" color="teal.500" />
+                    </Center>
+                ) : error ? (
+                    <Center py="8">
+                        <Text color="red.500">Failed to load recommendations</Text>
+                    </Center>
+                ) : recommendedRecipes.length === 0 ? (
+                    <Center py="8">
+                        <Text color="gray.500">Explore recipes to get personalized recommendations</Text>
+                    </Center>
+                ) : (
+                    <Flex 
+                        direction="row" 
+                        w="full"
+                        gap="6" 
+                        align="center"
+                        mb='12'
+                        wrap="wrap" 
+                        justify="center"
+                        justifyContent="center"
+                    >
+                        <Recipes recipes={recommendedRecipes} />
+                    </Flex>
+                )}
+            </Flex>
+
+            {/* Trending Section */}
             <Flex 
                 bg="white" 
                 w="100vw"

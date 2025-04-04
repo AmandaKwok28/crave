@@ -6,7 +6,7 @@ import { bookmarkRecipe, fetchRecipe, likeRecipe, unbookmarkRecipe, unlikeRecipe
 import { RecipeType } from "@/data/types";
 import { useAuth } from "@/hooks/use-auth";
 import useSimilarRecipes from "@/hooks/use-similar-recipes";
-import { useRecentlyViewed } from "@/hooks/use-recently-viewed";
+import useRecentlyViewed from "@/hooks/use-recently-viewed";
 import { Box, ButtonGroup, Center, Flex, Spinner, Image, Text, Button, HStack } from "@chakra-ui/react";
 import { Bookmark, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -322,7 +322,7 @@ const ViewRecipe = ({ recipe_id }: {
         </Flex>
       </Flex>
 
-      {/* Similar Recipes Section - now positioned at the bottom */}
+      {/* Similar Recipes Section */}
       <Box width="full" mt="8" px="4">
         {loading ? (
             <Center py={8}>

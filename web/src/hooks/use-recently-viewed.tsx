@@ -10,7 +10,7 @@ interface UseRecentlyViewedReturn {
   refreshRecentlyViewed: () => Promise<void>;
 }
 
-export function useRecentlyViewed(): UseRecentlyViewedReturn {
+export default function useRecentlyViewed(): UseRecentlyViewedReturn {
   const [recentlyViewed, setRecentlyViewed] = useState<RecipeType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
