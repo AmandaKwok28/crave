@@ -55,6 +55,7 @@ model User {
   session      Session[]
   avatarImage  String?    // should be optional
   recentlyViewed RecentlyViewed[]
+  recommendedRecipes RecommendedRecipe[]
 }
 
 model Session {
@@ -125,7 +126,12 @@ model Recipe {
  
   // New relation to feature vector
   featureVector RecipeFeatureVector?
+
+  // comments
+  comments   Comment[] @relation("RecipeComments")
   viewedBy RecentlyViewed[]
+
+  recommendedRecipes RecommendedRecipe[]
 }
 
 model Allergen {
@@ -148,3 +154,28 @@ model RecipeSimilarity {
   @@unique([baseRecipeId, similarRecipeId])
   @@index([baseRecipeId, similarityScore(sort: Desc)])
 }
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  content   String
+  recipeId  Int
+  recipe    Recipe   @relation("RecipeComments", fields: [recipeId], references: [id], onDelete: Cascade)
+}
+
+model RecommendedRecipe {
+  id               Int      @id @default(autoincrement())
+  userId           String  
+  recipeId         Int
+  similarityScore  Float
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Relation to User
+  recipe           Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade) // Relation to Recipe
+}
+
+
+
+
+
+
+

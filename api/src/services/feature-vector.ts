@@ -39,9 +39,11 @@ export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     const scriptPath = path.join(__dirname, '../../scripts/generate_vector.py');
+    const quotedScriptPath = `"${scriptPath}"`; // Wrap in quotes for paths with spaces
+    const quotedTempFile = `"${tempFile}"`;
     
     // Run the Python script with the batch of recipes
-    const { stdout, stderr } = await execAsync(`python3 ${scriptPath} "${tempFile}"`);
+    const { stdout, stderr } = await execAsync(`python ${quotedScriptPath} ${quotedTempFile}`);
     
     if (stderr) {
       console.log('Python:', stderr);
