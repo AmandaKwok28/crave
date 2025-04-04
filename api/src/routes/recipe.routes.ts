@@ -157,7 +157,7 @@ router.get('/:id/recommended', async(req, res) => {
         },
       },
     });
-    res.json(recommendedRecipes);
+    res.json(recipes);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch similar recipes' })
   }
