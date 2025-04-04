@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
     sources, 
     prepTime 
   } = req.body;
-
+  console.log('here')
   try {
     const recipe = await prisma.recipe.create({
       data: {
