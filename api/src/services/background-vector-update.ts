@@ -55,8 +55,10 @@ export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
         where: { userId: user.id },
         orderBy: { viewedAt: "desc" },
         take: batchSize,
-        select: { recipeId: true }, // ⬅️ Make sure you're selecting the actual recipeId
+        select: { recipeId: true },
       });
+
+      // console.log(recentlyViewed)
 
       if (recentlyViewed.length === 0) continue;
       console.log('Recently viewed recipes fetched!')
@@ -87,6 +89,12 @@ export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
         where: { recipeId: { notIn: recipeIds } },
         select: { recipeId: true, vector: true },
       });
+
+      if (otherRecipes.length === 0) {
+        console.log('Not enough recipes to generate recommended')
+        continue;
+      }
+
 
       // calculate similarity between the averaged vector and all other recipes
       const similarityScores = otherRecipes
@@ -131,7 +139,7 @@ export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
         }))
       });
 
-      console.log('Finsihed generating recommended recipes!')
+      console.log('Finished generating recommended recipes!')
 
     }
 
