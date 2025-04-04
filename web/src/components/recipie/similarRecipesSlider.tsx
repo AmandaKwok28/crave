@@ -7,12 +7,14 @@ import { Suspense, useRef } from "react";
 
 import Slider from 'react-slick';
 
+// Update the interface in similarRecipesSlider.tsx
 interface SimilarRecipesSliderProps {
   recipes: RecipeType[];
-  currentRecipeId?: number; // Make it optional since it's not being used
+  currentRecipeId?: number; 
+  title?: string; // Add optional title prop
 }
 
-const SimilarRecipesSlider = ({ recipes }: SimilarRecipesSliderProps) => {
+const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRecipesSliderProps) => {
   const sliderRef = useRef<any>(null);
   
   // recipes is a list of similar recipes
@@ -68,7 +70,7 @@ const SimilarRecipesSlider = ({ recipes }: SimilarRecipesSliderProps) => {
   
   return (
     <Box width="100%" maxWidth="100vw" my={8} px={16} position="relative">
-      <Heading size="lg" ml={4} mb={4}>Similar Recipes</Heading>
+      {title && <Heading size="lg" ml={4} mb={4}>{title}</Heading>}
       
       <Box
         width="100%"

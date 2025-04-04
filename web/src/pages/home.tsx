@@ -11,6 +11,7 @@ import {Box,
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import useRecommendedRecipes from "@/hooks/use-recommended-recipes";
 import Recipes from "@/components/recipie/recipes";
+import SimilarRecipesSlider from "@/components/recipie/similarRecipesSlider";
 import { SearchIcon } from "lucide-react";
 import { setFilters, setSearchTerm } from "@/lib/store";
 import Prices from "@/components/search/prices";
@@ -148,12 +149,7 @@ const Home = () => {
             </Flex>
 
             {/* Recommended Section */}
-            <Flex 
-                bg="white" 
-                w="100vw"
-                direction="column"
-                pt="8"
-            >
+            <Box width="100%" pt="8">
                 <Text 
                     textStyle="2xl"
                     color="black"
@@ -175,20 +171,15 @@ const Home = () => {
                         <Text color="gray.500">Explore recipes to get personalized recommendations</Text>
                     </Center>
                 ) : (
-                    <Flex 
-                        direction="row" 
-                        w="full"
-                        gap="6" 
-                        align="center"
-                        mb='12'
-                        wrap="wrap" 
-                        justify="center"
-                        justifyContent="center"
-                    >
-                        <Recipes recipes={recommendedRecipes} />
-                    </Flex>
+                    <Box width="full" px="4" mb="12">
+                        <SimilarRecipesSlider 
+                            recipes={recommendedRecipes} 
+                            currentRecipeId={undefined} 
+                            title="" // Pass your custom title
+                        />
+                    </Box>
                 )}
-            </Flex>
+            </Box>
 
             {/* Trending Section */}
             <Flex 
