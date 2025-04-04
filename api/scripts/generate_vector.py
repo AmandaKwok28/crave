@@ -31,7 +31,8 @@ try:
     
     for recipe in recipes:
         # Prepare the text for embedding
-        recipe_text = f"{recipe['title']} {recipe['description'] or ''} {' '.join(recipe['ingredients'])} {' '.join(recipe['instructions'])} {' number of likes: '.join(recipe['likes'])} meal types: {' '.join(recipe['mealTypes'])}"
+        # {' number of likes: '.join(recipe['likes'])} meal types: {' '.join(recipe['mealTypes'])}
+        recipe_text = f"{recipe['title']} {recipe['description'] or ''} {' '.join(recipe['ingredients'])} {' '.join(recipe['instructions'])}"
         recipe_texts.append(recipe_text)
         recipe_ids.append(recipe['id'])
 

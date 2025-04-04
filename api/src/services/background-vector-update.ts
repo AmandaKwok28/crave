@@ -40,15 +40,17 @@ export async function processUnvectorizedRecipes(batchSize = 10, maxSimilarities
 }
 
 // get the user also...
-export async function recommendedRecipes(batchSize=10, maxSimilarities=10) {
+export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
 
   try {
 
     // get all the users and find recommended for each user
+    console.log('Fetching users to create recommendations')
     const users = await prisma.user.findMany();     
     for (const user of users) {
 
       // get the recently viewed up to the most recent n (determined by batchsize)
+      console.log('Fetching recently viewed recipes')
       const recentlyViewed = await prisma.recentlyViewed.findMany({   
         where: { userId: user.id },
         orderBy: { viewedAt: "desc" },
@@ -56,14 +58,19 @@ export async function recommendedRecipes(batchSize=10, maxSimilarities=10) {
       }); 
 
       if (recentlyViewed.length === 0) return;
+      console.log('Recently viewed recipes fetched!')
 
       // get the average feature vector
+      console.log('Creating average feature vector')
       const recipeIds = recentlyViewed.map(recipe => recipe.id);
       const featureVectors = await prisma.recipeFeatureVector.findMany({              
         where: { recipeId: { in: recipeIds } }
       });
 
-      if (featureVectors.length < recentlyViewed.length) return;           // find a more elegant way to deal with this later
+      if (featureVectors.length < recentlyViewed.length) { // find a more elegant way to deal with this later
+        console.log('Failed to get feature vectors for recently viewed recipes') 
+        return;
+      }           
 
       const vectorSize = featureVectors[0].vector.length;
       const averagedVector = new Array(vectorSize).fill(0);
@@ -100,6 +107,8 @@ export async function recommendedRecipes(batchSize=10, maxSimilarities=10) {
           similarityScore: rec.similarity,    // has the similarity score
         }))
       });
+
+      console.log('Finsihed generating recommended recipes!')
 
     }
 

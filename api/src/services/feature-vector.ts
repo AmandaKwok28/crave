@@ -32,7 +32,6 @@ export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<
     
     // Remove 'const' to update the outer variable instead of creating a new one
     tempFile = path.join(os.tmpdir(), `recipes_${Date.now()}.json`);
-    console.log(tempFile)
     fs.writeFileSync(tempFile, JSON.stringify(recipes), 'utf8');
     console.log(`Wrote recipe data to temporary file: ${tempFile}`);
     
@@ -40,9 +39,11 @@ export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     const scriptPath = path.join(__dirname, '../../scripts/generate_vector.py');
+    const quotedScriptPath = `"${scriptPath}"`; // Wrap in quotes for paths with spaces
+    const quotedTempFile = `"${tempFile}"`;
     
     // Run the Python script with the batch of recipes
-    const { stdout, stderr } = await execAsync(`python3 ${scriptPath} "${tempFile}"`);
+    const { stdout, stderr } = await execAsync(`python ${quotedScriptPath} ${quotedTempFile}`);
     
     if (stderr) {
       console.log('Python:', stderr);
