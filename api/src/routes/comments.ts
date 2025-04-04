@@ -12,7 +12,6 @@ const getSchema = z.object({
 });
 
 const createSchema = z.object({
-    id: z.number(),
     content: z.string().nonempty(),
 });
 
@@ -48,41 +47,41 @@ comments_route.get('/:recipeId/comments', async(req, res) => {    // has to take
 })
 
 // create
-comments_route.post('/:recipeId', async(req, res) => {
+comments_route.post('/recipe/:recipeId/comments', async (req, res) => {
     const request = createSchema.safeParse(req.body);
     if (!request.success) {
         res.status(400).json({
-            message: "invalid id",
+            message: "invalid input",
             error: request.error.flatten().fieldErrors
-        })
-
+        });
         return;
     }
 
-    const {content, id} = request.data;
+    const { content } = request.data;
+    const recipeId = parseInt(req.params.recipeId);
 
     const recipe = await prisma.recipe.findUnique({
-        where: { id: id }
+        where: { id: recipeId }
     });
 
     if (!recipe) {
         res.status(404).json({ message: "Recipe not found" });
+        return;
     }
 
-    // make a new comment
     const comment = await prisma.comment.create({
         data: {
             content,
-            recipeId: id  
+            recipeId
         }
     });
 
     res.status(201).json({
         message: "Comment created successfully",
-        comment: comment
+        comment
     });
+});
 
-})
 
 
 // delete
