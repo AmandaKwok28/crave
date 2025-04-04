@@ -30,7 +30,9 @@ export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<
         cuisine: true,
         allergens: true,
         sources: true,
-        prepTime: true
+        prepTime: true,
+        likes: true,
+        bookmarks: true
       }
     });
 
