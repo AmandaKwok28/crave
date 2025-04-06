@@ -28,6 +28,26 @@ DATABASE_URL=<YOUR_URL_HERE>
 OPEN_AI_KEY=<YOUR_OPENAI_API_KEY_HERE>
 ```
 
+### Setting up python
+
+Our backend runs a python script to generate feature vectors for recipes. In order for the script to run properly, make sure you have
+python version 3.10 installed. navigate to `api/scripts/` and run
+
+```bash
+pip install -r requirements.txt
+```
+
+If you have python installed in a conda environment and would rather install the requirements file inside of that environement, run 
+the following command to to list your environemnts and choose the correct one:
+
+```bash
+conda env list                    # get a list of conda environements on your local machine
+conda activate my_env             # activate your environment
+pip install -r requirements.txt   # install the requirements
+```
+
+
+
 ## Developing
 
 Starting from the root folder, you can run these commands:
