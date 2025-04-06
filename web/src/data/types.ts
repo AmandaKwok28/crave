@@ -85,3 +85,10 @@ export interface CommentType {
   author: AuthorType;
   content: string;
 };
+
+export interface LikeType {
+  id: number;
+  recipeId: number;
+  userId: string;
+  date: string;
+}
