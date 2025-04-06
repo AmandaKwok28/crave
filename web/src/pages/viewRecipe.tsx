@@ -6,6 +6,7 @@ import { bookmarkRecipe, fetchRecipe, likeRecipe, unbookmarkRecipe, unlikeRecipe
 import { RecipeType } from "@/data/types";
 import { useAuth } from "@/hooks/use-auth";
 import useSimilarRecipes from "@/hooks/use-similar-recipes";
+import useRecentlyViewed from "@/hooks/use-recently-viewed";
 import { Box, ButtonGroup, Center, Flex, Spinner, Image, Text, Button, HStack } from "@chakra-ui/react";
 import { Bookmark, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -15,12 +16,21 @@ const ViewRecipe = ({ recipe_id }: {
   recipe_id: number; 
 }) => {
   const { user } = useAuth();
+  const { markAsViewed } = useRecentlyViewed();
 
   const [ recipe, setRecipe ] = useState<RecipeType | null>();
   const [ refresh, setRefresh ] = useState<boolean>(true);
 
   // Fetch similar recipes from the API
   const { similarRecipes, loading, error } = useSimilarRecipes(recipe_id);
+
+  // Mark recipe as viewed when the page loads
+  useEffect(() => {
+    if (recipe_id) {
+      markAsViewed(recipe_id)
+        .catch(err => console.error("Failed to mark recipe as viewed:", err));
+    }
+  }, [recipe_id, markAsViewed]);
 
   useEffect(() => {
     if (!refresh) {
@@ -89,227 +99,231 @@ const ViewRecipe = ({ recipe_id }: {
   }
   
   return (
-    <Flex direction="row" alignContent="flex-start">
+    <Flex direction="column" alignContent="flex-start">
       <NavBar/>
 
-      <Flex direction="column" alignItems="flex-start" p="4" ml="2vw" gap='4'>
-          <Text
-              textStyle="5xl"
-              textAlign="left"
-              fontWeight="bold"
-              mt="5vh"
-          >
-              {recipe.title}
-          </Text>
-
-            {/* Adding image here */}
-            <Image rounded="md" src={recipe.image ? recipe.image : '/img_placeholder.jpg'} w='30vw' />
-
-            <HStack>
-              <Button
-                variant='ghost'
-                color={recipe.liked ? 'red.400' : 'gray.600'}
-                onClick={likeCallback}
-              >
-                {recipe.likes} <Heart />
-              </Button>
-
-              <Button
-                variant='ghost'
-                color={recipe.bookmarked ? 'blue.400' : 'gray.600'}
-                onClick={bookmarkCallback}
-              >
-                <Bookmark />
-              </Button>
-            </HStack>
-
+      <Flex direction="row" width="full">
+        <Flex direction="column" alignItems="flex-start" p="4" ml="2vw" gap='4'>
             <Text
-              fontSize='md'
-              fontWeight='light'
-              fontStyle='italic'
-              whiteSpace='pre-line'
+                textStyle="5xl"
+                textAlign="left"
+                fontWeight="bold"
+                mt="5vh"
             >
-              {recipe.description}
-          </Text>
-      </Flex>
+                {recipe.title}
+            </Text>
 
-      <Flex direction="column" alignItems="flex-start" p="4" gap="4" mt="28">
-          <Text
-            fontSize="2xl"
-            fontWeight="bold"
-            ml="4rem"
-          >
-            Ingredients
-          </Text>
-          <Flex ml="6rem">
-            <DisplayIngredients ingredients={recipe.ingredients} />
-          </Flex>
+              {/* Adding image here */}
+              <Image rounded="md" src={recipe.image ? recipe.image : '/img_placeholder.jpg'} w='30vw' />
 
-          {/* Instructions */}
-          <Text
-              ml="4rem"
-              fontSize="2xl"
-              fontWeight="bold"
-              mt="12"
-          > 
-              Instructions
+              <HStack>
+                <Button
+                  variant='ghost'
+                  color={recipe.liked ? 'red.400' : 'gray.600'}
+                  onClick={likeCallback}
+                >
+                  {recipe.likes} <Heart />
+                </Button>
+
+                <Button
+                  variant='ghost'
+                  color={recipe.bookmarked ? 'blue.400' : 'gray.600'}
+                  onClick={bookmarkCallback}
+                >
+                  <Bookmark />
+                </Button>
+              </HStack>
+
               <Text
-                  fontSize='md'
-                  fontWeight='normal'
-                  whiteSpace='pre-line'
+                fontSize='md'
+                fontWeight='light'
+                fontStyle='italic'
+                whiteSpace='pre-line'
               >
-                  {recipe.instructions}
-              </Text>
-          </Text>
-
-          {/* Add tags info */}
-          <Text
-              ml="4rem"
-              fontSize="2xl"
-              fontWeight="bold"
-              mt="12"
-          > 
-              Tags
-          </Text>
-          <Flex 
-              direction="row"
-              ml="4rem"
-              fontSize="md"
-              fontWeight='normal'
-              gap="2"
-              wrap="wrap"
-              w="40vw"
-          >
-              <Box 
-                  borderRadius="10px"
-                  borderWidth="1px"
-                  p="1"
-                  px="4"
-                  display="flex" // Enables flexbox
-                  alignItems="center" // Centers content vertically
-                  justifyContent="center" // Centers content horizontally
-                  w="fit-content"
-                  mt="2"
-                  bgGradient="to-r"
-                  gradientFrom="blue.300"
-                  gradientTo="blue.500"
-                  color="white"
-              > 
-                  Price: {priceVal}
-              </Box>
-
-              <Box 
-                  borderRadius="10px"
-                  borderWidth="1px"
-                  p="1"
-                  px="2"
-                  alignItems="center" 
-                  justifyContent="center" 
-                  w="fit-content"
-                  mt="2"
-                  bgGradient="to-r"
-                  gradientFrom="cyan.300"
-                  gradientTo="blue.400"
-                  color="white"
-              > 
-                  Cuisine: {recipe.cuisine ? recipe.cuisine.toLowerCase() : ""}
-              </Box>
-
-              {recipe.allergens.map((a) => {
-                  return (
-                      <Box 
-                          key={a}
-                          borderRadius="10px"
-                          borderWidth="1px"
-                          p="1"
-                          px="2"
-                          display="flex" // Enables flexbox
-                          alignItems="center" // Centers content vertically
-                          justifyContent="center" // Centers content horizontally
-                          mt="2"
-                          bgGradient="to-r"
-                          gradientFrom="red.500"
-                          gradientTo="red.700"
-                          color="white"
-                      > 
-                          Allergens: {a}
-                      </Box>
-                  )
-              })}
-
-              <Box 
-                  borderRadius="10px"
-                  borderWidth="1px"
-                  p="1"
-                  px="2"
-                  display="flex" 
-                  alignItems="center" 
-                  justifyContent="center"
-                  mt="2"
-                  bgGradient="to-r"
-                  gradientFrom="cyan.400"
-                  gradientTo="purple.700"
-                  color="white"
-              > 
-                  Difficulty: {recipe.difficulty ? recipe.difficulty.toLowerCase() : ""}
-              </Box>
-
-              {recipe.mealTypes && (
-                  <Flex direction="row" gap="4" mt="2">
-                      {recipe.mealTypes.map((type) => {
-                          return (
-                              <Box 
-                                  key={type}
-                                  borderRadius="10px"
-                                  borderWidth="1px"
-                                  p="1"
-                                  px="2"
-                                  display="flex" // Enables flexbox
-                                  alignItems="center" // Centers content vertically
-                                  justifyContent="center" // Centers content horizontally
-                                  bgGradient="to-r"
-                                  gradientFrom="teal.300"
-                                  gradientTo="green.400"
-                                  color="white"
-                              > 
-                                  Meal Types: {type}
-                              </Box>
-                          )
-                      })}
-                      
-                  </Flex>
-              )}
-
-              {recipe.sources && (
-                  <Flex direction="row" gap="4" mt="2">
-                      {recipe.sources.map((source) => {
-                          return (
-                              <Box 
-                                  key={source}
-                                  borderRadius="10px"
-                                  borderWidth="1px"
-                                  p="1"
-                                  px="2"
-                                  display="flex" 
-                                  alignItems="center" 
-                                  justifyContent="center" 
-                                  bgGradient="to-r"
-                                  gradientFrom="purple.300"
-                                  gradientTo="purple.500"
-                                  color="white"
-                              > 
-                                  {source}
-                              </Box>
-                          )
-                      })}
-                      
-                  </Flex>
-              )}      
-
-          </Flex>
+                {recipe.description}
+            </Text>
         </Flex>
 
-        {/* Display loading spinner while fetching similar recipes */}
+        <Flex direction="column" alignItems="flex-start" p="4" gap="4" mt="28">
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              ml="4rem"
+            >
+              Ingredients
+            </Text>
+            <Flex ml="6rem">
+              <DisplayIngredients ingredients={recipe.ingredients} />
+            </Flex>
+
+            {/* Instructions */}
+            <Box ml="4rem" mt="12">
+                <Text
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    mb="2"
+                > 
+                    Instructions
+                </Text>
+                <Text
+                    fontSize='md'
+                    fontWeight='normal'
+                    whiteSpace='pre-line'
+                >
+                    {recipe.instructions}
+                </Text>
+            </Box>
+
+            {/* Add tags info */}
+            <Text
+                ml="4rem"
+                fontSize="2xl"
+                fontWeight="bold"
+                mt="12"
+            > 
+                Tags
+            </Text>
+            <Flex 
+                direction="row"
+                ml="4rem"
+                fontSize="md"
+                fontWeight='normal'
+                gap="2"
+                wrap="wrap"
+                w="40vw"
+            >
+                <Box 
+                    borderRadius="10px"
+                    borderWidth="1px"
+                    p="1"
+                    px="4"
+                    display="flex" // Enables flexbox
+                    alignItems="center" // Centers content vertically
+                    justifyContent="center" // Centers content horizontally
+                    w="fit-content"
+                    mt="2"
+                    bgGradient="to-r"
+                    gradientFrom="blue.300"
+                    gradientTo="blue.500"
+                    color="white"
+                > 
+                    Price: {priceVal}
+                </Box>
+
+                <Box 
+                    borderRadius="10px"
+                    borderWidth="1px"
+                    p="1"
+                    px="2"
+                    alignItems="center" 
+                    justifyContent="center" 
+                    w="fit-content"
+                    mt="2"
+                    bgGradient="to-r"
+                    gradientFrom="cyan.300"
+                    gradientTo="blue.400"
+                    color="white"
+                > 
+                    Cuisine: {recipe.cuisine ? recipe.cuisine.toLowerCase() : ""}
+                </Box>
+
+                {recipe.allergens.map((a) => {
+                    return (
+                        <Box 
+                            key={a}
+                            borderRadius="10px"
+                            borderWidth="1px"
+                            p="1"
+                            px="2"
+                            display="flex" // Enables flexbox
+                            alignItems="center" // Centers content vertically
+                            justifyContent="center" // Centers content horizontally
+                            mt="2"
+                            bgGradient="to-r"
+                            gradientFrom="red.500"
+                            gradientTo="red.700"
+                            color="white"
+                        > 
+                            Allergens: {a}
+                        </Box>
+                    )
+                })}
+
+                <Box 
+                    borderRadius="10px"
+                    borderWidth="1px"
+                    p="1"
+                    px="2"
+                    display="flex" 
+                    alignItems="center" 
+                    justifyContent="center"
+                    mt="2"
+                    bgGradient="to-r"
+                    gradientFrom="cyan.400"
+                    gradientTo="purple.700"
+                    color="white"
+                > 
+                    Difficulty: {recipe.difficulty ? recipe.difficulty.toLowerCase() : ""}
+                </Box>
+
+                {recipe.mealTypes && (
+                    <Flex direction="row" gap="4" mt="2">
+                        {recipe.mealTypes.map((type) => {
+                            return (
+                                <Box 
+                                    key={type}
+                                    borderRadius="10px"
+                                    borderWidth="1px"
+                                    p="1"
+                                    px="2"
+                                    display="flex" // Enables flexbox
+                                    alignItems="center" // Centers content vertically
+                                    justifyContent="center" // Centers content horizontally
+                                    bgGradient="to-r"
+                                    gradientFrom="teal.300"
+                                    gradientTo="green.400"
+                                    color="white"
+                                > 
+                                    Meal Types: {type}
+                                </Box>
+                            )
+                        })}
+                        
+                    </Flex>
+                )}
+
+                {recipe.sources && (
+                    <Flex direction="row" gap="4" mt="2">
+                        {recipe.sources.map((source) => {
+                            return (
+                                <Box 
+                                    key={source}
+                                    borderRadius="10px"
+                                    borderWidth="1px"
+                                    p="1"
+                                    px="2"
+                                    display="flex" 
+                                    alignItems="center" 
+                                    justifyContent="center" 
+                                    bgGradient="to-r"
+                                    gradientFrom="purple.300"
+                                    gradientTo="purple.500"
+                                    color="white"
+                                > 
+                                    {source}
+                                </Box>
+                            )
+                        })}
+                        
+                    </Flex>
+                )}      
+
+            </Flex>
+        </Flex>
+      </Flex>
+
+      {/* Similar Recipes Section */}
+      <Box width="full" mt="8" px="4">
         {loading ? (
             <Center py={8}>
                 <Spinner size="xl" color="teal.500" />
@@ -325,9 +339,8 @@ const ViewRecipe = ({ recipe_id }: {
         ) : (
             <SimilarRecipesSlider recipes={similarRecipes} currentRecipeId={recipe_id} />
         )}
-
-
-        
+      </Box>
+      
       {
         recipe.authorId === user.id && (
           <ButtonGroup m="8" position="fixed" bottom="0%" right="0%">

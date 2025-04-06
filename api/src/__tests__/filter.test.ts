@@ -1,12 +1,12 @@
 import { test, expect, vi, describe, beforeEach } from 'vitest';
 import request from 'supertest';
-import { app } from '../index';
-import { prisma } from '../lib/__mocks__/prisma';
+import { app } from '../index.js';
+import { prisma } from '../lib/__mocks__/prisma.js';
 import { Cuisine, Difficulty, Price } from '@prisma/client';
 
 // Mock the Prisma client
 vi.mock('../../prisma/db', async () => {
-  const actual = await vi.importActual<typeof import('../lib/__mocks__/prisma')>('../lib/__mocks__/prisma');
+  const actual = await vi.importActual<typeof import('../lib/__mocks__/prisma.js')>('../lib/__mocks__/prisma.js');
   return {
     ...actual
   };

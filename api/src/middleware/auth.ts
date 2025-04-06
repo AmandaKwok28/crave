@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { deleteSessionTokenCookie, validateSessionToken } from "../lib/session";
+import type { Request, Response } from "express";
+import { deleteSessionTokenCookie, validateSessionToken } from "../lib/session.js";
 
 export async function auth(req: Request, res: Response, next: (err?: any) => void) {
   const token = req.cookies['session'];

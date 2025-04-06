@@ -17,7 +17,7 @@ Next, clone the repository and navigate to the `web/` folder and run `pnpm insta
 
 Then, navigate to the `api/` folder and run `pnpm install`
 
-For a database, you can either use a local PostgreSQL instance, or you can create an external one with [prisma](https://console.prisma.io/cm76k5lgv04fom2dzj2ohv0rm/overview). Either way, you'll have a database URL you should save in a `.env` file. 
+For a database, you can either use a local PostgreSQL instance, or you can create an external one with [prisma](https://console.prisma.io/cm76k5lgv04fom2dzj2ohv0rm/overview). Either way, you'll have a database URL you should save in a `.env` file.
 
 Furthermore, you need to provide your own OpenAI API key to use our AI-powered features. If you don’t have one, you can get it from OpenAI's API key page. If you're testing the app without using AI features, you can leave OPEN_AI_KEY empty or use a placeholder value.
 
@@ -50,11 +50,9 @@ Additionally, in the api folder, create a .env file with the following:
 
 ## Seeding
 
-WARNING: if you seed the database it will remove all current users to avoid unique email conflicts. If you don't want to get rid of the current database values don't
-run the seed comand.
+WARNING: if you seed the database it will remove all current users to avoid unique email conflicts. If you don't want to get rid of the current database values don't run the seed comand.
 
-from the api folder after setting up the development backend you can run this command to seed the database with some test data
-
+From the api folder after setting up the development backend you can run this command to seed the database with some test data:
 
 ```bash
 pnpm prisma db seed
@@ -98,11 +96,11 @@ Adding additional frontend & E2E tests is also easy. Navigate to the `web/cypres
 
 ## Deployment
 
-To build a release version of the frontend, run ```pnpm build``` within the `web/` directory, and then run `pnpm preview` to check out the build before deployment.
+To build a release version of the frontend, run ```pnpm build``` within the `web/` directory, and then run `pnpm preview` to check out the build before deployment. Building a release version of the backend, also run ```pnpm build``` but within the `api/` directory, and the generated build can be ran as a regular Node.JS script.
 
-frontend deployment: <https://crave-v3pt.onrender.com>
+Public Frontend deployment: <https://crave-v3pt.onrender.com>
 
-backend deployment: <https://team-05-db.onrender.com>
+Public Backend deployment: <https://team-05-db.onrender.com>
 
 ## Deployment
 
@@ -114,6 +112,7 @@ To deploy, push the docker image to docker hub, ssh to the gcp-vm and pull it do
 e.g. : ```sudo docker run -d -p 3000:3000 --name Crave-container lllllaplus/team05-app_amd64:latest```
 
 And the app will be deployed at <https://team05.zapto.org/>.
+
 
 
 ## Contributing
