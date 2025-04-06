@@ -444,7 +444,7 @@ export const fetchComments = async (recipe_id: string | number): Promise<Comment
 
 // Create comment on a recipe
 export const createComment = async (recipe_id: string | number, content: string, userId: string): Promise<CommentType> => {
-  const response = await fetch(`${API_URL}/recipe/${recipe_id}`, {
+  const response = await fetch(`${API_URL}/recipe/${recipe_id}/comments`, {
     method: 'POST',
     headers: { "Content-Type": "application/json" },
     credentials: 'include',
