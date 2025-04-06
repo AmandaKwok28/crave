@@ -152,7 +152,7 @@ const Home = () => {
                     color="black"
                     fontWeight="bold"
                     m="4"> 
-                    Trending
+                    Recipes:
                 </Text>
                 <Flex 
                     direction="row" 
@@ -164,7 +164,7 @@ const Home = () => {
                     justify="center"
                     justifyContent="center"
                 >
-                    <TrendingRecipes recipes={recipes}/>
+                    <Recipes recipes={recipes}/>
                 </Flex>
             </Flex>
         </Flex>

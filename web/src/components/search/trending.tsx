@@ -33,8 +33,8 @@ const TrendingRecipes = ({recipes}:{recipes:RecipeType[]}) => {
                 currRecipeScore += 1 / (1 + Math.abs(searchDate.getTime() - new Date(currRecipeLikes[i].date).getTime()) );
             }
             
-            // if trending list < 5 add to list
-            if (trendingRecipes.length < 5) {
+            // if trending list < 3 add to list
+            if (trendingRecipes.length < 3) {
                 trendingRecipes.push([recipe, currRecipeScore]);
             } else { // else sort trending list compare to smallest replace if curr recipe score is larger
                 trendingRecipes.sort((a, b) => a[1] - b[1]);
@@ -55,7 +55,7 @@ const TrendingRecipes = ({recipes}:{recipes:RecipeType[]}) => {
     
 
     return (
-        <Stack>
+        <Stack >
             <Flex>
                 <Button 
                     borderRadius="10px"

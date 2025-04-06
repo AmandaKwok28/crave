@@ -2,7 +2,7 @@ import TagInput from "@/components/search/tagInput";
 import { Search as SearchIcon } from "lucide-react";
 import { Box, Flex, Input, Text} from "@chakra-ui/react";
 import { useStore } from "@nanostores/react";
-import { $filters, $searchTerm, setFilters, setSearchTerm } from "@/lib/store";
+import { $filters, $searchTerm, setFilters, setSearchTerm, } from "@/lib/store";
 import Prices from "./prices";
 import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
@@ -140,7 +140,6 @@ const Sidebar = () => {
             <Box mb="12">
 
             </Box>
-           
 
             
         </Flex>
