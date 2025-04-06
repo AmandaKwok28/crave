@@ -386,6 +386,49 @@ export const editAvatarUrl = async (email: string, url: string): Promise<UserTyp
 
 }
 
+// Mark a recipe as recently viewed
+export const markRecipeAsViewed = async (recipeId: number): Promise<void> => {
+  const response = await fetch(`${API_URL}/user/recently-viewed/${recipeId}`, {
+    method: 'POST',
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+};
+
+// Fetch recently viewed recipes
+export const fetchRecentlyViewed = async (): Promise<RecipeType[]> => {
+  const response = await fetch(`${API_URL}/user/recently-viewed`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const recentlyViewed: RecipeType[] = await response.json();
+  return recentlyViewed;
+};
+
+// Fetch user recommended recipes
+export const fetchUserRecommendedRecipes = async (limit?: number): Promise<RecipeType[]> => {
+  // Add the limit as a query parameter if provided
+  const queryParams = limit ? `?limit=${limit}` : '';
+  
+  const response = await fetch(`${API_URL}/user/recommended${queryParams}`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const recommendedRecipes: RecipeType[] = await response.json();
+  return recommendedRecipes;
+}
+
 // Fetch all comments for a given recipe
 export const fetchComments = async (recipe_id: string | number): Promise<CommentType[]> => {
   const response = await fetch(`${API_URL}/recipe/${recipe_id}/comments`, {

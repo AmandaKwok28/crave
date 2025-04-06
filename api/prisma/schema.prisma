@@ -29,6 +29,19 @@ model Bookmark {
   @@unique([recipeId, userId], name: "bookmarkId")
 }
 
+model RecentlyViewed {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  recipeId  Int
+  viewedAt  DateTime @default(now()) @updatedAt
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, recipeId])
+  @@index([userId, viewedAt(sort: Desc)])
+}
+
 model User {
   id           String       @id @default(uuid())
   email        String    @unique
@@ -42,6 +55,8 @@ model User {
   recipes      Recipe[]
   session      Session[]
   avatarImage  String?    // should be optional
+  recentlyViewed RecentlyViewed[]
+  recommendedRecipes RecommendedRecipe[]
 }
 
 model Session {
@@ -115,6 +130,9 @@ model Recipe {
 
   // comments
   comments   Comment[] @relation("RecipeComments")
+  viewedBy RecentlyViewed[]
+
+  recommendedRecipes RecommendedRecipe[]
 }
 
 model Allergen {
@@ -147,4 +165,21 @@ model Comment {
   authorId  String
   author    User     @relation(fields: [authorId], references: [id])
 }
+
+model RecommendedRecipe {
+  id               Int      @id @default(autoincrement())
+  userId           String  
+  recipeId         Int
+  similarityScore  Float
+  createdAt        DateTime @default(now())
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Relation to User
+  recipe           Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade) // Relation to Recipe
+}
+
+
+
+
+
+
 

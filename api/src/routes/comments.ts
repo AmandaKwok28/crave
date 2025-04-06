@@ -58,10 +58,9 @@ comments_route.post('/recipe/:recipeId', async(req, res) => {
     const request = createSchema.safeParse(req.body);
     if (!request.success) {
         res.status(400).json({
-            message: "invalid id",
+            message: "invalid input",
             error: request.error.flatten().fieldErrors
-        })
-
+        });
         return;
     }
 
@@ -73,6 +72,7 @@ comments_route.post('/recipe/:recipeId', async(req, res) => {
 
     if (!recipe) {
         res.status(404).json({ message: "Recipe not found" });
+        return;
     }
 
     const author = await prisma.user.findUnique({
