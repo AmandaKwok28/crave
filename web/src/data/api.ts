@@ -1,4 +1,4 @@
-import { Cuisine, Difficulty, Price, RecipeType, TagsResponse, UserType } from "./types";
+import { CommentType, Cuisine, Difficulty, Price, RecipeType, TagsResponse, UserType } from "./types";
 import { API_URL } from "@/env";
 
 // Fetch all users
@@ -10,7 +10,6 @@ export const fetchUsers = async (): Promise<UserType[]> => {
     throw new Error(`API request failed! with status: ${response.status}`);
   }
   const data: UserType[] = await response.json();
-  console.log(data);
   return data;
 };
 
@@ -233,7 +232,6 @@ export const createRecipe = async (
         image
       }),
     });
-    console.log(response)
     if (!response.ok) {
       throw new Error(`API request failed! with status: ${response.status}`);
     }
@@ -430,3 +428,50 @@ export const fetchUserRecommendedRecipes = async (limit?: number): Promise<Recip
   const recommendedRecipes: RecipeType[] = await response.json();
   return recommendedRecipes;
 }
+
+// Fetch all comments for a given recipe
+export const fetchComments = async (recipe_id: string | number): Promise<CommentType[]> => {
+  const response = await fetch(`${API_URL}/recipe/${recipe_id}/comments`, {
+    method: 'GET',
+    credentials: 'include'
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const comments: CommentType[] = await response.json();
+  return comments;
+};
+
+// Create comment on a recipe
+export const createComment = async (recipe_id: string | number, content: string, userId: string): Promise<CommentType> => {
+  const response = await fetch(`${API_URL}/recipe/${recipe_id}/comments`, {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
+    body: JSON.stringify({
+      content,
+      id: recipe_id,
+      authorId: userId,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const comment: CommentType = await response.json();
+  return comment;
+};
+
+// Delete comment on a recipe
+export const deleteComment = async (recipe_id: string | number, commentId: number) : Promise<boolean> => {
+  const response = await fetch(`${API_URL}/recipe/${recipe_id}/comments/${commentId}`, {
+    credentials: 'include',
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  return true;
+};
+

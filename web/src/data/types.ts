@@ -51,7 +51,7 @@ export interface RecipeType {
   difficulty: Difficulty;
   sources: string[];
   prepTime: number;
-  image?: string
+  image?: string;
 }
 
 export interface AuthorType {
@@ -78,6 +78,14 @@ export interface TagsResponse {
     mealTypes: string[]
   }
 }
+
+export interface CommentType {
+  id: number;
+  createdAt: string;
+  recipeId: number;
+  author: AuthorType;
+  content: string;
+};
 
 export interface LikeType {
   id: number;
