@@ -96,14 +96,6 @@ Adding additional frontend & E2E tests is also easy. Navigate to the `web/cypres
 
 ## Deployment
 
-To build a release version of the frontend, run ```pnpm build``` within the `web/` directory, and then run `pnpm preview` to check out the build before deployment. Building a release version of the backend, also run ```pnpm build``` but within the `api/` directory, and the generated build can be ran as a regular Node.JS script.
-
-Public Frontend deployment: <https://crave-v3pt.onrender.com>
-
-Public Backend deployment: <https://team-05-db.onrender.com>
-
-## Deployment
-
 To build a docker image for deployment, run ```docker build --platform linux/amd64 -t <image_name> .``` at the root directory.
 To deploy, push the docker image to docker hub, ssh to the gcp-vm and pull it down, run:
 
@@ -112,7 +104,6 @@ To deploy, push the docker image to docker hub, ssh to the gcp-vm and pull it do
 e.g. : ```sudo docker run -d -p 3000:3000 --name Crave-container lllllaplus/team05-app_amd64:latest```
 
 And the app will be deployed at <https://team05.zapto.org/>.
-
 
 
 ## Contributing

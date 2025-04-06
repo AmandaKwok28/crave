@@ -39,6 +39,7 @@ export interface RecipeType {
   description: string;
   authorId: string;
   published: boolean;
+  likesList: LikeType[];
   likes: number;
   liked: boolean;
   bookmarked: boolean;

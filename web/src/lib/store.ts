@@ -46,6 +46,16 @@ export function addRecipe(recipe: RecipeType) {
     $recipes.set([...$recipes.get(), recipe]);
 }
 
+// trending store
+export const $trendingrecipes = atom<RecipeType[]>([]);
+export function setTrendingRecipes(recipes: RecipeType[]) {
+  $trendingrecipes.set(recipes);
+}
+export const $showSearchTrending = atom<Boolean>(false);
+export function setShowSearchTrending(val: Boolean) {
+  $showSearchTrending.set(val)
+}
+
 // Drafts store
 export const $drafts = persistentAtom<RecipeType[]>('drafts', [], {
   encode: JSON.stringify,
