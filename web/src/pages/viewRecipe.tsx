@@ -6,6 +6,7 @@ import { bookmarkRecipe, fetchRecipe, likeRecipe, unbookmarkRecipe, unlikeRecipe
 import { RecipeType } from "@/data/types";
 import { useAuth } from "@/hooks/use-auth";
 import useSimilarRecipes from "@/hooks/use-similar-recipes";
+import useRecentlyViewed from "@/hooks/use-recently-viewed";
 import { Box, ButtonGroup, Center, Flex, Spinner, Image, Text, Button, HStack } from "@chakra-ui/react";
 import { Bookmark, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -15,12 +16,21 @@ const ViewRecipe = ({ recipe_id }: {
   recipe_id: number; 
 }) => {
   const { user } = useAuth();
+  const { markAsViewed } = useRecentlyViewed();
 
   const [ recipe, setRecipe ] = useState<RecipeType | null>();
   const [ refresh, setRefresh ] = useState<boolean>(true);
 
   // Fetch similar recipes from the API
   const { similarRecipes, loading, error } = useSimilarRecipes(recipe_id);
+
+  // Mark recipe as viewed when the page loads
+  useEffect(() => {
+    if (recipe_id) {
+      markAsViewed(recipe_id)
+        .catch(err => console.error("Failed to mark recipe as viewed:", err));
+    }
+  }, [recipe_id, markAsViewed]);
 
   useEffect(() => {
     if (!refresh) {
@@ -147,13 +157,14 @@ const ViewRecipe = ({ recipe_id }: {
             </Flex>
 
             {/* Instructions */}
-            <Text
-                ml="4rem"
-                fontSize="2xl"
-                fontWeight="bold"
-                mt="12"
-            > 
-                Instructions
+            <Box ml="4rem" mt="12">
+                <Text
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    mb="2"
+                > 
+                    Instructions
+                </Text>
                 <Text
                     fontSize='md'
                     fontWeight='normal'
@@ -161,7 +172,7 @@ const ViewRecipe = ({ recipe_id }: {
                 >
                     {recipe.instructions}
                 </Text>
-            </Text>
+            </Box>
 
             {/* Add tags info */}
             <Text
@@ -311,7 +322,7 @@ const ViewRecipe = ({ recipe_id }: {
         </Flex>
       </Flex>
 
-      {/* Similar Recipes Section - now positioned at the bottom */}
+      {/* Similar Recipes Section */}
       <Box width="full" mt="8" px="4">
         {loading ? (
             <Center py={8}>

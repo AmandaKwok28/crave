@@ -4,9 +4,14 @@ import {Box,
         Flex, 
         Input, 
         Spacer, 
-        Text } from "@chakra-ui/react";
+        Text,
+        Spinner,
+        Center
+} from "@chakra-ui/react";
 import useQueryRecipes from "@/hooks/use-query-recipes";
+import useRecommendedRecipes from "@/hooks/use-recommended-recipes";
 import Recipes from "@/components/recipie/recipes";
+import SimilarRecipesSlider from "@/components/recipie/similarRecipesSlider";
 import { SearchIcon } from "lucide-react";
 import { setFilters, setSearchTerm } from "@/lib/store";
 import Prices from "@/components/search/prices";
@@ -20,7 +25,8 @@ import TrendingRecipes from "@/components/search/trending";
 
 const Home = () => {
     const { recipes } = useQueryRecipes(true);
-    
+    const { recommendedRecipes, isLoading, error } = useRecommendedRecipes(10);
+    console.log(`Recommended recipes length: ${recommendedRecipes?.length || 0}`);
     const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
     const handleCookTimeChange = (details: { value: [number, number] }) => {
         setCookTime(details.value);
@@ -142,6 +148,41 @@ const Home = () => {
                     </Button>
                 </Flex>
             </Flex>
+
+            {/* Recommended Section */}
+            <Box width="100%" pt="8">
+                <Text 
+                    textStyle="2xl"
+                    color="black"
+                    fontWeight="bold"
+                    m="4"
+                > 
+                    Recommended For You
+                </Text>
+                {isLoading ? (
+                    <Center py="8">
+                        <Spinner size="xl" color="teal.500" />
+                    </Center>
+                ) : error ? (
+                    <Center py="8">
+                        <Text color="red.500">Failed to load recommendations</Text>
+                    </Center>
+                ) : recommendedRecipes.length === 0 ? (
+                    <Center py="8">
+                        <Text color="gray.500">Explore recipes to get personalized recommendations</Text>
+                    </Center>
+                ) : (
+                    <Box width="full" px="4" mb="12">
+                        <SimilarRecipesSlider 
+                            recipes={recommendedRecipes} 
+                            currentRecipeId={undefined} 
+                            title="" // Pass your custom title
+                        />
+                    </Box>
+                )}
+            </Box>
+
+            {/* Trending Section */}
             <Flex 
                 bg="white" 
                 w="100vw"

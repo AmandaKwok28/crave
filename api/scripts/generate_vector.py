@@ -31,8 +31,21 @@ try:
     
     for recipe in recipes:
         # Prepare the text for embedding
+        # add tags, number of likes, bookmarks
         recipe_text = f"{recipe['title']} {recipe['description'] or ''} {' '.join(recipe['ingredients'])} {' '.join(recipe['instructions'])}"
         recipe_texts.append(recipe_text)
+        recipe_tags = f"meal types: {' '.join(recipe['mealTypes']) if len(recipe['mealTypes']) > 0 else 'not listed'}, " \
+              f"difficulty: {recipe['difficulty'] if recipe['difficulty'] else 'not listed'}, " \
+              f"cuisine: {recipe['cuisine'] if recipe['cuisine'] else 'not listed'}, " \
+              f"allergens: {' '.join(recipe['allergens']) if len(recipe['allergens']) > 0 else 'not listed'}, " \
+              f"sources: {' '.join(recipe['sources']) if len(recipe['sources']) > 0 else 'not listed'}, " \
+              f"prep time: {recipe['prepTime'] if recipe['prepTime'] else 'not listed'}" \
+              f"likes: {len(recipe['likes'])}" \
+              f"bookmarks: {len(recipe['bookmarks'])}"
+
+
+        # recipe_tags = f" meal types: {' '.join(recipe['mealTypes'])}, difficulty: {recipe['difficulty']}, cuisine: {recipe['cuisine']}, allergens: {' '.join(recipe['allergens'])}, sources: {' '.join(recipe['sources'])}, prep time: {recipe['prepTime']}"
+        recipe_texts.append(recipe_tags)
         recipe_ids.append(recipe['id'])
 
     # Generate embeddings in a single batch call
