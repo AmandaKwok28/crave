@@ -16,6 +16,7 @@ import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
+import TrendingRecipes from "@/components/search/trending";
 
 const Home = () => {
     const { recipes } = useQueryRecipes(true);
@@ -151,7 +152,7 @@ const Home = () => {
                     color="black"
                     fontWeight="bold"
                     m="4"> 
-                    Trending
+                    Recipes:
                 </Text>
                 <Flex 
                     direction="row" 
