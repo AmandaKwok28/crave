@@ -22,6 +22,7 @@
     "@nanostores/persistent": "^0.10.2",
     "@nanostores/react": "^0.8.4",
     "@nanostores/router": "^0.16.1",
+    "dayjs": "^1.11.13",
     "lucide-react": "^0.476.0",
     "nanostores": "^0.11.4",
     "next-themes": "^0.4.4",

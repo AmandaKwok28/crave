@@ -1,0 +1,84 @@
+import { Button, Text, CloseButton, Drawer, Portal, Input, Flex } from "@chakra-ui/react";
+import { FaComment } from "react-icons/fa";
+import { useState } from "react";
+import Comment from "./comment";
+import { useAuth } from "@/hooks/use-auth";
+import useMutationComment from "@/hooks/comments/use-mutation-comments";
+import useQueryComments from "@/hooks/comments/use-query-comments";
+import { fetchComments } from "@/data/api";
+import { setComments } from "@/lib/store";
+
+const CommentList = ({recipe_id} : {recipe_id : number}) => {
+
+    const [open, setOpen] = useState(false);
+    const [commentText, setCommentText] = useState('');
+    const { addComment } = useMutationComment(recipe_id);
+    const { comments } = useQueryComments(recipe_id);
+    const user = useAuth();
+
+    const handleCreateComment = async () => {
+      if (commentText.trim()) {
+        try {
+          await addComment(commentText, user.user.id);
+          const updatedComments = await fetchComments(recipe_id);
+          setComments(updatedComments);
+          setCommentText('');
+        } catch (error) {
+          console.error('Error creating comment:', error);
+        }
+      }
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleCreateComment();
+      }
+    };
+
+    return (
+    <Drawer.Root open={open} onOpenChange={(e) => setOpen(e.open)} size="sm">
+      <Drawer.Trigger asChild>
+        <Button variant='ghost' color="cyan.400">
+            <FaComment />
+        </Button>
+      </Drawer.Trigger>
+      <Portal>
+        <Drawer.Backdrop />
+        <Drawer.Positioner>
+          <Drawer.Content>
+            <Drawer.Header>
+              <Flex direction="row" justifyContent="space-between">
+                <Drawer.Title>Comments</Drawer.Title>
+                <Drawer.CloseTrigger asChild>
+                  <CloseButton size="sm" />
+                </Drawer.CloseTrigger>
+              </Flex>
+            </Drawer.Header>
+            <Drawer.Body display="flex" flexDirection="column" justifyContent="space-between" height="full">
+            <Flex direction="column">
+                {comments && comments.length > 0 ? (
+                  comments
+                    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                    .map((comment) => <Comment key={comment.id} comment={comment} />)
+                ) : (
+                  <Text>No comments yet.</Text>
+                )}
+            </Flex>
+            </Drawer.Body>
+            <Drawer.Footer>
+              <Input 
+                  mt="4" 
+                  placeholder="Add a comment..."
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  onKeyDown={handleKeyPress}/>
+            </Drawer.Footer>
+          </Drawer.Content>
+        </Drawer.Positioner>
+      </Portal>
+    </Drawer.Root>
+    );
+};
+
+export default CommentList;

@@ -59,6 +59,7 @@ const exampleRecipeExpectedFetchString = {
   createdAt: (new Date()).toISOString(),
   updatedAt: (new Date()).toISOString(),
   viewCount: 0,
+  likesList: [exampleLikeResponseString],
   liked: false,
   likes: 1,
   bookmarked: false,

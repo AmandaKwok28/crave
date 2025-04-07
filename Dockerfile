@@ -1,4 +1,3 @@
-# Use Node.js image with Debian (better Python compatibility)
 FROM --platform=linux/amd64 node:20-slim
 # FROM --platform=linux/arm64 node:20
 

@@ -1,4 +1,4 @@
-import { AllergenType, RecipeType, UserType } from "@/data/types";
+import { AllergenType, CommentType, RecipeType, UserType } from "@/data/types";
 import { persistentAtom } from "@nanostores/persistent";
 import { atom } from "nanostores";
 
@@ -44,6 +44,16 @@ export function removeRecipe(recipe_id: number) {
 
 export function addRecipe(recipe: RecipeType) {
     $recipes.set([...$recipes.get(), recipe]);
+}
+
+// trending store
+export const $trendingrecipes = atom<RecipeType[]>([]);
+export function setTrendingRecipes(recipes: RecipeType[]) {
+  $trendingrecipes.set(recipes);
+}
+export const $showSearchTrending = atom<Boolean>(false);
+export function setShowSearchTrending(val: Boolean) {
+  $showSearchTrending.set(val)
 }
 
 // Drafts store
@@ -140,4 +150,19 @@ export function setSearchTerm(term: string) {
 export const $allergenTable = atom<AllergenType[]>([]);
 export function setAllergenTable(allergens: AllergenType[]) {
   $allergenTable.set(allergens);
+}
+
+// Comments Store
+export const $comments = atom<CommentType[]>([]);
+
+export function setComments(comments: CommentType[]) {
+    $comments.set(comments)
+}
+
+export function removeComment(commentId: number) {
+    $comments.set($comments.get().filter((comment) => comment.id !== commentId));
+}
+
+export function addComment(comment: CommentType) {
+    $comments.set([...$comments.get(), comment]);
 }

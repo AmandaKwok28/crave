@@ -192,7 +192,7 @@ const Home = () => {
                     color="black"
                     fontWeight="bold"
                     m="4"> 
-                    Trending
+                    Recipes:
                 </Text>
                 <Flex 
                     direction="row" 

@@ -28,6 +28,26 @@ DATABASE_URL=<YOUR_URL_HERE>
 OPEN_AI_KEY=<YOUR_OPENAI_API_KEY_HERE>
 ```
 
+### Setting up python
+
+Our backend runs a python script to generate feature vectors for recipes. In order for the script to run properly, make sure you have
+python version 3.10 installed. navigate to `api/scripts/` and run
+
+```bash
+pip install -r requirements.txt
+```
+
+If you have python installed in a conda environment and would rather install the requirements file inside of that environement, run 
+the following command to to list your environemnts and choose the correct one:
+
+```bash
+conda env list                    # get a list of conda environements on your local machine
+conda activate my_env             # activate your environment
+pip install -r requirements.txt   # install the requirements
+```
+
+
+
 ## Developing
 
 Starting from the root folder, you can run these commands:
@@ -96,14 +116,6 @@ Adding additional frontend & E2E tests is also easy. Navigate to the `web/cypres
 
 ## Deployment
 
-To build a release version of the frontend, run ```pnpm build``` within the `web/` directory, and then run `pnpm preview` to check out the build before deployment. Building a release version of the backend, also run ```pnpm build``` but within the `api/` directory, and the generated build can be ran as a regular Node.JS script.
-
-Public Frontend deployment: <https://crave-v3pt.onrender.com>
-
-Public Backend deployment: <https://team-05-db.onrender.com>
-
-## Deployment
-
 To build a docker image for deployment, run ```docker build --platform linux/amd64 -t <image_name> .``` at the root directory.
 To deploy, push the docker image to docker hub, ssh to the gcp-vm and pull it down, run:
 
@@ -111,8 +123,7 @@ To deploy, push the docker image to docker hub, ssh to the gcp-vm and pull it do
 
 e.g. : ```sudo docker run -d -p 3000:3000 --name Crave-container lllllaplus/team05-app_amd64:latest```
 
-And the app will be deployed at <https://team05.zapto.org/>.
-
+You can access the app at <https://team05.zapto.org/>.
 
 
 ## Contributing

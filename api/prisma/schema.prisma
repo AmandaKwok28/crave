@@ -48,7 +48,8 @@ model User {
   name         String
   passwordHash String
   bookmarks    Bookmark[]
-  likes        Like[]  
+  likes        Like[]
+  comments     Comment[]  
   school       String
   major        String
   recipes      Recipe[]
@@ -161,6 +162,8 @@ model Comment {
   content   String
   recipeId  Int
   recipe    Recipe   @relation("RecipeComments", fields: [recipeId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
 }
 
 model RecommendedRecipe {

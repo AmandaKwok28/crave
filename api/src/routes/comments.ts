@@ -12,7 +12,9 @@ const getSchema = z.object({
 });
 
 const createSchema = z.object({
+    id: z.number(),
     content: z.string().nonempty(),
+    authorId: z.string(),
 });
 
 const deleteSchema = z.object({
@@ -21,7 +23,7 @@ const deleteSchema = z.object({
 });
 
 // get
-comments_route.get('/:recipeId/comments', async(req, res) => {    // has to take a recipe id since each recipe has many comments
+comments_route.get('/recipe/:recipeId/comments', async(req, res) => {    // has to take a recipe id since each recipe has many comments
 
     const result = getSchema.safeParse({ recipeId: parseInt(req.params.recipeId) });
     if (!result.success) {
@@ -35,7 +37,12 @@ comments_route.get('/:recipeId/comments', async(req, res) => {    // has to take
 
     const data = result.data;
     const comments = await prisma.comment.findMany({
-        where: { recipeId: data.recipeId }, 
+        where: { 
+            recipeId: data.recipeId 
+        }, 
+        include: {
+            author: true,
+        },
     });
 
     if (!comments) {
@@ -47,7 +54,7 @@ comments_route.get('/:recipeId/comments', async(req, res) => {    // has to take
 })
 
 // create
-comments_route.post('/recipe/:recipeId/comments', async (req, res) => {
+comments_route.post('/recipe/:recipeId/comments', async(req, res) => {
     const request = createSchema.safeParse(req.body);
     if (!request.success) {
         res.status(400).json({
@@ -57,11 +64,10 @@ comments_route.post('/recipe/:recipeId/comments', async (req, res) => {
         return;
     }
 
-    const { content } = request.data;
-    const recipeId = parseInt(req.params.recipeId);
+    const {content, id, authorId} = request.data;
 
     const recipe = await prisma.recipe.findUnique({
-        where: { id: recipeId }
+        where: { id: id }
     });
 
     if (!recipe) {
@@ -69,23 +75,33 @@ comments_route.post('/recipe/:recipeId/comments', async (req, res) => {
         return;
     }
 
+    const author = await prisma.user.findUnique({
+        where: { id: authorId }
+    });
+    
+    if (!author) {
+        res.status(404).json({ message: "Author not found" });
+    }
+
+    // make a new comment
     const comment = await prisma.comment.create({
         data: {
             content,
-            recipeId
-        }
+            recipeId: id,
+            authorId: authorId,
+        },
     });
 
+    // Respond with success
     res.status(201).json({
         message: "Comment created successfully",
-        comment
+        comment,
     });
-});
 
-
+})
 
 // delete
-comments_route.delete('/:recipeId/:commentId', authGuard, async(req, res) => {
+comments_route.delete('/recipe/:recipeId/comments/:commentId', authGuard, async(req, res) => {
 
     const request = deleteSchema.safeParse(req.params);
     if (!request.success) {
@@ -111,7 +127,7 @@ comments_route.delete('/:recipeId/:commentId', authGuard, async(req, res) => {
 
     const comment = await prisma.comment.findUnique({
         where: { id: parseInt(commentId) },
-        include: { recipe: true } // We also check if the comment is related to the correct recipe
+        include: { recipe: true }
     });
 
     if (!comment) {

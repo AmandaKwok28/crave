@@ -89,12 +89,12 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
         </Box>
 
         <Box>
-            <Text lineClamp="3">
+            <Text lineClamp="1">
             {recipe.description}
             </Text>
 
             {/* For the recipe card: let's only display popular tags like price, allergens, and preptime */}
-            <Box flexWrap="true" spaceX="2" mt="4">
+            <Box flexWrap="true" spaceX="2" mt="2">
             {/* {recipe.allergens.map((tag, index) => (
                   <Tag.Root key={index} variant="outline" size="lg" w="fit-content" borderRadius="10px">
                       <Tag.Label>{tag}</Tag.Label>
