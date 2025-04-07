@@ -12,7 +12,7 @@ const Recipes = ({recipes}:{recipes:RecipeType[]}) => {
     return (
         <Flex gap="10" wrap="wrap" justifyContent="center" w="full">
             {recipes.map((card:RecipeType) => (
-                <RecipeCard recipe={card} /> 
+                <RecipeCard key={card.id} recipe={card} /> 
             ))}
         </Flex>
     )
