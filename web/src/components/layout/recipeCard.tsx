@@ -89,7 +89,7 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
         </Box>
 
         <Box>
-            <Text lineClamp="3">
+            <Text lineClamp="1">
             {recipe.description}
             </Text>
 
