@@ -4,6 +4,8 @@ import RecipeCard from "../layout/recipeCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Suspense, useRef } from "react";
+import { Global, css } from '@emotion/react';
+
 
 import Slider from 'react-slick';
 
@@ -13,6 +15,54 @@ interface SimilarRecipesSliderProps {
   currentRecipeId?: number; 
   title?: string; // Add optional title prop
 }
+
+const SlickCarouselStyles = () => (
+  <Global
+    styles={css`
+      .slick-slider {
+        width: 100%;
+        max-width: 100%;
+        position: relative;
+      }
+
+      .slick-list {
+        max-width: 100%;
+        overflow: hidden;
+        padding: 0 !important;
+      }
+
+      .slick-dots {
+        transform: translateY(1em);
+        bottom: -35px;
+      }
+
+      .slick-dots li button:before {
+        font-size: 10px;
+        color: #319795;
+      }
+
+      .slick-dots li.slick-active button:before {
+        color: #2c7a7b;
+      }
+
+      .slick-track {
+        display: flex;
+        margin-left: 0;
+        margin-right: 0;
+        align-items: stretch;
+      }
+
+      .slick-slide {
+        padding: 0 !important;
+        height: auto;
+      }
+
+      .slick-slide > div {
+        height: 100%;
+      }
+    `}
+  />
+);
 
 const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRecipesSliderProps) => {
   const sliderRef = useRef<any>(null);
@@ -70,6 +120,7 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
   
   return (
     <Box width="100%" maxWidth="100vw" my={8} px={16} position="relative">
+      <SlickCarouselStyles /> {/* Inject global slick styles */}
       {title && <Heading size="lg" ml={4} mb={4}>{title}</Heading>}
       
       <Box
@@ -78,42 +129,6 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
         maxWidth="100%"
         mx="auto"
         px={10}
-        css={{
-          ".slick-slider": {
-            width: "100%",
-            maxWidth: "100%",
-            position: "relative"
-          },
-          ".slick-list": {
-            maxWidth: "100%",
-            overflow: "hidden",
-            padding: "0 !important"
-          },
-          ".slick-dots": {
-            transform: "translateY(1em)",
-            bottom: "-35px"
-          },
-          ".slick-dots li button:before": {
-            fontSize: "10px",
-            color: "#319795"
-          },
-          ".slick-dots li.slick-active button:before": {
-            color: "#2C7A7B"
-          },
-          ".slick-track": {
-            display: "flex",
-            marginLeft: 0,
-            marginRight: 0,
-            alignItems: "stretch"
-          },
-          ".slick-slide": {
-            padding: "0 8px",
-            height: "auto",
-            "& > div": {
-              height: "100%"
-            }
-          }
-        }}
       >
         {/* Custom Previous Button */}
         {similarRecipes.length > 3 && (
@@ -170,7 +185,7 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
 
             {similarRecipes.map((card:RecipeType) => (
               // <Box key={recipe.id} padding={2} maxWidth="100%" height="100%">
-                <RecipeCard key={card.id} recipe={card} />
+                <RecipeCard key={card.id} recipe={card}/>
               /* </Box> */
             ))}
           </Slider>

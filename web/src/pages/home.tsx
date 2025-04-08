@@ -39,6 +39,8 @@ const Home = () => {
         <Flex
             direction="column"
             className="min-h-screen"
+            w="100vw"
+            overflowX="hidden"
             style={{ backgroundColor: "white" }}
         >
             <NavBar />
@@ -49,9 +51,11 @@ const Home = () => {
                 bgGradient="to-r"
                 gradientFrom="cyan.500"
                 gradientTo="purple.600"
-                h="60vh" 
-                className="w-screen"
-                mt="4"
+                h="auto" 
+                minH="500px"
+                w="100vw"
+                overflowX="hidden"
+                mt={4}
             >
                 <Box
                     alignContent="center"
@@ -80,11 +84,14 @@ const Home = () => {
                 <Flex 
                     backgroundColor="rgba(211, 211, 211, 0.4)"
                     w="50vw"
-                    m="5vh"
+                    m="auto"
+                    mr="2vw"
                     direction="column"
                     borderRadius="20px"
                     gap="8"
                     p="12"
+                    maxW="100%"
+                    maxH="100%"
                 >
                     {/* Search Bar */}
                     <Flex direction="row" alignItems="center" gap="2">
@@ -170,7 +177,7 @@ const Home = () => {
                         <Text color="gray.500">Explore recipes to get personalized recommendations</Text>
                     </Center>
                 ) : (
-                    <Box width="full" px="4" mb="12">
+                    <Box width="full" mb="12">
                         <SimilarRecipesSlider 
                             recipes={recommendedRecipes} 
                             currentRecipeId={undefined} 
