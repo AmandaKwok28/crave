@@ -209,16 +209,14 @@ router.get('/recommended', authGuard, async(req, res) => {
       }
     });
 
-    // // Format the response similarly to other endpoints
-    // const formattedRecipes = recipes.map(recipe => ({
-    //   ...recipe,
-    //   likes: recipe.likes.length,
-    //   liked: !!recipe.likes.find(l => l.userId === res.locals.user!.id),
-    //   bookmarks: undefined, // Don't expose all bookmarks
-    //   bookmarked: !!recipe.bookmarks.find(b => b.userId === res.locals.user!.id)
-    // }));
-
-    res.json(recipes);
+    res.json(recipes.map((recipe) => ({
+      ...recipe,
+      likes: recipe.likes.length,
+      likesList: recipe.likes,
+      liked: !!recipe.likes.find((l) => l.userId === res.locals.user?.id),
+      bookmarks: undefined, // Do not share bookmarks with everyone
+      bookmarked: !!recipe.bookmarks.find((b) => b.userId === res.locals.user?.id)
+    })));
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch similar recipes' })
   }

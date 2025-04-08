@@ -1,6 +1,6 @@
 import { Box, Heading, Spinner, Center, Button } from "@chakra-ui/react";
 import { RecipeType } from "@/data/types";
-import RecipeCard from "@/components/layout/recipeCard";
+import RecipeCard from "../layout/recipeCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Suspense, useRef } from "react";
@@ -168,10 +168,10 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
         }>
           <Slider ref={sliderRef} {...slickSettings}>
 
-            {similarRecipes.map((recipe:RecipeType) => (
-              <Box key={recipe.id} padding={2} maxWidth="100%" height="100%">
-                <RecipeCard recipe={recipe} />
-              </Box>
+            {similarRecipes.map((card:RecipeType) => (
+              // <Box key={recipe.id} padding={2} maxWidth="100%" height="100%">
+                <RecipeCard key={card.id} recipe={card} />
+              /* </Box> */
             ))}
           </Slider>
         </Suspense>
