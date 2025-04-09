@@ -64,32 +64,37 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
   };
 
   return (
-    <Card.Root width="370px" maxH="500px" overflow="hidden" borderRadius="20px">
+    <Card.Root 
+      width="300px" 
+      maxH="400px" 
+      overflow="hidden" 
+      borderRadius="20px"
+      >
         <Image 
-        src={recipe.image ? recipe.image : '/fallback.png'}
+        src={recipe.image ? recipe.image : '/img_placeholder.jpg'}
         alt="Default Recipe Image" 
         maxW="100vw" 
-        height="25vh" 
+        height="20vh" 
         objectFit="cover" 
         />
-      <Card.Body gap="2">
+      <Card.Body gap="1">
         <Card.Title>
-          <Text textStyle="xl" fontWeight="medium" letterSpacing="tight"> 
+          <Text textStyle="lg" fontWeight="medium" letterSpacing="tight"> 
             {recipe.title}
           </Text>
         </Card.Title>
-        <Box display="flex" alignItems="center" gap="2">
+        <Box display="flex" alignItems="center" gap="1" ml="-6px">
           <AvatarGroup>
             <Avatar.Root size="xs" variant="subtle">
               <Avatar.Fallback name={`${recipe.author ? recipe.author.name : 'You'}`} />
               <Avatar.Image />
             </Avatar.Root>
           </AvatarGroup>
-          <Text>{recipe.author ? `${recipe.author.name}` : "You"}</Text>
+          <Text textStyle="sm" color="gray">{recipe.author ? `@${recipe.author.name}` : "You"}</Text>
         </Box>
 
         <Box>
-            <Text lineClamp="1">
+            <Text lineClamp="1" textStyle="sm">
             {recipe.description}
             </Text>
 

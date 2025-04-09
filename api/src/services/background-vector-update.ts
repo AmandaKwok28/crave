@@ -50,7 +50,7 @@ export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
     for (const user of users) {
 
       // get the recently viewed up to the most recent n (determined by batchsize)
-      console.log('Fetching recently viewed recipes')
+      // console.log('Fetching recently viewed recipes')
       const recentlyViewed = await prisma.recentlyViewed.findMany({   
         where: { userId: user.id },
         orderBy: { viewedAt: "desc" },
@@ -61,10 +61,10 @@ export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
       // console.log(recentlyViewed)
 
       if (recentlyViewed.length === 0) continue;
-      console.log('Recently viewed recipes fetched!')
+      // console.log('Recently viewed recipes fetched!')
 
       // get the average feature vector
-      console.log('Creating average feature vector')
+      // console.log('Creating average feature vector')
       const recipeIds = recentlyViewed.map(recipe => recipe.recipeId);
       const featureVectors = await prisma.recipeFeatureVector.findMany({              
         where: { recipeId: { in: recipeIds } }
@@ -75,7 +75,7 @@ export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
         continue;
       }           
 
-      console.log('Creating average feature vector');
+      // console.log('Creating average feature vector');
       const vectorSize = featureVectors[0].vector.length;
       const averagedVector = new Array(vectorSize).fill(0);
       for (const { vector } of featureVectors) {
@@ -137,7 +137,7 @@ export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
         }))
       });
 
-      console.log('Finished generating recommended recipes!')
+      // console.log('Finished generating recommended recipes!')
 
     }
 

@@ -37,10 +37,10 @@ const CommentList = ({recipe_id} : {recipe_id : number}) => {
     };
 
     return (
-    <Drawer.Root open={open} onOpenChange={(e) => setOpen(e.open)} size="sm">
+    <Drawer.Root open={open} onOpenChange={(e) => setOpen(e.open)}>
       <Drawer.Trigger asChild>
-        <Button variant='ghost' color="cyan.400">
-            <FaComment />
+        <Button variant='ghost' color="cyan.400" size="xl">
+            <FaComment style={{ width: '40px', height: '40px' }}/>
         </Button>
       </Drawer.Trigger>
       <Portal>
