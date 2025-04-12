@@ -42,7 +42,7 @@ rating_route.get('/:id/rating', async(req, res) => {
         }
 
         res.json({
-            message: "You have been signed in!",
+            message: "Success!",
             rating: user.rating
         });
         
@@ -97,7 +97,10 @@ rating_route.put('/:id/rating', async(req, res) => {
 
         res.json({
             message: "User rating successfully updated",
-            user: updatedUser
+            user: {
+                ...updatedUser,
+                passwordHash: undefined
+            }
         });
 
         

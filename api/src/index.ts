@@ -14,6 +14,7 @@ import { startBackgroundJobs } from './services/scheduler.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import comments_route from './routes/comments.js';
+import rating_route from './routes/rating.js';
 
 export const app = express();
 
@@ -35,6 +36,7 @@ app.use(auth);
 app.use(auth_route);
 app.use(allergen_route);
 app.use(comments_route);    
+app.use(rating_route);
 app.use('/recipe', recipeRoutes);
 app.use('/user', userRoutes);
 app.use('/feed', feedRoutes);
