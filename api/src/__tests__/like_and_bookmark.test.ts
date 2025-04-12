@@ -1,4 +1,4 @@
-import { test, expect, vi, describe, beforeEach } from 'vitest';
+import { test, expect, vi, describe, beforeEach, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import { app } from '../index.js';
 import { hashPassword } from '../lib/password.js';
@@ -32,7 +32,8 @@ const exampleUser1 = {
   major: 'Example Major',
   likes: [],
   bookmarks: [],
-  avatarImage: ''
+  avatarImage: '',
+  rating: 0
 };
 
 const exampleRecipe1 = {
@@ -81,7 +82,8 @@ const exampleUser2 = {
   major: 'Example Major',
   likes: [exampleLike2],
   bookmarks: [exampleBookmark1],
-  avatarImage: ''
+  avatarImage: '',
+  rating: 0
 };
 
 
