@@ -57,6 +57,8 @@ model User {
   avatarImage  String?    // should be optional
   recentlyViewed RecentlyViewed[]
   recommendedRecipes RecommendedRecipe[]
+
+  rating       Float @default(0)   // the rating might be a decimal...
 }
 
 model Session {
