@@ -51,6 +51,32 @@ router.post('/:recipe_id', authGuard, async (req, res) => {
       }
     });  
 
+    const recipe = await prisma.recipe.findUnique({
+      where: { id: Number(recipe_id)}
+    })
+
+    if (!recipe) {
+      res.status(404).json('Recipe not found');
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: recipe.authorId }
+    })
+
+    if (!user) {
+      res.status(500).json('User not found')
+      return;
+    }
+
+    // add a score for making a bookmark!
+    await prisma.user.update({      
+      where: { id: user.id },
+      data: {
+        rating: user.rating + 1
+      }
+    })
+
     res.json({
       success: true
     });
@@ -72,6 +98,32 @@ router.delete('/:recipe_id', authGuard, async (req, res) => {
         userId: res.locals.user!.id
       }
     });
+
+    const recipe = await prisma.recipe.findUnique({
+      where: { id: Number(recipe_id)}
+    })
+
+    if (!recipe) {
+      res.status(404).json('Recipe not found');
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: recipe.authorId }
+    })
+
+    if (!user) {
+      res.status(500).json('User not found')
+      return;
+    }
+
+    // minus score for removing a bookmark
+    await prisma.user.update({      
+      where: { id: user.id },
+      data: {
+        rating: user.rating - 1
+      }
+    })
     
     res.json({
       success: true

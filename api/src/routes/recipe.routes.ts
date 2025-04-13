@@ -212,6 +212,26 @@ router.delete('/:recipe_id', async (req, res) => {
         authorId: res.locals.user.id
       }
     });
+
+    // if you're deleting a published recipe, lower your rating (deal with case where that recipe has likes and stuff...)
+    if (recipe.published) {
+      const user = await prisma.user.findUnique({
+        where: { id: recipe.authorId }
+      });
+  
+      if (!user) {
+        res.status(500).json({
+          message: "Could not create recipe, error fetching user"
+        })
+        return;
+      }
+  
+      await prisma.user.update({
+        where: { id: recipe.authorId },
+        data: { rating: user.rating - 5 }  
+      });
+    }
+
   
     res.json(recipe);  
   } catch (error) {

@@ -152,6 +152,21 @@ comments_route.delete('/recipe/:recipeId/comments/:commentId', authGuard, async(
         where: { id: parseInt(commentId) }
     });
 
+    const author = await prisma.user.findUnique({
+        where: { id: comment.authorId }
+    });
+
+    if (!author) {
+        res.status(404).json('User not found');
+        return;
+    }
+
+    // if you delete your comment, that author's rating goes down..
+    await prisma.user.update({
+        where: { id: comment.authorId},
+        data: { rating: author.rating - 1}
+    })
+
     res.status(200).json({ 
         message: "Comment deleted successfully", 
         data: comment
