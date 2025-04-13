@@ -81,6 +81,7 @@ comments_route.post('/recipe/:recipeId/comments', async(req, res) => {
     
     if (!author) {
         res.status(404).json({ message: "Author not found" });
+        return;
     }
 
     // make a new comment
@@ -91,6 +92,12 @@ comments_route.post('/recipe/:recipeId/comments', async(req, res) => {
             authorId: authorId,
         },
     });
+
+    // add rating to the author
+    await prisma.user.update({
+        where: { id: authorId },
+        data: { rating: author?.rating + 1}
+    })
 
     // Respond with success
     res.status(201).json({
