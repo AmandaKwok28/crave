@@ -57,6 +57,10 @@ model User {
   avatarImage  String?    // should be optional
   recentlyViewed RecentlyViewed[]
   recommendedRecipes RecommendedRecipe[]
+
+  sentMessages      Message[]     @relation("SentMessages")
+  conversations1    Conversation[] @relation("UserConversations1")
+  conversations2    Conversation[] @relation("UserConversations2")
 }
 
 model Session {
@@ -133,6 +137,8 @@ model Recipe {
   viewedBy RecentlyViewed[]
 
   recommendedRecipes RecommendedRecipe[]
+
+  sharedInMessages  Message[]     @relation("SharedRecipes")
 }
 
 model Allergen {
@@ -177,9 +183,48 @@ model RecommendedRecipe {
   recipe           Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade) // Relation to Recipe
 }
 
+model Conversation {
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // The two participants in the conversation
+  user1Id       String
+  user2Id       String
+  
+  // Relations to the users
+  user1         User      @relation("UserConversations1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2         User      @relation("UserConversations2", fields: [user2Id], references: [id], onDelete: Cascade)
+  
+  // All messages in this conversation
+  messages      Message[]
+  
+  @@unique([user1Id, user2Id])
+  @@index([user1Id])
+  @@index([user2Id])
+}
 
-
-
-
-
-
+model Message {
+  id             Int         @id @default(autoincrement())
+  content        String
+  createdAt      DateTime    @default(now())
+  
+  // Who sent the message
+  senderId       String
+  sender         User        @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  
+  // The conversation this message belongs to
+  conversationId Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  // Optional reference to a recipe (for recipe card sharing)
+  recipeId       Int?
+  recipe         Recipe?     @relation("SharedRecipes", fields: [recipeId], references: [id], onDelete: SetNull)
+  
+  // Track read/unread state
+  isRead         Boolean     @default(false)
+  
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([recipeId])
+}
