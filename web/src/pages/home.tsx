@@ -21,11 +21,15 @@ import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
+// import MessagingDrawer from "@/components/messaging/messagingDrawer";
+// import { useAuth } from "@/hooks/use-auth";
 
 const Home = () => {
     const { recipes } = useQueryRecipes(true);
     const { recommendedRecipes, isLoading, error } = useRecommendedRecipes(10);
     const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
+    // const { user, isLoggedIn } = useAuth();
+    
     const handleCookTimeChange = (details: { value: [number, number] }) => {
         setCookTime(details.value);
         const change = {
@@ -213,6 +217,9 @@ const Home = () => {
                     <Recipes recipes={recipes}/>
                 </Flex>
             </Flex>
+
+            {/* Messaging button (only show when logged in) */}
+            {/* {isLoggedIn && <MessagingDrawer />} */}
         </Flex>
     )
 }

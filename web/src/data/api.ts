@@ -475,3 +475,122 @@ export const deleteComment = async (recipe_id: string | number, commentId: numbe
   return true;
 };
 
+// Types for messages
+export interface Conversation {
+  id: number;
+  otherUser: {
+    id: string;
+    name: string;
+    avatarImage?: string;
+  };
+  lastMessage: Message | null;
+  updatedAt: string;
+}
+
+export interface Message {
+  id: number;
+  content: string;
+  createdAt: string;
+  senderId: string;
+  conversationId: number;
+  isRead: boolean;
+  sender: {
+    id: string;
+    name: string;
+    avatarImage?: string;
+  };
+  recipe?: {
+    id: number;
+    title: string;
+    image?: string;
+    difficulty?: string;
+  };
+}
+
+// Fetch all conversations for current user
+export const fetchConversations = async (): Promise<Conversation[]> => {
+  const response = await fetch(`${API_URL}/message`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const conversations: Conversation[] = await response.json();
+  return conversations;
+};
+
+// Fetch messages in a conversation with pagination
+export const fetchMessages = async (conversationId: number, page = 0, limit = 20): Promise<Message[]> => {
+  const response = await fetch(`${API_URL}/message/${conversationId}/messages?page=${page}&limit=${limit}`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const messages: Message[] = await response.json();
+  return messages;
+};
+
+// Send a message (text and/or recipe)
+export const sendMessage = async (
+  conversationId: number, 
+  content?: string, 
+  recipeId?: number
+): Promise<Message> => {
+  if (!content && !recipeId) {
+    throw new Error('Message must have either content or a recipe');
+  }
+
+  const response = await fetch(`${API_URL}/message/${conversationId}/messages`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({
+      content,
+      recipeId
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const message: Message = await response.json();
+  return message;
+};
+
+// Create a new conversation with another user
+export const createConversation = async (otherUserId: string): Promise<{id: number, existing: boolean}> => {
+  const response = await fetch(`${API_URL}/message`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({
+      otherUserId
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+// Get count of unread messages
+export const getUnreadMessageCount = async (): Promise<number> => {
+  const response = await fetch(`${API_URL}/message/unread/count`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.unreadCount;
+};
