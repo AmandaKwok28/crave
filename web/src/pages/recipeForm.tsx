@@ -6,7 +6,19 @@ import { Field } from "@/components/ui/field";
 import { InputGroup } from "@/components/ui/input-group";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import { $router } from "@/lib/router";
-import { Button, ButtonGroup, Flex, IconButton, Input, Text, Textarea, Image, VStack, RadioGroup, Spinner } from "@chakra-ui/react";
+import { 
+  Button, 
+  ButtonGroup, 
+  Flex, IconButton, 
+  Input, 
+  Text, 
+  Textarea, 
+  Image, 
+  VStack, 
+  RadioGroup, 
+  Spinner, 
+  FileUpload 
+} from "@chakra-ui/react";
 // import {
 //   FileUploadList,
 //   FileUploadRoot,
@@ -25,6 +37,7 @@ import AutoAllergens from "@/components/search/autoAllergens";
 import pluralize from "pluralize";
 import { $allergenTable } from "@/lib/store";
 import { useStore } from "@nanostores/react";
+import PDFUploadBtn from "@/components/recipie/pdfUploadBtn";
 
 
 // If draft_id is set, this will be autopopulated on page load
@@ -194,6 +207,7 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
     }
   }
 
+
   return (
     <Flex gap='4' flexDir='column' minW='100vw' align='center' justify='center'>
       <Flex pos='fixed' zIndex="100" top='0' left='0' w='100vw' h='10' bg="cyan.700" align='center' justify='center'>
@@ -231,6 +245,16 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
               >
               </Input>
             </Field>
+
+
+            {/* Allow them to input a pdf*/}
+            <Text fontSize="sm" color="gray.600" maxW="80%" mt={5}>
+              If you'd like to upload a PDF to auto-fill the recipe creation form, please upload it here:
+            </Text>
+            <PDFUploadBtn />
+            
+
+
 
             {/* Ingredients */}
             {showAdditionalInfo && <Field label='Ingredients' required>
