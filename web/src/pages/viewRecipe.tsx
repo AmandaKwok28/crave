@@ -4,13 +4,14 @@ import DeleteRecipe from "@/components/recipie/deleteRecipe";
 import DisplayIngredients from "@/components/recipie/displayIngredients";
 import SimilarRecipesSlider from "@/components/recipie/similarRecipesSlider";
 import { bookmarkRecipe, fetchRecipe, likeRecipe, unbookmarkRecipe, unlikeRecipe } from "@/data/api";
-import { RecipeType } from "@/data/types";
+import { RatingType, RecipeType } from "@/data/types";
 import { useAuth } from "@/hooks/use-auth";
 import useSimilarRecipes from "@/hooks/use-similar-recipes";
 import useRecentlyViewed from "@/hooks/use-recently-viewed";
 import { Box, ButtonGroup, Center, Flex, Spinner, Image, Text, Button, HStack } from "@chakra-ui/react";
 import { Bookmark, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useRating } from "@/hooks/ratings/use-rating";
 
 // Recipe page
 const ViewRecipe = ({ recipe_id }: { 
@@ -18,6 +19,7 @@ const ViewRecipe = ({ recipe_id }: {
 }) => {
   const { user } = useAuth();
   const { markAsViewed } = useRecentlyViewed();
+  const { updateUserRating } = useRating();
 
   const [ recipe, setRecipe ] = useState<RecipeType | null>();
   const [ refresh, setRefresh ] = useState<boolean>(true);
@@ -54,10 +56,12 @@ const ViewRecipe = ({ recipe_id }: {
       unlikeRecipe(recipe_id)
         .then(() => setRefresh(true))
         .catch(console.error);
+      updateUserRating(user.id, RatingType.LIKE);
     } else {
       likeRecipe(recipe_id)
         .then(() => setRefresh(true))
         .catch(console.error);
+      updateUserRating(user.id, RatingType.UNLIKE);
     }
   }
 
@@ -70,10 +74,12 @@ const ViewRecipe = ({ recipe_id }: {
       unbookmarkRecipe(recipe_id)
         .then(() => setRefresh(true))
         .catch(console.error);
+      updateUserRating(user.id, RatingType.UNBOOKMARK);
     } else {
       bookmarkRecipe(recipe_id)
         .then(() => setRefresh(true))
         .catch(console.error);
+      updateUserRating(user.id, RatingType.BOOKMARK);
     }
   }
 
@@ -346,7 +352,7 @@ const ViewRecipe = ({ recipe_id }: {
       
       <ButtonGroup m="8" position="fixed" bottom="0%" right="0%" gap="4">
         {recipe.authorId === user.id && (
-          <DeleteRecipe recipe_id={recipe.id} />
+          <DeleteRecipe recipe_id={recipe.id} user_id={user.id}/>
         )}
          <CommentList recipe_id={recipe.id} />
       </ButtonGroup>

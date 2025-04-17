@@ -7,22 +7,26 @@ import useMutationComment from "@/hooks/comments/use-mutation-comments";
 import useQueryComments from "@/hooks/comments/use-query-comments";
 import { fetchComments } from "@/data/api";
 import { setComments } from "@/lib/store";
+import { useRating } from "@/hooks/ratings/use-rating";
+import { RatingType } from "@/data/types";
 
 const CommentList = ({recipe_id} : {recipe_id : number}) => {
 
+    const { user } = useAuth();
+    const { updateUserRating } = useRating();
     const [open, setOpen] = useState(false);
     const [commentText, setCommentText] = useState('');
     const { addComment } = useMutationComment(recipe_id);
     const { comments } = useQueryComments(recipe_id);
-    const user = useAuth();
 
     const handleCreateComment = async () => {
       if (commentText.trim()) {
         try {
-          await addComment(commentText, user.user.id);
+          await addComment(commentText, user.id);
           const updatedComments = await fetchComments(recipe_id);
           setComments(updatedComments);
           setCommentText('');
+          updateUserRating(user.id, RatingType.COMMENT);
         } catch (error) {
           console.error('Error creating comment:', error);
         }

@@ -16,6 +16,7 @@ export const fetchRating = async (id: string): Promise<number> => {
 };
 
 
+// allow frontend to update the rating when likes, bookmarks, comments, creations occur
 export const updateRating = async (
     id: string, 
     type: RatingType

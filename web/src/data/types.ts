@@ -19,7 +19,11 @@ export enum RatingType {
   LIKE = "like",
   BOOKMARK = "bookmark",
   COMMENT = "comment",
-  CREATE = "create"
+  CREATE = "create",
+  UNLIKE = "unlike",
+  UNBOOKMARK = "unbookmark",
+  UNCOMMENT = "uncomment",
+  DELETE = "delete"
 }
 
 export enum Difficulty {
