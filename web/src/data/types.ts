@@ -91,6 +91,21 @@ export interface TagsResponse {
   }
 }
 
+export interface PdfResponse {
+  response: {
+    title: string;
+    description: string;
+    instructions: string; 
+    price: string;
+    cuisine: string;
+    difficulty: string;
+    prepTime: number;
+    ingredients: string[];
+    tags: string[];
+    mealTypes: string[]
+  }
+}
+
 export interface CommentType {
   id: number;
   createdAt: string;

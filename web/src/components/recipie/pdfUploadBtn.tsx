@@ -1,7 +1,8 @@
 import * as pdfjs from 'pdfjs-dist';
 import { TextItem, TextMarkedContent } from 'pdfjs-dist/types/src/display/api';
 import { useRef, useState } from 'react';
-import { Button, Flex, Input } from '@chakra-ui/react';
+import { Button, Flex, Input, Spinner } from '@chakra-ui/react';
+import { fetchPdfContent } from '@/data/pdf-api';
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';   // set pdf rendering opti
 
@@ -14,6 +15,7 @@ const PDFUpload = () => {
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);  // reference for the file input
     const [validFile, setValidFile] = useState<string | null>(null);  
+    const [loading, setLoading] = useState<boolean>(false);
     
     const getContent = async(src:string) => {
         const doc = pdfjs.getDocument(src).promise;
@@ -25,7 +27,6 @@ const PDFUpload = () => {
         const content = await getContent(src);
         const items = content.items.map((item) => {
             if (isTextItem(item)) {
-                console.log(item.str)
                 return item.str; 
             }
             return '';
@@ -40,6 +41,7 @@ const PDFUpload = () => {
     };
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        setLoading(true);
         const file = e.target.files?.[0];
         if (file) {
             setValidFile(file.name);                       // Display the file name            
@@ -47,6 +49,18 @@ const PDFUpload = () => {
             const extractedText = await getItems(fileUrl); // Call getItems to extract and log text
 
             // note to anirudh: use this to call the hook you define for making the gpt call :)
+            let response;
+            try {
+                response = await fetchPdfContent(extractedText.join(' '));
+                setTimeout(() => {
+                }, 2000);
+            } catch (error) {
+                console.log(error)
+            } finally {
+                console.log(response)
+                setLoading(false);
+            }
+            
         }
     };
 
@@ -71,7 +85,7 @@ const PDFUpload = () => {
                 borderRadius="md"
                 _hover={{ bg: "cyan.600" }}
             >
-                Upload PDF
+                {loading ? <Spinner size="lg" color="white" /> : "Upload PDF"}
             </Button>
 
             {/* Show file name */}
