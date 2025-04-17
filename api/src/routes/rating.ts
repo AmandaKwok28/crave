@@ -13,7 +13,7 @@ const idSchema = z.object({
 
 // json body params
 const ratingSchema = z.object({
-    rating: z.number().min(0)       // would be sad to have less than a 0 rating tbh
+    type: z.enum(['like', 'bookmark', 'comment', 'create'])
 });
 
 
@@ -77,7 +77,7 @@ rating_route.put('/:id/rating', async(req, res) => {
     }
 
     const id = res1.data.id;
-    const rating = res2.data.rating;
+    const { type } = res2.data;
 
     try {
 
@@ -90,9 +90,12 @@ rating_route.put('/:id/rating', async(req, res) => {
             return;
         }
 
+        // if the type was create recipe, you get 5 points, otherwise it's 1
+        const newRating = user.rating + (type === 'create' ? 5 : 1);
+        
         const updatedUser = await prisma.user.update({
             where: { id: id },
-            data: { rating: rating }
+            data: { rating: newRating }
         });
 
         res.json({

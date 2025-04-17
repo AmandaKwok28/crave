@@ -5,6 +5,7 @@ export interface UserType {
   school: string;
   major: string;
   avatarImage?: string;
+  rating: Number
 }
 
 export enum Price {

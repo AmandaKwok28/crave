@@ -4,8 +4,6 @@ import { authGuard } from '../middleware/auth.js';
 
 const router = Router();
 
-
-
 // Create a recipe
 router.post('/', async (req, res) => {
   const { 
@@ -158,38 +156,16 @@ router.put('/:id/publish', async (req, res) => {
   const { id } = req.params
   try {
     const recipeData = await prisma.recipe.findUnique({
-      where: { id: Number(id) }
+      where: { id: Number(id) },
+      select: { published: true },
     })
-
-    if (!recipeData) {
-      res.status(404).json({ message: `Recipe with ID ${id} not found` });
-      return;
-    }
-
     const updatedRecipe = await prisma.recipe.update({
       where: { id: Number(id) },
-      data: { published: !recipeData.published },
+      data: { published: !recipeData?.published },
     })
-
-    const user = await prisma.user.findUnique({
-      where: { id: recipeData.authorId }
-    });
-
-    if (!user) {
-      res.status(500).json({
-        message: "Could not create recipe, error fetching user"
-      })
-      return;
-    }
-
-    await prisma.user.update({
-      where: { id: recipeData.authorId },
-      data: { rating: user.rating + 5 }   // if you create a recipe you get +5 points (only if it's published though)
-    });
-
     res.json(updatedRecipe)
   } catch (error) {
-    res.status(500).json({ error: `Recipe with ID ${id} does not exist in the database` })
+    res.json({ error: `Recipe with ID ${id} does not exist in the database` })
   }
 })
 
@@ -212,26 +188,6 @@ router.delete('/:recipe_id', async (req, res) => {
         authorId: res.locals.user.id
       }
     });
-
-    // if you're deleting a published recipe, lower your rating (deal with case where that recipe has likes and stuff...)
-    if (recipe.published) {
-      const user = await prisma.user.findUnique({
-        where: { id: recipe.authorId }
-      });
-  
-      if (!user) {
-        res.status(500).json({
-          message: "Could not create recipe, error fetching user"
-        })
-        return;
-      }
-  
-      await prisma.user.update({
-        where: { id: recipe.authorId },
-        data: { rating: user.rating - 5 }  
-      });
-    }
-
   
     res.json(recipe);  
   } catch (error) {

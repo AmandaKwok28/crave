@@ -50,27 +50,6 @@ router.post('/:recipe_id', authGuard, async (req, res) => {
       }
     });  
 
-    const recipeData = await prisma.recipe.findUnique({
-      where: { id: Number(recipe_id) }
-    })
-
-    const user = await prisma.user.findUnique({
-      where: { id: recipeData?.authorId }
-    })
-
-    if (!user) {
-      res.status(404).json({ message: 'User not found '});
-      return;
-    }
-
-    // update that user's rating when you like it
-    await prisma.user.update({      
-      where: { id: user?.id },
-      data: {
-        rating: user.rating + 1
-      }
-    })
-
     res.json({
       success: true
     });
@@ -92,28 +71,7 @@ router.delete('/:recipe_id', authGuard, async (req, res) => {
         userId: res.locals.user!.id
       }
     });
-
-    const recipeData = await prisma.recipe.findUnique({
-      where: { id: Number(recipe_id) }
-    })
-
-    const user = await prisma.user.findUnique({
-      where: { id: recipeData?.authorId }
-    })
-
-    if (!user) {
-      res.status(404).json({ message: 'User not found '});
-      return;
-    }
     
-    // lower the rating if someone unlikes your recipe
-    await prisma.user.update({      
-      where: { id: user?.id },
-      data: {
-        rating: user.rating - 1
-      }
-    })
-
     res.json({
       success: true
     });

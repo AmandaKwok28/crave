@@ -78,7 +78,10 @@ const Profile = () => {
                   </Flex>
                 </Flex>
 
-                
+                <Flex align='center' p='4' color="white" bg='cyan.400'>
+                    Chef Rating: {String(user.rating)}
+                </Flex>
+
                 <div className="max-h-sm h-auto p-4 text-white w-full space-y-2">
 
                   <Field label="Image Url">
