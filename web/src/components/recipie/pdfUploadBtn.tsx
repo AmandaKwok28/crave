@@ -46,7 +46,7 @@ const PDFUpload = () => {
             const fileUrl = URL.createObjectURL(file);     // Create a URL for the file
             const extractedText = await getItems(fileUrl); // Call getItems to extract and log text
 
-            
+            // note to anirudh: use this to call the hook you define for making the gpt call :)
         }
     };
 

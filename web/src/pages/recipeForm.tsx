@@ -17,7 +17,6 @@ import {
   VStack, 
   RadioGroup, 
   Spinner, 
-  FileUpload 
 } from "@chakra-ui/react";
 // import {
 //   FileUploadList,
