@@ -8,7 +8,13 @@ import useMutationComment from "@/hooks/comments/use-mutation-comments";
 import { useRating } from "@/hooks/ratings/use-rating";
 
 
-const Comment = ( { comment }: { comment: CommentType }) => {
+const Comment = ( { 
+  comment,
+  user_id 
+}: { 
+  comment: CommentType,
+  user_id: string           // id of the user who's recipe you're commenting on 
+}) => {
 
   const { user } = useAuth();
   const { updateUserRating } = useRating();
@@ -21,7 +27,7 @@ const Comment = ( { comment }: { comment: CommentType }) => {
     try {
       setIsDeleting(true);
       await removeComment(comment.id);
-      updateUserRating(user.id, RatingType.UNCOMMENT);
+      updateUserRating(user_id, RatingType.UNCOMMENT);
     } catch (error) {
       console.error("Failed to delete comment:", error);
     } finally {

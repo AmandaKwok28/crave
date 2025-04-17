@@ -56,12 +56,12 @@ const ViewRecipe = ({ recipe_id }: {
       unlikeRecipe(recipe_id)
         .then(() => setRefresh(true))
         .catch(console.error);
-      updateUserRating(user.id, RatingType.LIKE);
+      updateUserRating(recipe.authorId, RatingType.LIKE);
     } else {
       likeRecipe(recipe_id)
         .then(() => setRefresh(true))
         .catch(console.error);
-      updateUserRating(user.id, RatingType.UNLIKE);
+      updateUserRating(recipe.authorId, RatingType.UNLIKE);
     }
   }
 
@@ -74,12 +74,12 @@ const ViewRecipe = ({ recipe_id }: {
       unbookmarkRecipe(recipe_id)
         .then(() => setRefresh(true))
         .catch(console.error);
-      updateUserRating(user.id, RatingType.UNBOOKMARK);
+      updateUserRating(recipe.authorId, RatingType.UNBOOKMARK);
     } else {
       bookmarkRecipe(recipe_id)
         .then(() => setRefresh(true))
         .catch(console.error);
-      updateUserRating(user.id, RatingType.BOOKMARK);
+      updateUserRating(recipe.authorId, RatingType.BOOKMARK);
     }
   }
 
@@ -352,9 +352,9 @@ const ViewRecipe = ({ recipe_id }: {
       
       <ButtonGroup m="8" position="fixed" bottom="0%" right="0%" gap="4">
         {recipe.authorId === user.id && (
-          <DeleteRecipe recipe_id={recipe.id} user_id={user.id}/>
+          <DeleteRecipe recipe_id={recipe.id} user_id={recipe.authorId}/>
         )}
-         <CommentList recipe_id={recipe.id} />
+         <CommentList recipe_id={recipe.id} user_id={recipe.authorId}/>
       </ButtonGroup>
 
     </Flex>

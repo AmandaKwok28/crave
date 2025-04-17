@@ -10,7 +10,13 @@ import { setComments } from "@/lib/store";
 import { useRating } from "@/hooks/ratings/use-rating";
 import { RatingType } from "@/data/types";
 
-const CommentList = ({recipe_id} : {recipe_id : number}) => {
+const CommentList = ({
+  recipe_id,
+  user_id
+} : {
+  recipe_id : number,
+  user_id: string
+}) => {
 
     const { user } = useAuth();
     const { updateUserRating } = useRating();
@@ -26,7 +32,7 @@ const CommentList = ({recipe_id} : {recipe_id : number}) => {
           const updatedComments = await fetchComments(recipe_id);
           setComments(updatedComments);
           setCommentText('');
-          updateUserRating(user.id, RatingType.COMMENT);
+          updateUserRating(user_id, RatingType.COMMENT);
         } catch (error) {
           console.error('Error creating comment:', error);
         }
@@ -64,7 +70,7 @@ const CommentList = ({recipe_id} : {recipe_id : number}) => {
                 {comments && comments.length > 0 ? (
                   comments
                     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                    .map((comment) => <Comment key={comment.id} comment={comment} />)
+                    .map((comment) => <Comment key={comment.id} comment={comment} user_id={user_id}/>)
                 ) : (
                   <Text>No comments yet.</Text>
                 )}
