@@ -15,6 +15,13 @@ export enum Price {
   EXPENSIVE = "EXPENSIVE",
 }
 
+export enum RatingType {
+  LIKE = "like",
+  BOOKMARK = "bookmark",
+  COMMENT = "comment",
+  CREATE = "create"
+}
+
 export enum Difficulty {
   EASY = "EASY",
   MEDIUM = "MEDIUM",
