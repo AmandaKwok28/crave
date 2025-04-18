@@ -3,6 +3,7 @@ import { TextItem, TextMarkedContent } from 'pdfjs-dist/types/src/display/api';
 import { useRef, useState } from 'react';
 import { Button, Flex, Input, Spinner } from '@chakra-ui/react';
 import { fetchPdfContent } from '@/data/pdf-api';
+import { PdfResponse } from '@/data/types';
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';   // set pdf rendering opti
 
@@ -10,8 +11,11 @@ const isTextItem = (item: TextItem | TextMarkedContent): item is TextItem => {
     return (item as TextItem).str !== undefined; // Checking if 'str' exists on the item
 };
   
+type PDFUploadProps = {
+    onComplete: (response: PdfResponse) => void;
+};
 
-const PDFUpload = () => {
+const PDFUpload = ({ onComplete }: PDFUploadProps) => {
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);  // reference for the file input
     const [validFile, setValidFile] = useState<string | null>(null);  
@@ -49,17 +53,19 @@ const PDFUpload = () => {
             const extractedText = await getItems(fileUrl); // Call getItems to extract and log text
 
             // note to anirudh: use this to call the hook you define for making the gpt call :)
-            let response;
+            let response: PdfResponse | null = null;
             try {
-                response = await fetchPdfContent(extractedText.join(' '));
-                setTimeout(() => {
-                }, 2000);
+            response = await fetchPdfContent(extractedText.join(' '));
+            // optional timeout
             } catch (error) {
-                console.log(error)
+            console.log(error);
             } finally {
-                console.log(response)
-                setLoading(false);
+            if (response) {
+                onComplete(response); // ✅ only call if response exists
             }
+            setLoading(false);
+            }
+
             
         }
     };
