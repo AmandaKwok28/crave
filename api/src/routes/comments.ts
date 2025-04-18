@@ -47,6 +47,7 @@ comments_route.get('/recipe/:recipeId/comments', async(req, res) => {    // has 
 
     if (!comments) {
         res.status(404).json({ message: "Comments not found" });
+        return;
     }
   
     res.json(comments);
@@ -81,6 +82,7 @@ comments_route.post('/recipe/:recipeId/comments', async(req, res) => {
     
     if (!author) {
         res.status(404).json({ message: "Author not found" });
+        return;
     }
 
     // make a new comment

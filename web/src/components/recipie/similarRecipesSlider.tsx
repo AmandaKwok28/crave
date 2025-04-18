@@ -6,11 +6,13 @@ import "slick-carousel/slick/slick-theme.css";
 import { Suspense, useRef, useState } from "react";
 import { Global, css } from '@emotion/react';
 import Slider from 'react-slick';
+import { useStore } from "@nanostores/react";
+import { $isMobile } from "@/lib/store";
 
 interface SimilarRecipesSliderProps {
   recipes: RecipeType[];
   currentRecipeId?: number; 
-  title?: string; // Add optional title prop
+  title?: string;
 }
 
 const SlickCarouselStyles = () => (
@@ -18,18 +20,33 @@ const SlickCarouselStyles = () => (
     styles={css`
       .slick-slider {
         width: 100%;
-        position: relative;
+        margin: 0 auto;
       }
 
       .slick-list {
-        max-width: 100%;
         overflow: hidden;
-        padding: 0 !important;
+        padding: 10px 0 !important; /* Add vertical padding */
+      }
+
+      .slick-track {
+        display: flex !important;
+        align-items: center;
+        justify-content: center !important;
+      }
+
+      .slick-slide {
+        display: flex !important;
+        justify-content: center !important;
+        height: auto;
+        padding: 0 8px; /* Horizontal spacing between slides */
+      }
+
+      .slick-slide > div {
+        width: 100%;
       }
 
       .slick-dots {
-        transform: translateY(1em);
-        bottom: -35px;
+        bottom: -25px;
       }
 
       .slick-dots li button:before {
@@ -40,79 +57,60 @@ const SlickCarouselStyles = () => (
       .slick-dots li.slick-active button:before {
         color: #2c7a7b;
       }
-
-      .slick-track {
-        display: flex;
-        margin-left: 0;
-        margin-right: 0;
-        align-items: stretch;
-      }
-
-      .slick-slide {
-        padding: 0 !important;
-        height: auto;
-      }
-
-      .slick-slide > div {
-        height: 100%;
-      }
     `}
   />
 );
 
 const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRecipesSliderProps) => {
   const sliderRef = useRef<any>(null);
-  const [isDebounced, setIsDebounced] = useState(false);  // For debounce handling
-  
+  const [isDebounced, setIsDebounced] = useState(false);
+  const isMobile = useStore($isMobile);
+
   const similarRecipes = recipes;
 
   if (similarRecipes.length === 0) return null;
 
-  // Debounced goToPrev function
   const goToPrev = () => {
     if (!isDebounced && sliderRef.current) {
       setIsDebounced(true);
       sliderRef.current.slickPrev();
-      setTimeout(() => setIsDebounced(false), 500); // Delay time to prevent too many clicks
+      setTimeout(() => setIsDebounced(false), 500);
     }
   };
 
-  // Debounced goToNext function
   const goToNext = () => {
     if (!isDebounced && sliderRef.current) {
       setIsDebounced(true);
       sliderRef.current.slickNext();
-      setTimeout(() => setIsDebounced(false), 500); // Delay time to prevent too many clicks
+      setTimeout(() => setIsDebounced(false), 500);
     }
   };
 
   const slickSettings = {
     dots: true,
-    infinite: true, // Always loop the slides
-    speed: 500, // Reduced transition speed for better responsiveness
-    slidesToShow: 3, // Show 3 recipes at a time
+    infinite: true,
+    speed: 500,
+    slidesToShow: isMobile ? 1 : 3,
     slidesToScroll: 1,
-    autoplay: false, // Disable autoplay for testing
+    autoplay: false,
     pauseOnHover: true,
-    pauseOnFocus: true,
-    swipeToSlide: true,
-    arrows: false, // Keep this false if you’re testing default arrows
+    arrows: false,
     draggable: true,
-    cssEase: "ease-in-out", // Smooth transition easing
-    centerMode: true, // This centers the slides
-    centerPadding: '0', // Reduced padding for better centering
+    cssEase: "ease-in-out",
+    centerMode: false, // Disabled for better control
+    variableWidth: false, // Ensure consistent slide widths
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 2, // Show 2 slides on tablets
+          slidesToShow: 2,
           slidesToScroll: 1
         }
       },
       {
         breakpoint: 600,
         settings: {
-          slidesToShow: 1, // Show 1 slide on mobile
+          slidesToShow: 1,
           slidesToScroll: 1
         }
       }
@@ -120,61 +118,48 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
   };
 
   return (
-    <Box width="100%" maxWidth="100vw" my={8} px={16} position="relative">
-      <SlickCarouselStyles /> 
-      {title && <Heading size="lg" ml={4} mb={4}>{title}</Heading>}
+    <Box width="100%" my={8} px={isMobile ? 12 : 8} alignContent='center'>
+      <SlickCarouselStyles />
+      {title && <Heading size="lg" mb={6} textAlign="center">{title}</Heading>}
       
-      <Box
-        width="100%"
-        position="relative"
-        maxWidth="100%"
-        mx="auto"
-        px={10}
-      >
-        {/* Custom Previous Button */}
+      <Box position="relative" width="100%" maxWidth="1200px" mx="auto">
         {similarRecipes.length > 3 && (
-          <Button
-            position="absolute"
-            left="-30px"
-            top="50%"
-            transform="translateY(-50%)"
-            zIndex={2}
-            onClick={goToPrev}
-            borderRadius="full"
-            colorScheme="teal"
-            size="md"
-            boxShadow="0px 2px 10px rgba(0, 0, 0, 0.2)"
-            _hover={{ boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.3)" }}
-            w="40px"
-            h="40px"
-            minW="40px"
-            p={0}
-          >
-            ←
-          </Button>
-        )}
-        
-        {/* Custom Next Button */}
-        {similarRecipes.length > 3 && (
-          <Button
-            position="absolute"
-            right="20px"
-            top="50%"
-            transform="translateY(-50%)"
-            zIndex={2}
-            onClick={goToNext}
-            borderRadius="full"
-            colorScheme="teal"
-            size="md"
-            boxShadow="0px 2px 10px rgba(0, 0, 0, 0.2)"
-            _hover={{ boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.3)" }}
-            w="40px"
-            h="40px"
-            minW="40px"
-            p={0}
-          >
-            →
-          </Button>
+          <>
+            <Button
+              position="absolute"
+              left={isMobile ? "-15px" : "-30px"}
+              top="50%"
+              transform="translateY(-50%)"
+              zIndex={2}
+              onClick={goToPrev}
+              borderRadius="full"
+              colorScheme="teal"
+              size={isMobile ? "sm" : "md"}
+              boxShadow="md"
+              _hover={{ boxShadow: "lg" }}
+              w={isMobile ? "30px" : "40px"}
+              h={isMobile ? "30px" : "40px"}
+            >
+              ←
+            </Button>
+            <Button
+              position="absolute"
+              right={isMobile ? "-15px" : "-30px"}
+              top="50%"
+              transform="translateY(-50%)"
+              zIndex={2}
+              onClick={goToNext}
+              borderRadius="full"
+              colorScheme="teal"
+              size={isMobile ? "sm" : "md"}
+              boxShadow="md"
+              _hover={{ boxShadow: "lg" }}
+              w={isMobile ? "30px" : "40px"}
+              h={isMobile ? "30px" : "40px"}
+            >
+              →
+            </Button>
+          </>
         )}
 
         <Suspense fallback={
@@ -184,7 +169,9 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
         }>
           <Slider ref={sliderRef} {...slickSettings}>
             {similarRecipes.map((card: RecipeType) => (
-              <RecipeCard key={card.id} recipe={card} />
+              <Box key={card.id} px={2} maxW="350px" w="100%" mx="auto">
+                <RecipeCard recipe={card} />
+              </Box>
             ))}
           </Slider>
         </Suspense>

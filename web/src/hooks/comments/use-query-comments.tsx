@@ -1,4 +1,5 @@
-import { fetchComments } from "@/data/api";
+
+import { fetchComments } from "@/data/comments-api";
 import { $comments, setComments } from "@/lib/store";
 import { useStore } from "@nanostores/react";
 import { useEffect } from "react";

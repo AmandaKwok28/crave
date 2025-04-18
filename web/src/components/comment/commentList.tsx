@@ -5,8 +5,7 @@ import Comment from "./comment";
 import { useAuth } from "@/hooks/use-auth";
 import useMutationComment from "@/hooks/comments/use-mutation-comments";
 import useQueryComments from "@/hooks/comments/use-query-comments";
-import { fetchComments } from "@/data/api";
-import { setComments } from "@/lib/store";
+
 import { useRating } from "@/hooks/ratings/use-rating";
 import { RatingType } from "@/data/types";
 
@@ -30,9 +29,8 @@ const CommentList = ({
         try {
           setCommentText('');
           await addComment(commentText, user.id);
-          const updatedComments = await fetchComments(recipe_id);
-          setComments(updatedComments);
           updateUserRating(user_id, RatingType.COMMENT);
+          console.log(comments)
         } catch (error) {
           console.error('Error creating comment:', error);
         }
@@ -72,7 +70,7 @@ const CommentList = ({
                   comments
                     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                     .map((comment, index) => (
-                      <Comment key={`${comment.id}-${index}`} comment={comment} user_id={user_id} />
+                      <Comment key={comment.id} comment={comment} user_id={user_id} />
                     ))
                 ) : (
                   <Text>No comments yet.</Text>

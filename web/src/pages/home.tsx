@@ -13,7 +13,7 @@ import useRecommendedRecipes from "@/hooks/use-recommended-recipes";
 import Recipes from "@/components/recipie/recipes";
 import SimilarRecipesSlider from "@/components/recipie/similarRecipesSlider";
 import { SearchIcon } from "lucide-react";
-import { setFilters, setSearchTerm } from "@/lib/store";
+import { $isMobile, setFilters, setSearchTerm } from "@/lib/store";
 import Prices from "@/components/search/prices";
 import DifficultyButtons from "@/components/search/DifficultyButtons";
 import { Difficulty } from "@/data/types";
@@ -21,11 +21,15 @@ import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
+import { useStore } from "@nanostores/react";
 
 const Home = () => {
     const { recipes } = useQueryRecipes(true);
     const { recommendedRecipes, isLoading, error } = useRecommendedRecipes(10);
     const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
+    const isMobile = useStore($isMobile);
+
+
     const handleCookTimeChange = (details: { value: [number, number] }) => {
         setCookTime(details.value);
         const change = {
@@ -51,8 +55,7 @@ const Home = () => {
                 bgGradient="to-r"
                 gradientFrom="cyan.500"
                 gradientTo="purple.600"
-                h="auto" 
-                minH="500px"
+                h={isMobile ? '200px' : '500px'}
                 w="100vw"
                 overflowX="hidden"
                 mt={4}
@@ -63,14 +66,14 @@ const Home = () => {
                     ml="4"
                 >
                     <Text
-                        textStyle="7xl"
+                        textStyle={isMobile ? "3xl" : "7xl"}
                         fontWeight="bold"
                         color='bg'
                     > 
                         Crave. 
                     </Text>
                     <Text
-                        textStyle="2xl"
+                        textStyle={isMobile ? "md" : "2xl"}
                         fontWeight="bold"
                         color="gray.300"
                     > 
@@ -81,6 +84,9 @@ const Home = () => {
                 <Spacer/>
 
                 {/* Home Page Search Box */}
+                {!isMobile && (
+                    <>
+                    
                 <Flex 
                     backgroundColor="rgba(211, 211, 211, 0.4)"
                     w="50vw"
@@ -152,11 +158,15 @@ const Home = () => {
                         Search
                     </Button>
                 </Flex>
+                </>
+                )}
+         
             </Flex>
+            
 
             {/* Recommended Section: note, takes a solid minute to load data and then it scrolls well */}
             <Text 
-                textStyle="2xl"
+                textStyle={isMobile ? "md" : "2xl"}
                 color="black"
                 fontWeight="bold"
                 m="4"
@@ -169,7 +179,7 @@ const Home = () => {
                 display="flex" 
                 justifyContent="center" // Center the content horizontally
                 alignItems="center" // Center the content vertically (if needed)
-                >
+            >
                 
                 {isLoading ? (
                     <Center py="8">
@@ -185,7 +195,7 @@ const Home = () => {
                     </Center>
                 ) : (
                     <Box 
-                    width="80%" 
+                    width={isMobile ? "100%" : "80%"} 
                     mb="12" 
                     display="flex" 
                     justifyContent="center" // Center slider content
