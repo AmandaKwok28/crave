@@ -32,9 +32,7 @@ const CommentList = ({
           updateUserRating(user_id, RatingType.COMMENT);
         } catch (error) {
           console.error('Error creating comment:', error);
-        } finally {
-          console.log(comments)
-        }
+        } 
       }
     };
 

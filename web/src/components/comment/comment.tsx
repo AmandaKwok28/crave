@@ -35,35 +35,37 @@ const Comment = ( {
     }
   };
 
-    return (
-        <Card.Root mb="2" borderRadius="md">
-            <Card.Body>
-                <Flex direction="row" justifyContent="space-between">
-                    <Flex direction="column">
-                        <Flex direction="column" mb="4">
-                            <Text mr="4">{comment.author?.name}</Text>
-                            <Text fontSize="xs">{formatTimestamp(comment.createdAt)}</Text>
-                        </Flex>
-                        <Text fontWeight="bold" fontSize="sm">{comment.content}</Text>
-                    </Flex>
-                    <Flex>
-                        {comment.author?.id === user.id && (
-                            <Button 
-                                variant="ghost" 
-                                size="xs" 
-                                mt="2" 
-                                color="red.400"
-                                onClick={handleDelete}
-                                loading={isDeleting}>
-                                <Trash />
-                            </Button>
-                            )
-                        }
-                    </Flex>
-                </Flex>
-            </Card.Body>
-        </Card.Root>
-    );
+  const isAuthor = comment.author.id === user.id;
+
+  return (
+      <Card.Root mb="2" borderRadius="md">
+          <Card.Body>
+              <Flex direction="row" justifyContent="space-between">
+                  <Flex direction="column">
+                      <Flex direction="column" mb="4">
+                          <Text mr="4">{comment.author?.name}</Text>
+                          <Text fontSize="xs">{formatTimestamp(comment.createdAt)}</Text>
+                      </Flex>
+                      <Text fontWeight="bold" fontSize="sm">{comment.content}</Text>
+                  </Flex>
+                  <Flex>
+                      {isAuthor && (
+                          <Button 
+                              variant="ghost" 
+                              size="xs" 
+                              mt="2" 
+                              color="red.400"
+                              onClick={handleDelete}
+                              loading={isDeleting}>
+                              <Trash />
+                          </Button>
+                          )
+                      }
+                  </Flex>
+              </Flex>
+          </Card.Body>
+      </Card.Root>
+  );
 };
 
 export default Comment;

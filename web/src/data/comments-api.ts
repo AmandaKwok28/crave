@@ -34,7 +34,7 @@ export const fetchComments = async (recipe_id: string | number): Promise<Comment
   };
   
   // Delete comment on a recipe
-  export const deleteComment = async (recipe_id: string | number, commentId: number) : Promise<CommentType> => {
+  export const deleteComment = async (recipe_id: string | number, commentId: number) : Promise<boolean> => {
     const response = await fetch(`${API_URL}/recipe/${recipe_id}/comments/${commentId}`, {
       credentials: 'include',
       method: 'DELETE'
@@ -43,10 +43,7 @@ export const fetchComments = async (recipe_id: string | number): Promise<Comment
     if (!response.ok) {
       throw new Error(`API request failed with status ${response.status}`);
     }
-
-    const comment: CommentType = await response.json();
-  
-    return comment;
+    return true;
   };
   
   

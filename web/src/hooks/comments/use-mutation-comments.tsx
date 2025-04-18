@@ -15,8 +15,9 @@ const useMutationComment = (recipeId: number) => {
 
   const removeComment = async (commentId: number) => {
     try {
-      const deletedComment = await deleteComment(recipeId, commentId);
-      removeAComment(deletedComment.id); 
+      await deleteComment(recipeId, commentId);
+      removeAComment(commentId); 
+      console.log('just deleted!')
     } catch (error) {
       console.error("Error deleting comment:", error);
     }

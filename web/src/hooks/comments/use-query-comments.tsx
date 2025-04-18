@@ -9,6 +9,7 @@ const useQueryComments = (recipeId: number) => {
 
   const loadComments = async () => {
     try {
+      console.log('new recipe!')
       const fetchedComments = await fetchComments(recipeId);
       setComments(fetchedComments);
     } catch {
@@ -16,8 +17,7 @@ const useQueryComments = (recipeId: number) => {
     }
   };
 
-  useEffect(() => {
-    if (!recipeId) return;    
+  useEffect(() => { 
     loadComments();
   }, [recipeId]);
 

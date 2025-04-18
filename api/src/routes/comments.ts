@@ -55,7 +55,7 @@ comments_route.get('/recipe/:recipeId/comments', async(req, res) => {    // has 
 })
 
 // create
-comments_route.post('/recipe/:recipeId/comments', async(req, res) => {
+comments_route.post('/recipe/:recipeId/comments', authGuard, async(req, res) => {
     const request = createSchema.safeParse(req.body);
     if (!request.success) {
         res.status(400).json({
