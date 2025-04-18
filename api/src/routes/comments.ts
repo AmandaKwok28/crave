@@ -92,6 +92,10 @@ comments_route.post('/recipe/:recipeId/comments', async(req, res) => {
             recipeId: id,
             authorId: authorId,
         },
+        include: {
+            author: true, 
+            recipe: true,
+        }
     });
 
     // Respond with success

@@ -30,9 +30,10 @@ const CommentList = ({
           setCommentText('');
           await addComment(commentText, user.id);
           updateUserRating(user_id, RatingType.COMMENT);
-          console.log(comments)
         } catch (error) {
           console.error('Error creating comment:', error);
+        } finally {
+          console.log(comments)
         }
       }
     };

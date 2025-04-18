@@ -47,7 +47,7 @@ const Comment = ( {
                         <Text fontWeight="bold" fontSize="sm">{comment.content}</Text>
                     </Flex>
                     <Flex>
-                        {comment.author?.id == user.id && (
+                        {comment.author?.id === user.id && (
                             <Button 
                                 variant="ghost" 
                                 size="xs" 
