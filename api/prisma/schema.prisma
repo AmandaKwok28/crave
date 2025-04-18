@@ -57,6 +57,8 @@ model User {
   avatarImage  String?    // should be optional
   recentlyViewed RecentlyViewed[]
   recommendedRecipes RecommendedRecipe[]
+  hostedParties  CookingParty[]  @relation("PartyHost")
+  partyMemberships PartyMember[]
 }
 
 model Session {
@@ -133,6 +135,8 @@ model Recipe {
   viewedBy RecentlyViewed[]
 
   recommendedRecipes RecommendedRecipe[]
+
+  partyRecommendations PartyRecommendation[]
 }
 
 model Allergen {
@@ -177,9 +181,64 @@ model RecommendedRecipe {
   recipe           Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade) // Relation to Recipe
 }
 
+enum PartyStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
 
+model CookingParty {
+  id             String          @id @default(uuid())
+  name           String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  status         PartyStatus     @default(PENDING)
+  shareLink      String          @unique
+  expiresAt      DateTime?       
+  hostId         String
+  host           User            @relation("PartyHost", fields: [hostId], references: [id], onDelete: Cascade)
+  members        PartyMember[]
+  preferences    PartyPreference?
+  recommendations PartyRecommendation[]
+}
 
+model PartyMember {
+  id             Int             @id @default(autoincrement())
+  partyId        String
+  userId         String
+  joinedAt       DateTime        @default(now())
+  hasAccepted    Boolean         @default(false)
+  party          CookingParty    @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ingredients    String[]        @default([])
+  cookingAbility Difficulty?
 
+  @@unique([partyId, userId])
+}
 
+model PartyPreference {
+  id             Int             @id @default(autoincrement())
+  partyId        String          @unique
+  party          CookingParty    @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  availableTime  Int?            // Time in minutes
+  preferredCuisines Cuisine[]    @default([])
+  preferredPrice Price?
+  aggregatedIngredients String[] @default([])
+  excludedAllergens String[]     @default([])
+  preferredDifficulty Difficulty?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
 
+model PartyRecommendation {
+  id             Int             @id @default(autoincrement())
+  partyId        String
+  recipeId       Int
+  matchScore     Float
+  createdAt      DateTime        @default(now())
+  party          CookingParty    @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  recipe         Recipe          @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
+  @@unique([partyId, recipeId])
+}
