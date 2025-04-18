@@ -69,7 +69,7 @@ const CommentList = ({
                 {comments && comments.length > 0 ? (
                   comments
                     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                    .map((comment, index) => (
+                    .map((comment) => (
                       <Comment key={comment.id} comment={comment} user_id={user_id} />
                     ))
                 ) : (
