@@ -19,7 +19,7 @@ interface UseMessagingReturn {
   isLoading: boolean;
   error: Error | null;
   loadConversations: () => Promise<void>;
-  loadMessages: (conversationId: number, page?: number, limit?: number) => Promise<void>;
+  loadMessages: (conversationId: number, page?: number, limit?: number, isInitialLoad?: boolean) => Promise<void>;
   sendNewMessage: (conversationId: number, content?: string, recipeId?: number) => Promise<void>;
   startConversation: (otherUserId: string) => Promise<number>;
   setCurrentConversation: (id: number | null) => void;
@@ -51,11 +51,14 @@ export function useMessaging(): UseMessagingReturn {
     }
   }, [user.id]);
 
-  // Load messages for a specific conversation
-  const loadMessages = useCallback(async (conversationId: number, page = 0, limit = 20) => {
+  const loadMessages = useCallback(async (conversationId: number, page = 0, limit = 20, isInitialLoad = true) => {
     if (!user.id) return;
     
-    setIsLoading(true);
+    // Only show loading state on initial load, not during polling updates
+    if (isInitialLoad) {
+      setIsLoading(true);
+    }
+    
     setError(null);
     try {
       const data = await fetchMessages(conversationId, page, limit);
@@ -65,7 +68,9 @@ export function useMessaging(): UseMessagingReturn {
       setError(err instanceof Error ? err : new Error('Failed to load messages'));
       console.error('Error loading messages:', err);
     } finally {
-      setIsLoading(false);
+      if (isInitialLoad) {
+        setIsLoading(false);
+      }
     }
   }, [user.id]);
 

@@ -7,28 +7,43 @@ import { formatDistanceToNow } from "date-fns";
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
 import { Message } from "@/data/api"; // Make sure to import the Message type
-
+import { useLayoutEffect } from "react";
 
 // Define props interface for the MessageBubble component
 interface MessageBubbleProps {
-    message: Message;
-    isCurrentUser: boolean;
-  }
+  message: Message;
+  isCurrentUser: boolean;
+  currentUser: any; // Add currentUser prop
+}
 
 // Simple message component similar to Comment component
-const MessageBubble = ({ message, isCurrentUser }: MessageBubbleProps) => {
+const MessageBubble = ({ message, isCurrentUser, currentUser }: MessageBubbleProps) => {
   const align = isCurrentUser ? "flex-end" : "flex-start";
   const bgColor = isCurrentUser ? "cyan.100" : "gray.100";
 
   return (
-    <Flex direction="column" alignItems={align} mb={3} width="100%">
+    <Flex 
+      direction="row" 
+      alignItems="flex-start" 
+      mb={3} 
+      width="100%"
+      justifyContent={isCurrentUser ? "flex-end" : "flex-start"}
+    >
+      {/* Avatar for other users, shown on the left */}
       {!isCurrentUser && (
-        <Text fontSize="xs" fontWeight="medium" mb={1} color="gray.500">
-          {message.sender.name}
-        </Text>
+        <Avatar.Root size="sm" mr={2} mt={1}>
+          <Avatar.Fallback name={message.sender.name} />
+          <Avatar.Image src={message.sender.avatarImage || undefined} />
+        </Avatar.Root>
       )}
       
       <Flex direction="column" alignItems={align} maxWidth="70%">
+        {!isCurrentUser && (
+          <Text fontSize="xs" fontWeight="medium" mb={1} color="gray.500">
+            {message.sender.name}
+          </Text>
+        )}
+
         {/* Recipe card */}
         {message.recipe && (
           <Box 
@@ -69,6 +84,13 @@ const MessageBubble = ({ message, isCurrentUser }: MessageBubbleProps) => {
           {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
         </Text>
       </Flex>
+
+      {isCurrentUser && (
+        <Avatar.Root size="sm" ml={2} mt={1}>
+          <Avatar.Fallback name={currentUser.name || 'You'} />
+          <Avatar.Image src={currentUser.avatarImage || undefined} />
+        </Avatar.Root>
+      )}
     </Flex>
   );
 };
@@ -77,7 +99,7 @@ const MessagingDrawer = () => {
   const [open, setOpen] = useState(false);
   const [messageText, setMessageText] = useState('');
   const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   
   // Add a new state for sorted messages
@@ -115,25 +137,48 @@ const MessagingDrawer = () => {
   // Load messages when a conversation is selected
   useEffect(() => {
     if (selectedConversationId) {
-      loadMessages(selectedConversationId);
+      // Initial load - show loading state
+      loadMessages(selectedConversationId, 0, 20, true);
+      
+      // Set up polling for new messages every 3 seconds - without loading state
+      const intervalId = setInterval(() => {
+        loadMessages(selectedConversationId, 0, 20, false);
+      }, 3000);
+      
+      // Clean up interval on unmount or when conversation changes
+      return () => clearInterval(intervalId);
     }
   }, [selectedConversationId, loadMessages]);
 
-  // Scroll to bottom of messages only when messages change
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  // Replace just the useLayoutEffect for scroll behavior
+  useLayoutEffect(() => {
+    // Only modify scroll if messages aren't empty
+    if (messagesContainerRef.current && sortedMessages.length > 0) {
+      // Use requestAnimationFrame to ensure DOM is fully updated
+      requestAnimationFrame(() => {
+        if (messagesContainerRef.current) {
+          // Smoothly maintain position at bottom
+          messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
+      });
     }
-  }, [sortedMessages]); // Changed from messages to sortedMessages
+  }, [sortedMessages]);
+  
 
-  // Send message handler (similar to handleCreateComment)
+  // Modify the send message handler to be more efficient
   const handleSendMessage = async () => {
     if (messageText.trim() && selectedConversationId) {
+      const messageToSend = messageText.trim();
+      // Clear input immediately for better UX (feels more responsive)
+      setMessageText('');
+      
       try {
-        await sendNewMessage(selectedConversationId, messageText);
-        setMessageText('');
+        await sendNewMessage(selectedConversationId, messageToSend);
+        // No need to clear input again, it's already cleared
       } catch (error) {
         console.error('Error sending message:', error);
+        // On error, we could restore the message text if desired
+        // setMessageText(messageToSend);
       }
     }
   };
@@ -222,7 +267,7 @@ const MessagingDrawer = () => {
                         <Flex alignItems="center">
                           <Avatar.Root size="sm" mr={3}>
                             <Avatar.Fallback name={conversation.otherUser.name} />
-                            <Avatar.Image src={conversation.otherUser.avatarImage || ''} />
+                            <Avatar.Image src={conversation.otherUser.avatarImage || undefined} />
                           </Avatar.Root>
                           <Box flex="1">
                             <Text fontWeight="medium">{conversation.otherUser.name}</Text>
@@ -254,7 +299,7 @@ const MessagingDrawer = () => {
                   </Button>
                 
                   {/* Messages */}
-                  <Box flex="1" overflowY="auto">
+                  <Box flex="1" overflowY="auto" ref={messagesContainerRef}>
                     {isLoading ? (
                       <Center><Spinner /></Center>
                     ) : sortedMessages.length > 0 ? (
@@ -262,7 +307,8 @@ const MessagingDrawer = () => {
                         <MessageBubble 
                           key={message.id} 
                           message={message} 
-                          isCurrentUser={message.senderId === user.id} 
+                          isCurrentUser={message.senderId === user.id}
+                          currentUser={user}  // Pass the user object
                         />
                       ))
                     ) : (
@@ -270,7 +316,6 @@ const MessagingDrawer = () => {
                         No messages yet. Start the conversation!
                       </Text>
                     )}
-                    <div ref={messagesEndRef} />
                   </Box>
                 </Flex>
               )}

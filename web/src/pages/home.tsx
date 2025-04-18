@@ -234,7 +234,7 @@ const Home = () => {
                 onClick={async () => {
                     try {
                     // Replace with any valid user ID from your database
-                    const targetUserId = "1abc";
+                    const targetUserId = "a04e9d23-73f8-484f-93f8-f2e30c944709";
                     const result = await createConversation(targetUserId);
                     console.log("Conversation created:", result);
                     alert(`Conversation created with ID: ${result.id}`);
