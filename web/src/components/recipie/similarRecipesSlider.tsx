@@ -3,13 +3,10 @@ import { RecipeType } from "@/data/types";
 import RecipeCard from "../layout/recipeCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Suspense, useRef } from "react";
+import { Suspense, useRef, useState } from "react";
 import { Global, css } from '@emotion/react';
-
-
 import Slider from 'react-slick';
 
-// Update the interface in similarRecipesSlider.tsx
 interface SimilarRecipesSliderProps {
   recipes: RecipeType[];
   currentRecipeId?: number; 
@@ -21,7 +18,6 @@ const SlickCarouselStyles = () => (
     styles={css`
       .slick-slider {
         width: 100%;
-        max-width: 100%;
         position: relative;
       }
 
@@ -66,61 +62,66 @@ const SlickCarouselStyles = () => (
 
 const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRecipesSliderProps) => {
   const sliderRef = useRef<any>(null);
+  const [isDebounced, setIsDebounced] = useState(false);  // For debounce handling
   
-  // recipes is a list of similar recipes
   const similarRecipes = recipes;
 
-  // Don't show anything if no similar recipes
   if (similarRecipes.length === 0) return null;
-  
-  // Methods to control the slider
+
+  // Debounced goToPrev function
   const goToPrev = () => {
-    if (sliderRef.current) {
+    if (!isDebounced && sliderRef.current) {
+      setIsDebounced(true);
       sliderRef.current.slickPrev();
+      setTimeout(() => setIsDebounced(false), 500); // Delay time to prevent too many clicks
     }
   };
 
+  // Debounced goToNext function
   const goToNext = () => {
-    if (sliderRef.current) {
+    if (!isDebounced && sliderRef.current) {
+      setIsDebounced(true);
       sliderRef.current.slickNext();
+      setTimeout(() => setIsDebounced(false), 500); // Delay time to prevent too many clicks
     }
   };
-  
-  // Slider settings
+
   const slickSettings = {
     dots: true,
-    infinite: similarRecipes.length > 3,
-    speed: 700,
-    slidesToShow: Math.min(3, similarRecipes.length),
+    infinite: true, // Always loop the slides
+    speed: 500, // Reduced transition speed for better responsiveness
+    slidesToShow: 3, // Show 3 recipes at a time
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: false, // Disable autoplay for testing
     pauseOnHover: true,
     pauseOnFocus: true,
     swipeToSlide: true,
-    arrows: false, // Disable default arrows
+    arrows: false, // Keep this false if you’re testing default arrows
     draggable: true,
-    cssEase: "ease-out",
+    cssEase: "ease-in-out", // Smooth transition easing
+    centerMode: true, // This centers the slides
+    centerPadding: '0', // Reduced padding for better centering
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: Math.min(2, similarRecipes.length),
+          slidesToShow: 2, // Show 2 slides on tablets
           slidesToScroll: 1
         }
       },
       {
         breakpoint: 600,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 1, // Show 1 slide on mobile
           slidesToScroll: 1
         }
       }
     ]
   };
-  
+
   return (
     <Box width="100%" maxWidth="100vw" my={8} px={16} position="relative">
-      <SlickCarouselStyles /> {/* Inject global slick styles */}
+      <SlickCarouselStyles /> 
       {title && <Heading size="lg" ml={4} mb={4}>{title}</Heading>}
       
       <Box
@@ -134,7 +135,7 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
         {similarRecipes.length > 3 && (
           <Button
             position="absolute"
-            left="-30px" // Fixed distance from the left edge of the slider container
+            left="-30px"
             top="50%"
             transform="translateY(-50%)"
             zIndex={2}
@@ -175,18 +176,15 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
             →
           </Button>
         )}
-        
+
         <Suspense fallback={
           <Center py={8}>
             <Spinner size="xl" color="teal.500" />
           </Center>
         }>
           <Slider ref={sliderRef} {...slickSettings}>
-
-            {similarRecipes.map((card:RecipeType) => (
-              // <Box key={recipe.id} padding={2} maxWidth="100%" height="100%">
-                <RecipeCard key={card.id} recipe={card}/>
-              /* </Box> */
+            {similarRecipes.map((card: RecipeType) => (
+              <RecipeCard key={card.id} recipe={card} />
             ))}
           </Slider>
         </Suspense>

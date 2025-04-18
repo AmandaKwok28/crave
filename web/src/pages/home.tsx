@@ -154,38 +154,51 @@ const Home = () => {
                 </Flex>
             </Flex>
 
-            {/* Recommended Section */}
-            <Box width="100%" pt="8">
-                <Text 
-                    textStyle="2xl"
-                    color="black"
-                    fontWeight="bold"
-                    m="4"
-                > 
-                    Recommended For You
-                </Text>
+            {/* Recommended Section: note, takes a solid minute to load data and then it scrolls well */}
+            <Text 
+                textStyle="2xl"
+                color="black"
+                fontWeight="bold"
+                m="4"
+            > 
+                Recommended For You
+            </Text>
+            <Box 
+                width="100%" 
+                pt="8" 
+                display="flex" 
+                justifyContent="center" // Center the content horizontally
+                alignItems="center" // Center the content vertically (if needed)
+                >
+                
                 {isLoading ? (
                     <Center py="8">
-                        <Spinner size="xl" color="teal.500" />
+                    <Spinner size="xl" color="teal.500" />
                     </Center>
                 ) : error ? (
                     <Center py="8">
-                        <Text color="red.500">Failed to load recommendations</Text>
+                    <Text color="red.500">Failed to load recommendations</Text>
                     </Center>
                 ) : recommendedRecipes.length === 0 ? (
                     <Center py="8">
-                        <Text color="gray.500">Explore recipes to get personalized recommendations</Text>
+                    <Text color="gray.500">Explore recipes to get personalized recommendations</Text>
                     </Center>
                 ) : (
-                    <Box width="full" mb="12">
-                        <SimilarRecipesSlider 
-                            recipes={recommendedRecipes} 
-                            currentRecipeId={undefined} 
-                            title=""
-                        />
+                    <Box 
+                    width="80%" 
+                    mb="12" 
+                    display="flex" 
+                    justifyContent="center" // Center slider content
+                    >
+                    <SimilarRecipesSlider 
+                        recipes={recommendedRecipes} 
+                        currentRecipeId={undefined} 
+                        title=""
+                    />
                     </Box>
                 )}
-            </Box>
+                </Box>
+
 
             {/* Trending Section */}
             <Flex 
@@ -197,7 +210,9 @@ const Home = () => {
                     textStyle="2xl"
                     color="black"
                     fontWeight="bold"
-                    m="4"> 
+                    m="4"
+                    p={2}
+                > 
                     Recipes:
                 </Text>
                 <Flex 
@@ -206,6 +221,7 @@ const Home = () => {
                     gap="6" 
                     align="center"
                     mb='16'
+                    p={10}
                     wrap="wrap" 
                     justify="center"
                     justifyContent="center"

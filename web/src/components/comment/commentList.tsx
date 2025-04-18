@@ -28,10 +28,10 @@ const CommentList = ({
     const handleCreateComment = async () => {
       if (commentText.trim()) {
         try {
+          setCommentText('');
           await addComment(commentText, user.id);
           const updatedComments = await fetchComments(recipe_id);
           setComments(updatedComments);
-          setCommentText('');
           updateUserRating(user_id, RatingType.COMMENT);
         } catch (error) {
           console.error('Error creating comment:', error);
@@ -66,11 +66,14 @@ const CommentList = ({
               </Flex>
             </Drawer.Header>
             <Drawer.Body display="flex" flexDirection="column" justifyContent="space-between" height="full">
+            {/* temporary fix to make comment id unique... */}
             <Flex direction="column">
                 {comments && comments.length > 0 ? (
                   comments
                     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                    .map((comment) => <Comment key={comment.id} comment={comment} user_id={user_id}/>)
+                    .map((comment, index) => (
+                      <Comment key={`${comment.id}-${index}`} comment={comment} user_id={user_id} />
+                    ))
                 ) : (
                   <Text>No comments yet.</Text>
                 )}
