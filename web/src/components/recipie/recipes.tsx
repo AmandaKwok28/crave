@@ -1,11 +1,26 @@
 import { RecipeType } from "@/data/types";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Text, Image } from "@chakra-ui/react";
 import RecipeCard from "../layout/recipeCard";
 
 const Recipes = ({recipes}:{recipes:RecipeType[]}) => {
     if (recipes.length === 0) {
         return (
-            <Text mt='14' fontSize='xl'>No recipes found, create one to get started!</Text>
+            <Flex 
+            height="80vh" 
+            width="75vw"
+            align="center" 
+            justify="center"
+            direction="column"
+          >
+            <Image
+                boxSize="300px" 
+                objectFit="contain"
+                src="/no_recipe_fallback.png">
+            </Image>
+            <Text fontSize="xl" fontWeight="light" color="gray.600">
+              No recipes found!
+            </Text>
+          </Flex>
         );
     }
 
