@@ -142,22 +142,29 @@ const Profile = ({ userId }: {userId: string}) => {
 
   
                   <div className="max-h-sm h-auto p-4 text-white w-full space-y-2">
-                    
-                    <Field label="Image Url">
-                      <Input
-                        bg="white"
-                        color="black"
-                        placeholder="Enter an image url"
-                        onKeyDown={(e) => handleImageFile(e)}
-                        value={url}
-                        onChange={(e) => setUrl(e.target.value)}
-                      />
-                    </Field>
-  
-                    <TabButton label='My Recipes' value='recipes' curtab={tab} callback={setTab} />
-                    <TabButton label='My Drafts' value='drafts' curtab={tab} callback={setTab} />
-                    <TabButton label='My Likes' value='likes' curtab={tab} callback={setTab} />
-                    <TabButton label='My Bookmarks' value='bookmarks' curtab={tab} callback={setTab} />
+                    {loggedInUser?.id === user?.id ? (
+                      <>
+                        <Field label="Image Url">
+                          <Input
+                            bg="white"
+                            color="black"
+                            placeholder="Enter an image url"
+                            onKeyDown={(e) => handleImageFile(e)}
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
+                          />
+                        </Field>
+                        <TabButton label='My Recipes' value='recipes' curtab={tab} callback={setTab} />
+                        <TabButton label='My Drafts' value='drafts' curtab={tab} callback={setTab} />
+                        <TabButton label='My Likes' value='likes' curtab={tab} callback={setTab} />
+                        <TabButton label='My Bookmarks' value='bookmarks' curtab={tab} callback={setTab} />
+                      </>
+                    ) : (
+                      <>
+                        <TabButton label='Recipes' value='recipes' curtab={tab} callback={setTab} />
+                        <TabButton label='Likes' value='likes' curtab={tab} callback={setTab} />
+                      </>
+                    )}
   
                   </div>
               </div>
