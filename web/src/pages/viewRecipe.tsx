@@ -8,9 +8,11 @@ import { RecipeType } from "@/data/types";
 import { useAuth } from "@/hooks/use-auth";
 import useSimilarRecipes from "@/hooks/use-similar-recipes";
 import useRecentlyViewed from "@/hooks/use-recently-viewed";
-import { Box, ButtonGroup, Center, Flex, Spinner, Image, Text, Button, HStack } from "@chakra-ui/react";
+import { Box, ButtonGroup, Center, Flex, Spinner, Image, Text, Button, HStack, Link } from "@chakra-ui/react";
 import { Bookmark, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
+import { openPage } from "@nanostores/router";
+import { $router } from "@/lib/router";
 
 // Recipe page
 const ViewRecipe = ({ recipe_id }: { 
@@ -114,6 +116,22 @@ const ViewRecipe = ({ recipe_id }: {
                 {recipe.title}
             </Text>
 
+              <Text fontSize="md" fontWeight="light" whiteSpace="pre-line">
+                  Created by
+                  <Link 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      openPage($router, 'profile', { userId: recipe.author.id });
+                    }}
+                    fontWeight="bold"
+                    color="teal.600"
+                    ml="2"
+                  >
+                    {recipe.author.name}
+                  </Link>
+                </Text>
+
               {/* Adding image here */}
               <Image rounded="md" src={recipe.image ? recipe.image : '/img_placeholder.jpg'} w='30vw' />
 
@@ -142,14 +160,6 @@ const ViewRecipe = ({ recipe_id }: {
                 whiteSpace='pre-line'
               >
                 {recipe.description}
-              </Text>
-
-              <Text
-                fontSize='md'
-                fontWeight='light'
-                whiteSpace='pre-line'
-              >
-                Made By {user.name}
               </Text>
         </Flex>
 
