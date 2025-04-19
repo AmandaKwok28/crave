@@ -1,0 +1,26 @@
+services:
+  api:
+    image: ghcr.io/cs421sp25-homework/team-05-api:latest
+    volumes:
+      - api-data:/app/data
+    environment:
+      - DATABASE_URL=prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiOTcyZGU5NjUtNzFjZi00NzJjLThkYTgtODA3M2QwNDMzYTVlIiwidGVuYW50X2lkIjoiMDUyMTljOGQ4MWRiN2VhMWFjNDFlOGNhN2RiMzI5ZjIyN2JjN2QyZTRhZGIyZDA4ZTc1Y2QyYWVlYWJlMjc5OCIsImludGVybmFsX3NlY3JldCI6IjUxYTJkNjBmLThmNWUtNGM5MS04MTJlLTExZWZiY2JlNDk5MSJ9.IPdxEhScCF_stl9Hgia2riUeYAiE4o_K9Eekyf4N9rs
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  web:
+    image: ghcr.io/cs421sp25-homework/team-05-web:latest
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  api-data:

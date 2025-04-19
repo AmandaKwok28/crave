@@ -18,7 +18,7 @@ import rating_route from './routes/rating.js';
 import pdf_route from './routes/parse-pdf.js';
 
 export const app = express();
-const port = process.env.PORT || 3000;   // app can dynamically listen to port specified by the PORT env var
+const port = Number(process.env.PORT) || 3000;   // app can dynamically listen to port specified by the PORT env var
 
 app.use(cors({
   origin: true,
@@ -34,6 +34,12 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 app.use(auth);
+
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'Hello Express!'
+  })
+});
 
 app.use(pdf_route);
 app.use(auth_route);
@@ -51,14 +57,14 @@ app.use('/gpt', gptRoutes);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(__dirname, '../../../web/dist')));
+// app.use(express.static(path.join(__dirname, '../../../web/dist')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../../web/dist/index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../../../web/dist/index.html'));
+// });
 
-startBackgroundJobs();
+// startBackgroundJobs();
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Listening @ http://localhost:3000`);
 });
