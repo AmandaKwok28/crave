@@ -57,13 +57,13 @@ app.use('/gpt', gptRoutes);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// app.use(express.static(path.join(__dirname, '../../../web/dist')));
+app.use(express.static(path.join(__dirname, '../../../web/dist')));
 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../../../web/dist/index.html'));
-// });
+app.get('*', (_, res) => {
+  res.sendFile(path.join(__dirname, '../../../web/dist/index.html'));
+});
 
-// startBackgroundJobs();
+startBackgroundJobs();
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Listening @ http://localhost:3000`);

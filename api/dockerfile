@@ -1,31 +1,41 @@
-# Use an official Node.js runtime as the base image
-FROM node:lts-alpine
+FROM node:20-slim
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Install required system dependencies
-RUN apk add --no-cache postgresql-client curl
-
-# Copy package.json and pnpm-lock.yaml
-COPY package.json pnpm-lock.yaml ./
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    postgresql-client \
+    curl \
+    python3 \
+    python3-pip \
+    python3-venv \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@latest
 
-# Install dependencies (use --prod in production)
+# Copy package files first (better caching)
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
 RUN pnpm install
 
-# Copy the rest of the application code
+# Python environment setup
+RUN python3 -m venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
+
+# Copy Python requirements
+COPY scripts/requirements.txt ./scripts/
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r scripts/requirements.txt
+
+# Copy application code
 COPY . .
 
-# Generate Prisma client (doesn't need DB connection)
-RUN pnpm prisma generate
+# Generate Prisma client and build
+RUN pnpm prisma generate && pnpm build
 
-# Expose the port the app runs on
-ARG PORT=3000
-ENV PORT=${PORT}
-EXPOSE ${PORT}
+EXPOSE 3000
 
-# Command to run the application with DB migration
-CMD ["sh", "-c", "pnpm prisma migrate deploy && pnpm run start"]
+CMD ["sh", "-c", "pnpm prisma migrate deploy && pnpm start"]
