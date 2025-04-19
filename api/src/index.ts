@@ -10,6 +10,7 @@ import likeRoutes from './routes/like.routes.js';
 import bookmarkRoutes from './routes/bookmark.routes.js';
 import gptRoutes from './routes/gpt.routes.js';
 import allergen_route from './routes/allergens.js';
+import messageRoutes from './routes/message.routes.js'
 import { startBackgroundJobs } from './services/scheduler.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -47,6 +48,7 @@ app.use('/like', likeRoutes);
 app.use('/bookmark', bookmarkRoutes);
 app.use('/gpt', gptRoutes);
 app.use('/users', usersRoutes);
+app.use('/message', messageRoutes);
 
 // Define __dirname for ES module
 const __filename = fileURLToPath(import.meta.url);
