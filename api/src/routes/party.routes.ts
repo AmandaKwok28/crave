@@ -204,4 +204,56 @@ router.delete('/:partyId/members/:userId', authGuard, async (req, res) => {
   }
 });
 
+// Get a single party by ID
+router.get('/:id', authGuard, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = res.locals.user!.id;
+    
+    // Find the party with all its related data
+    const party = await prisma.cookingParty.findUnique({
+      where: { id },
+      include: {
+        members: {
+          include: {
+            user: true
+          }
+        },
+        preferences: true,
+        host: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatarImage: true
+          }
+        }
+      }
+    });
+    
+    // Check if party exists
+    if (!party) {
+      res.status(404).json({ message: 'Party not found' });
+      return;
+    }
+    
+    // Check if the current user is allowed to view this party
+    // (either as the host or as a member)
+    const isHost = party.hostId === userId;
+    const isMember = party.members.some(member => member.userId === userId);
+    
+    if (!isHost && !isMember) {
+      res.status(403).json({ 
+        message: 'You do not have permission to view this party' 
+      });
+      return;
+    }
+    
+    res.json(party);
+  } catch (error) {
+    console.error('Error fetching party:', error);
+    res.status(500).json({ message: 'Failed to fetch party' });
+  }
+});
+
 export default router;
