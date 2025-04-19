@@ -14,6 +14,7 @@ import { startBackgroundJobs } from './services/scheduler.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import comments_route from './routes/comments.js';
+import usersRoutes from './routes/users.routes.js';
 
 export const app = express();
 
@@ -41,6 +42,7 @@ app.use('/feed', feedRoutes);
 app.use('/like', likeRoutes);
 app.use('/bookmark', bookmarkRoutes);
 app.use('/gpt', gptRoutes);
+app.use('/users', usersRoutes);
 
 // Define __dirname for ES module
 const __filename = fileURLToPath(import.meta.url);

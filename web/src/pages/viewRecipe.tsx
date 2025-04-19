@@ -142,7 +142,15 @@ const ViewRecipe = ({ recipe_id }: {
                 whiteSpace='pre-line'
               >
                 {recipe.description}
-            </Text>
+              </Text>
+
+              <Text
+                fontSize='md'
+                fontWeight='light'
+                whiteSpace='pre-line'
+              >
+                Made By {user.name}
+              </Text>
         </Flex>
 
         <Flex direction="column" alignItems="flex-start" p="4" gap="4" mt="28">

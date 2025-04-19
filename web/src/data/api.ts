@@ -13,6 +13,18 @@ export const fetchUsers = async (): Promise<UserType[]> => {
   return data;
 };
 
+// Fetch user by id
+export const fetchUser = async (userId: string): Promise<UserType> => {
+  const response = await fetch(`${API_URL}/users/${userId}`, {
+    credentials: 'include'
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const data: UserType = await response.json();
+  return data;
+}
+
 // Fetch all recipes with query
 export const fetchRecipes = async (
   filters?: any,

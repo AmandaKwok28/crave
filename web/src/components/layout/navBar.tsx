@@ -9,7 +9,7 @@ import { clearFilters } from "@/lib/store";
 
 const NavBar = () => {
 
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
     const handleLogout = async () => {
         logout()
             .then(() => redirectPage($router, 'login'))
@@ -66,7 +66,7 @@ const NavBar = () => {
                         </IconButton>
                     </MenuTrigger>
                     <MenuContent>
-                        <MenuItem value='profile' onClick={() => openPage($router, 'profile')}>
+                        <MenuItem value='profile' onClick={() => openPage($router, 'profile', { userId: user.id })}>
                             View Profile
                         </MenuItem>
                         <MenuItem value='logout' color='red.400' onClick={handleLogout} justifyContent='space-between'>
