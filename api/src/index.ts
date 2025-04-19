@@ -18,6 +18,7 @@ import rating_route from './routes/rating.js';
 import pdf_route from './routes/parse-pdf.js';
 
 export const app = express();
+const port = process.env.PORT || 3000;   // app can dynamically listen to port specified by the PORT env var
 
 app.use(cors({
   origin: true,
@@ -58,6 +59,6 @@ app.get('*', (req, res) => {
 
 startBackgroundJobs();
 
-const server = app.listen(3000, () => {
+app.listen(port, () => {
   console.log(`Listening @ http://localhost:3000`);
 });
