@@ -1,4 +1,4 @@
-import { AllergenType, CommentType, RecipeType, UserType } from "@/data/types";
+import { AllergenType, CommentType, PartyType, RecipeType, UserType } from "@/data/types";
 import { persistentAtom } from "@nanostores/persistent";
 import { atom } from "nanostores";
 
@@ -165,4 +165,15 @@ export function removeComment(commentId: number) {
 
 export function addComment(comment: CommentType) {
     $comments.set([...$comments.get(), comment]);
+}
+
+// Party Store
+export const $parties = atom<PartyType[]>([]);
+
+export function removeParty(partyId: string) {
+    $parties.set($parties.get().filter((party) => party.id !== partyId));
+}
+
+export function addParty(party: PartyType) {
+    $parties.set([...$parties.get(), party]);
 }

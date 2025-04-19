@@ -59,7 +59,7 @@ const Profile = () => {
             position="fixed"
             zIndex="100"
           >
-            <div className="max-h-sm h-auto flex flex-col self-start w-full">
+            <div className="flex flex-col self-start w-full h-auto max-h-sm">
 
                 {/* User info: avatar, email, username */}
                 <Flex direction="row" align="center" p="2" mt="2" mr="2">
@@ -68,7 +68,7 @@ const Profile = () => {
                         <Image borderRadius="full" src={user.avatarImage ? user.avatarImage : '/anon.jpg'} boxSize="50px"/>
                     </Box>
                     <Flex direction="column">
-                        <h2 className="text-white text-xl font-bold">
+                        <h2 className="text-xl font-bold text-white">
                             {user.name}
                         </h2>
                         <h1 className="text-white">
@@ -79,7 +79,7 @@ const Profile = () => {
                 </Flex>
 
                 
-                <div className="max-h-sm h-auto p-4 text-white w-full space-y-2">
+                <div className="w-full h-auto p-4 space-y-2 text-white max-h-sm">
 
                   <Field label="Image Url">
                     <Input
@@ -120,6 +120,13 @@ const Profile = () => {
                     curtab={tab}
                     callback={setTab}
                   />
+
+                  <TabButton 
+                    label='My Collaborative Parties'
+                    value='parties'
+                    curtab={tab}
+                    callback={setTab}
+                  />  
                 </div>
             </div>
           </Box>
@@ -129,6 +136,7 @@ const Profile = () => {
             {tab === 'drafts' && <Recipes recipes={drafts} />}
             {tab === 'likes' && <Recipes recipes={likes} />}
             {tab === 'bookmarks' && <Recipes recipes={bookmarks} />}
+            {tab === 'parties' && <Button> test </Button>}
           </Flex>
         </Flex>
       </Flex>

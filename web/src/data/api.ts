@@ -1,4 +1,4 @@
-import { CommentType, Cuisine, Difficulty, Price, RecipeType, TagsResponse, UserType } from "./types";
+import { CommentType, Cuisine, Difficulty, PartyType, Price, RecipeType, TagsResponse, UserType } from "./types";
 import { API_URL } from "@/env";
 
 // Fetch all users
@@ -475,3 +475,34 @@ export const deleteComment = async (recipe_id: string | number, commentId: numbe
   return true;
 };
 
+// create a new party
+export const createNewParty = async (title: string, expirationDate: String): Promise<PartyType> => {
+  const response = await fetch(`${API_URL}/party/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
+    body: JSON.stringify({
+      name: title,
+      expiresAt: expirationDate,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const data: PartyType = await response.json();
+  return data;
+}
+
+// Delete party by id
+export const deleteParty = async (party_id: string) : Promise<boolean> => {
+  const response = await fetch(`${API_URL}/party/${party_id}`, {
+    credentials: 'include',
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  return true;
+};

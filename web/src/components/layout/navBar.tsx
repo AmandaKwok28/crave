@@ -6,6 +6,7 @@ import { LogOut, PlusCircleIcon, Search, User } from "lucide-react";
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu";
 import { toaster } from "../ui/toaster";
 import { clearFilters } from "@/lib/store";
+import CreateNewPartyButton from "../party/createNewPartyButton";
 
 const NavBar = () => {
 
@@ -53,9 +54,11 @@ const NavBar = () => {
             </Text>
 
             <ButtonGroup gap='3' variant='subtle' size='xs'>
+                <CreateNewPartyButton />
                 <IconButton onClick={() => openPage($router, 'createRecipe')}>
                     <PlusCircleIcon />
                 </IconButton>
+                
                 <IconButton onClick={() => openPage($router, 'search')}>
                     <Search />
                 </IconButton>
