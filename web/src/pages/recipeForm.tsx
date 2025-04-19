@@ -6,7 +6,18 @@ import { Field } from "@/components/ui/field";
 import { InputGroup } from "@/components/ui/input-group";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import { $router } from "@/lib/router";
-import { Button, ButtonGroup, Flex, IconButton, Input, Text, Textarea, Image, VStack, RadioGroup, Spinner } from "@chakra-ui/react";
+import { 
+  Button, 
+  ButtonGroup, 
+  Flex, IconButton, 
+  Input, 
+  Text, 
+  Textarea, 
+  Image, 
+  VStack, 
+  RadioGroup, 
+  Spinner, 
+} from "@chakra-ui/react";
 // import {
 //   FileUploadList,
 //   FileUploadRoot,
@@ -17,7 +28,7 @@ import { Trash } from "lucide-react";
 import { KeyboardEvent, useEffect, useState } from "react";
 // import { HiUpload } from "react-icons/hi";
 // import { FileAcceptDetails } from "node_modules/@chakra-ui/react/dist/types/components/file-upload/namespace";
-import { Cuisine, Difficulty, Price } from "@/data/types";
+import { Cuisine, Difficulty, PdfResponse, Price } from "@/data/types";
 import TagInput from "@/components/recipie/tagInput";
 import { Separator } from '@chakra-ui/react'
 import { fetchTags } from "@/data/api";
@@ -25,6 +36,7 @@ import AutoAllergens from "@/components/search/autoAllergens";
 import pluralize from "pluralize";
 import { $allergenTable } from "@/lib/store";
 import { useStore } from "@nanostores/react";
+import PDFUploadBtn from "@/components/recipie/pdfUploadBtn";
 
 
 // If draft_id is set, this will be autopopulated on page load
@@ -194,6 +206,22 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
     }
   }
 
+  const handlePdfUpload = (response: PdfResponse) => {
+    const { response : data } = response;
+    setTitle(data.title)
+    setDescription(data.description)
+    setInstructions([data.instructions])
+    setIngredients(data.ingredients)
+    setSelectedPrice(data.price)
+    setCookTime(String(data.prepTime))
+    setCuisine(data.cuisine)
+    setDiff(data.difficulty)
+    setShowAdditionalInfo(true);
+    setMealType(data.mealTypes)
+    matchAllergens(allergyList, data.ingredients); 
+  }
+
+
   return (
     <Flex gap='4' flexDir='column' minW='100vw' align='center' justify='center'>
       <Flex pos='fixed' zIndex="100" top='0' left='0' w='100vw' h='10' bg="cyan.700" align='center' justify='center'>
@@ -207,10 +235,9 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
         <Flex direction="row" gap="8">
 
           {/* Column 1 */}
-          <Flex direction="column" gap="4">
-
+          <Flex direction="column" gap="4" w="35vw">
             {/* Image Upload */}
-            <Image rounded="md" src={img} w="30vw"/>
+            <Image rounded="md" src={img} maxW="100%"/>
 
             {/* <FileUploadRoot accept={["image/png"]} onFileAccept={handleImageFile}>
               <FileUploadTrigger asChild>
@@ -232,9 +259,21 @@ export default function RecipeForm({ draft_id }: { draft_id?: number }) {
               </Input>
             </Field>
 
+
+            {/* Allow them to input a pdf*/}
+            {!showAdditionalInfo && (
+              <Flex direction="column">
+              <Text fontSize="sm" color="gray.600" maxW="80%" mt={5}>
+                If you'd like to upload a PDF to auto-fill the recipe creation form, please upload it here:
+              </Text>
+              <PDFUploadBtn onComplete={handlePdfUpload}/>
+              </Flex>
+            )}
+            
+
             {/* Ingredients */}
             {showAdditionalInfo && <Field label='Ingredients' required>
-              <Flex gap='3' justify='flex-end' flexWrap='wrap' w='100%'>
+              <Flex gap='3' justify='flex-start' flexWrap='wrap' w='100%'>
                 {ingredients.map((ingredient, i) => (
                   <InputGroup
                     key={i}

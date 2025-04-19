@@ -5,6 +5,7 @@ export interface UserType {
   school: string;
   major: string;
   avatarImage?: string;
+  rating: Number
 }
 
 export enum Price {
@@ -12,6 +13,17 @@ export enum Price {
   MODERATE = "MODERATE",
   PRICEY = "PRICEY",
   EXPENSIVE = "EXPENSIVE",
+}
+
+export enum RatingType {
+  LIKE = "like",
+  BOOKMARK = "bookmark",
+  COMMENT = "comment",
+  CREATE = "create",
+  UNLIKE = "unlike",
+  UNBOOKMARK = "unbookmark",
+  UNCOMMENT = "uncomment",
+  DELETE = "delete"
 }
 
 export enum Difficulty {
@@ -69,6 +81,21 @@ export interface AllergenType {
 
 export interface TagsResponse {
   response: {
+    price: string;
+    cuisine: string;
+    difficulty: string;
+    prepTime: number;
+    ingredients: string[];
+    tags: string[];
+    mealTypes: string[]
+  }
+}
+
+export interface PdfResponse {
+  response: {
+    title: string;
+    description: string;
+    instructions: string; 
     price: string;
     cuisine: string;
     difficulty: string;
