@@ -1,6 +1,7 @@
 import NavBar from "@/components/layout/navBar";
 import Recipes from "@/components/recipie/recipes";
 import { Field } from "@/components/ui/field";
+import Network from "@/components/user/network";
 import { followUser, unfollowUser } from "@/data/api";
 import { useAuth } from "@/hooks/use-auth";
 import useMutationUser from "@/hooks/use-mutation-user";
@@ -105,7 +106,7 @@ const Profile = ({ userId }: {userId: string}) => {
             >
               <div className="max-h-sm h-auto flex flex-col self-start w-full">
   
-                  {/* User info: avatar, email, username */}
+                  {/* User info: avatar, email, username, followers, following */}
                   <Flex direction="row" align="center" p="2" mt="2" mr="2">
                     <Flex direction="row" align="center" spaceX="2">
                       <Box p="1">
@@ -118,8 +119,8 @@ const Profile = ({ userId }: {userId: string}) => {
                           <h1 className="text-white">
                               {user.email}
                           </h1>
-                          <Flex direction="row" color="white">
-                            {followers.length} Followers {following.length} Following
+                          <Flex direction="row" color="white" gap="2">
+                            {followers.length} <Network group={followers} name="Followers"/> {following.length} <Network group={following} name="Following"/>
                           </Flex>
                       </Flex>
                     </Flex>

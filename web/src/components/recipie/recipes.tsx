@@ -2,8 +2,8 @@ import { RecipeType } from "@/data/types";
 import { Flex, Text, Image } from "@chakra-ui/react";
 import RecipeCard from "../layout/recipeCard";
 
-const Recipes = ({recipes}:{recipes:RecipeType[]}) => {
-    if (recipes.length === 0) {
+const Recipes = ({ recipes, showEmptyImage = true }:{recipes:RecipeType[], showEmptyImage?: boolean}) => {
+    if (recipes.length === 0 && showEmptyImage) {
         return (
             <Flex 
             height="80vh" 
@@ -18,7 +18,7 @@ const Recipes = ({recipes}:{recipes:RecipeType[]}) => {
                 src="/no_recipe_fallback.png">
             </Image>
             <Text fontSize="xl" fontWeight="light" color="gray.600">
-              No recipes found!
+              No recipes found! Time to cook something up 🔥
             </Text>
           </Flex>
         );
