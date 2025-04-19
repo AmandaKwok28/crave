@@ -1,6 +1,8 @@
 import NavBar from "@/components/layout/navBar";
 import Recipes from "@/components/recipie/recipes";
 import { Field } from "@/components/ui/field";
+import { followUser, unfollowUser } from "@/data/api";
+import { useAuth } from "@/hooks/use-auth";
 import useMutationUser from "@/hooks/use-mutation-user";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import useQueryUser from "@/hooks/use-query-user";
@@ -28,8 +30,12 @@ function TabButton({
 }
 
 const Profile = ({ userId }: {userId: string}) => {
-  // const { user } = useAuth();
-  const { user, loading } = useQueryUser(userId);
+  const { user: loggedInUser } = useAuth();
+  const { user, followers, following, loading, refetch } = useQueryUser(userId);
+  const isOwnProfile = loggedInUser?.id === user?.id;
+  const isFollowing = followers?.some(f => f.id === loggedInUser?.id);
+
+
   
   const { updateAvatar } = useMutationUser();
   const { recipes, drafts, likes, bookmarks } = useQueryRecipes();
@@ -43,6 +49,22 @@ const Profile = ({ userId }: {userId: string}) => {
       setUrl('');
     }
   }
+
+  const handleFollowToggle = async (targetUserId: string, isCurrentlyFollowing: boolean) => {
+    if (!targetUserId || !loggedInUser) return;
+  
+    try {
+      if (isCurrentlyFollowing) {
+        await unfollowUser(targetUserId, loggedInUser.id);
+      } else {
+        await followUser(targetUserId, loggedInUser.id);
+      }
+      await refetch();
+    } catch (err) {
+      console.error("Error updating follow status:", err);
+    }
+  };
+  
 
   if (loading) {
     return (
@@ -96,12 +118,31 @@ const Profile = ({ userId }: {userId: string}) => {
                           <h1 className="text-white">
                               {user.email}
                           </h1>
+                          <Flex direction="row" color="white">
+                            {followers.length} Followers {following.length} Following
+                          </Flex>
                       </Flex>
                     </Flex>
                   </Flex>
+
+                  <Flex p="4">
+                    {!isOwnProfile && (
+                      <Button 
+                        className="w-full" 
+                        bgGradient="to-l"
+                        gradientFrom={isFollowing ? "red.300" : "teal.300"}
+                        gradientTo={isFollowing ? "red.500" : "blue.400"}
+                        onClick={() => handleFollowToggle(user?.id, isFollowing)}
+                      >
+                        {isFollowing ? "Unfollow" : "Follow"}
+                      </Button>
+                    )}
+                  </Flex>
+
+
   
                   <div className="max-h-sm h-auto p-4 text-white w-full space-y-2">
-  
+                    
                     <Field label="Image Url">
                       <Input
                         bg="white"
