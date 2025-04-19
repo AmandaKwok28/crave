@@ -20,7 +20,7 @@ const Network = ({ group, name }: { group: UserType[], name: string }) => {
             </Dialog.Header>
             <Dialog.Body>
             {group.map(user => (
-              <Flex direction="row">
+              <Flex direction="row" key={user.id}>
                 <Link 
                   href="#" 
                   onClick={(e) => {
@@ -34,7 +34,7 @@ const Network = ({ group, name }: { group: UserType[], name: string }) => {
                   {user.name}
                 </Link>
                 <Spacer/>
-                <Text fontWeight="lighter" key={user.id}>{user.major}</Text>
+                <Text fontWeight="lighter">{user.major}</Text>
               </Flex>
             ))}
             </Dialog.Body>
