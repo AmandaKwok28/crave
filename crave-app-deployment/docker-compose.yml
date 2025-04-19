@@ -5,8 +5,10 @@ services:
     image: ghcr.io/cs421sp25-homework/team-05-api:latest
     volumes:
       - api-data:/app/data
+    environment:
+      - NODE_ENV=production
     env_file:
-      - ../api/.env
+      - ../api/.env.production
     ports:
       - "3000:3000"
     healthcheck:

@@ -1,3 +1,9 @@
+import dotenv from 'dotenv';
+
+const envFile = `.env.${process.env.NODE_ENV || '.env'}`;
+dotenv.config({ path: envFile });
+
+
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -16,6 +22,8 @@ import { fileURLToPath } from 'url';
 import comments_route from './routes/comments.js';
 import rating_route from './routes/rating.js';
 import pdf_route from './routes/parse-pdf.js';
+
+
 
 export const app = express();
 const port = Number(process.env.PORT) || 3000;   // app can dynamically listen to port specified by the PORT env var
