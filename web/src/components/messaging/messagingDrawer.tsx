@@ -1,13 +1,25 @@
 import { Button, Text, CloseButton, Drawer, Portal, Input, Flex, Box, Center, Spinner, Badge, Avatar } from "@chakra-ui/react";
 import { MessageSquare } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useMessaging } from "@/hooks/use-messaging";
 import { useAuth } from "@/hooks/use-auth";
 import { formatDistanceToNow } from "date-fns";
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
-import { Message } from "@/data/api"; // Make sure to import the Message type
+import { Message, fetchRecipe } from "@/data/api"; // Import fetchRecipe from api.ts
 import { useLayoutEffect } from "react";
+
+// Update the recipe fetching function to use the correct API endpoint
+const fetchRecipeById = async (recipeId: number) => {
+  try {
+    // Use the existing fetchRecipe function from api.ts
+    const recipe = await fetchRecipe(recipeId);
+    return recipe;
+  } catch (error) {
+    console.error('Error fetching recipe:', error);
+    return null;
+  }
+};
 
 // Define props interface for the MessageBubble component
 interface MessageBubbleProps {
@@ -102,6 +114,9 @@ const MessagingDrawer = () => {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   
+  const [selectedRecipeId, setSelectedRecipeId] = useState<number | null>(null);
+  const [selectedRecipeDetails, setSelectedRecipeDetails] = useState<any>(null);
+  
   // Add a new state for sorted messages
   const [sortedMessages, setSortedMessages] = useState<Message[]>([]);
 
@@ -165,24 +180,49 @@ const MessagingDrawer = () => {
   }, [sortedMessages]);
   
 
-  // Modify the send message handler to be more efficient
   const handleSendMessage = async () => {
-    if (messageText.trim() && selectedConversationId) {
+    if (selectedConversationId && (messageText.trim() || selectedRecipeId)) {
       const messageToSend = messageText.trim();
-      // Clear input immediately for better UX (feels more responsive)
+      // Clear input and recipe selection immediately for better UX
       setMessageText('');
+      const recipeId = selectedRecipeId;
+      setSelectedRecipeId(null);
+      setSelectedRecipeDetails(null);
       
       try {
-        await sendNewMessage(selectedConversationId, messageToSend);
-        // No need to clear input again, it's already cleared
+        await sendNewMessage(selectedConversationId, messageToSend, recipeId || undefined);
       } catch (error) {
         console.error('Error sending message:', error);
-        // On error, we could restore the message text if desired
-        // setMessageText(messageToSend);
       }
     }
   };
 
+  const handleInputChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setMessageText(value);
+    
+    // If the last character typed is a space, check if previous content has a recipe tag
+    if (value.endsWith(' ')) {
+      const previousContent = value.slice(0, -1);
+      const match = previousContent.match(/@(\d+)$/);
+      
+      if (match && match[1] && !selectedRecipeId) {
+        const recipeId = parseInt(match[1], 10);
+        
+        // Fetch recipe details
+        const recipeDetails = await fetchRecipeById(recipeId);
+        if (recipeDetails) {
+          setSelectedRecipeId(recipeId);
+          setSelectedRecipeDetails(recipeDetails);
+          
+          // Remove the @recipeId pattern from the message text
+          const newText = value.replace(/@\d+\s/, '').trim();
+          setMessageText(newText);
+        }
+      }
+    }
+  }, [selectedRecipeId]);
+  
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -320,16 +360,56 @@ const MessagingDrawer = () => {
                 </Flex>
               )}
             </Drawer.Body>
-            <Drawer.Footer>
-              {selectedConversationId && (
-                <Input
-                  placeholder="Type a message..."
-                  value={messageText}
-                  onChange={(e) => setMessageText(e.target.value)}
-                  onKeyDown={handleKeyPress}
-                />
-              )}
-            </Drawer.Footer>
+              <Drawer.Footer>
+                {selectedConversationId && (
+                  <>
+                    {selectedRecipeDetails && (
+                      <Box 
+                        p={2} 
+                        mb={2} 
+                        borderWidth="1px" 
+                        borderRadius="md"
+                        position="relative"
+                      >
+                        <Flex alignItems="center" gap={2}>
+                          {selectedRecipeDetails.image ? (
+                            <Box width="40px" height="40px" borderRadius="md" overflow="hidden">
+                              <img 
+                                src={selectedRecipeDetails.image} 
+                                alt={selectedRecipeDetails.title} 
+                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              />
+                            </Box>
+                          ) : (
+                            <Box width="40px" height="40px" bg="gray.200" borderRadius="md"></Box>
+                          )}
+                          <Text fontSize="sm" fontWeight="medium">{selectedRecipeDetails.title}</Text>
+                        </Flex>
+                        <CloseButton 
+                          size="sm" 
+                          position="absolute" 
+                          top="0" 
+                          right="0"
+                          onClick={() => {
+                            setSelectedRecipeId(null);
+                            setSelectedRecipeDetails(null);
+                          }}
+                        />
+                      </Box>
+                    )}
+                    <Flex gap={2} width="100%">
+                      <Input
+                        flex="1"
+                        placeholder="Type a message..."
+                        value={messageText}
+                        onChange={handleInputChange}
+                        onKeyDown={handleKeyPress}
+                        size="md"
+                      />
+                    </Flex>
+                  </>
+                )}
+              </Drawer.Footer>
           </Drawer.Content>
         </Drawer.Positioner>
       </Portal>
