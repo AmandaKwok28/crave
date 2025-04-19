@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - dockerize_ak
     paths:
       - 'web/**'
       - '.github/workflows/web.container.yml'
