@@ -8,7 +8,8 @@ export const $user = persistentAtom<UserType>('user', {
   email: '',
   name: '',
   school: '',
-  major: ''
+  major: '',
+  rating: 0
 }, {
   encode: JSON.stringify,
   decode: JSON.parse
@@ -20,8 +21,22 @@ export function clearUser() {
     email: '',
     name: '',
     school: '',
-    major: ''
+    major: '',
+    rating: 0
   });
+}
+
+export const $viewingUser = atom<UserType>({
+    id: '',
+    email: '',
+    name: '',
+    school: '',
+    major: '',
+    rating: 0
+});
+
+export function setViewingUser(user: UserType) {
+  $viewingUser.set(user);
 }
 
 export function setUser(user: UserType) {

@@ -1,6 +1,6 @@
 import { updateRating } from "@/data/rating-api"
 import { RatingType } from "@/data/types"
-import { setUser } from "@/lib/store";
+import { setUser, setViewingUser } from "@/lib/store";
 import { useAuth } from "../use-auth";
 
 export function useRating() {
@@ -12,6 +12,8 @@ export function useRating() {
         const updatedUser = await updateRating(id, type);
         if (updatedUser.id === user.id) {
             setUser(updatedUser);
+        } else {
+            setViewingUser(updatedUser);
         }
     }
 

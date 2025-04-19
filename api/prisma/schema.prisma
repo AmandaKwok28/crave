@@ -57,8 +57,19 @@ model User {
   avatarImage  String?    // should be optional
   recentlyViewed RecentlyViewed[]
   recommendedRecipes RecommendedRecipe[]
+  rating       Float        @default(0)
+  followedBy   Follow[]     @relation("UserFollowedBy")
+  following    Follow[]     @relation("UserFollowing")
+}
 
-  rating       Float @default(0)   // the rating might be a decimal...
+model Follow {
+  followerId   String
+  followingId  String
+  follower     User         @relation("UserFollowing", fields: [followerId], references: [id])
+  following    User         @relation("UserFollowedBy", fields: [followingId], references: [id])
+  createdAt  DateTime  @default(now())
+
+  @@id([followerId, followingId])
 }
 
 model Session {
