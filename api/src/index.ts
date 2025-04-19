@@ -35,7 +35,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(auth);
 
-app.get('/', (req, res) => {
+app.get('/', (_ , res) => {
   res.status(200).json({
     message: 'Hello Express!'
   })
