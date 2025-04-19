@@ -1,4 +1,4 @@
-import { CommentType, Cuisine, Difficulty, Price, RecipeType, TagsResponse, UserType } from "./types";
+import { Cuisine, Difficulty, Price, RecipeType, TagsResponse, UserType } from "./types";
 import { API_URL } from "@/env";
 
 // Fetch all users
