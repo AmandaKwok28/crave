@@ -54,12 +54,13 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, '../../../web/dist')));
 
-app.get('*', (req, res) => {
+app.get('*', (_, res) => {
   res.sendFile(path.join(__dirname, '../../../web/dist/index.html'));
 });
 
 startBackgroundJobs();
 
+// make sure to not bind to a specific port during testing to avoid port already in use conflicts
 if (process.env.NODE_ENV !== 'test') {
   app.listen(3000, () => {
     console.log(`Listening @ http://localhost:3000`);

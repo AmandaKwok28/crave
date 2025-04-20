@@ -2,8 +2,6 @@ import { test, expect, vi, describe, beforeEach } from 'vitest';
 import request from 'supertest';
 import { app } from '../index.js';
 import { prisma } from '../lib/__mocks__/prisma.js';
-import { hashPassword } from '../lib/password.js';
-import { Like } from '@prisma/client';
 
 // note: no testing on user2 interaction with user1 content becuase that is maintained by the frontend
 
