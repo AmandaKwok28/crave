@@ -10,53 +10,42 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import useMutationRecipes from "@/hooks/use-mutation-recipes";
-import { useAuth } from "@/hooks/use-auth";
-import { publishRecipe } from "@/data/api";
 import { redirectPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
-import { Cuisine, Difficulty, Price } from "@/data/types";
+import { Cuisine, Difficulty, PartyType, Price } from "@/data/types";
 import { toaster } from "../ui/toaster";
 import { useState } from "react";
+import useMutationParty from "@/hooks/party/use-mutation-party";
+import { useAuth } from "@/hooks/use-auth";
 
 type JoinPartyProps = {
-    title: string;
-    description: string;
-    ingredients: string[];
-    instructions: string[];
-    draft_id?: number;
-    mealTypes?: string[];
-    price: Price,
-    cuisine: Cuisine,
-    allergens: string[],
-    difficulty: Difficulty,
-    sources?: string[],
-    prepTime: number,
-    image?: string
+    party: PartyType,
+    availableTime: number, 
+    preferredCuisine: Cuisine, 
+    ingredients: string[],
+    excludedAllergens: string,
+    preferredPrice: Price,
+    preferredDifficulty: Difficulty 
 }
 
 const JoinPartyButton = ({ 
-    title, 
-    description, 
+    party, 
+    availableTime, 
+    preferredCuisine, 
     ingredients, 
-    instructions, 
-    draft_id, 
-    mealTypes, 
-    price,
-    cuisine,
-    allergens,
-    difficulty,
-    sources,
-    prepTime,
-    image, 
+    excludedAllergens, 
+    preferredPrice,
+    preferredDifficulty
 }: JoinPartyProps ) => {
-    const { user } = useAuth();
-    const { addNewRecipe, editRecipe } = useMutationRecipes();
+    const { user } = useAuth()
+    const { updatePartyPrefrences, joinParty } = useMutationParty();
     const [isOpen, setIsOpen] = useState<boolean>(false);
+
+    
 
     const handleSave = async () => {
         // only need to throw an error for incompletion iff they're trying to publish
-        if (!title || !description || !ingredients || !instructions) {
+        if (!availableTime || !preferredCuisine || !ingredients || !excludedAllergens || !preferredDifficulty) {
             toaster.create({
                 title: 'Please fill out all required fields',
                 type: "error"
@@ -64,31 +53,29 @@ const JoinPartyButton = ({
             setIsOpen(false);
             return;
         }
-
-        if (!price || !cuisine || !allergens || !difficulty || !prepTime) {
-            toaster.create({
-                title: 'Please fill out the necessary additional information'
-            })
-            setIsOpen(false);
-            return;
+        console.log(party.id);
+        console.log(availableTime);
+        console.log([preferredCuisine]);
+        console.log(ingredients);
+        console.log([excludedAllergens]);
+        console.log(preferredDifficulty);
+        //join the party
+        if (user.id != party.host.id) {
+            console.log("abc")
+            await joinParty(party.shareLink, ingredients, preferredDifficulty);
         }
 
-        console.log(difficulty)
-        await editRecipe(
-            title, 
-            description, 
-            ingredients, 
-            instructions, 
-            true,
-            mealTypes ? mealTypes : [], 
-            price,
-            cuisine,
-            allergens,
-            difficulty,
-            sources ? sources : [],
-            prepTime
-        );
-        redirectPage($router, `profile`);
+        // update the partyPrefrences
+        await updatePartyPrefrences(
+            party.id,
+            availableTime,
+            [preferredCuisine],
+            ingredients,
+            [excludedAllergens],
+            preferredPrice,
+            preferredDifficulty,
+        )
+        redirectPage($router, 'party', { share_link: party.shareLink });
     };
 
     return (

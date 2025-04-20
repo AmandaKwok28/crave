@@ -8,7 +8,7 @@ export const $router = createRouter({
   register: `${BASE_URL}register`,
   search: `${BASE_URL}search`,
   createRecipe: `${BASE_URL}create`, // create recipe page
-  addPartyPrefrences: `${BASE_URL}addprefrences`, // create party page
+  party: `${BASE_URL}party/:share_link`, // view/join party page
   recipe: `${BASE_URL}recipe/:recipe_id`, // recipie page with specific recipie by id
   editDraft: `${BASE_URL}edit/:draft_id`
 });

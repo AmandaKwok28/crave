@@ -1,4 +1,4 @@
-import { CommentType, Cuisine, Difficulty, PartyType, Price, RecipeType, TagsResponse, UserType } from "./types";
+import { CommentType, Cuisine, Difficulty, PartyMemberType, PartyPrefrenceType, PartyType, Price, RecipeType, TagsResponse, UserType } from "./types";
 import { API_URL } from "@/env";
 
 // Fetch all users
@@ -520,3 +520,69 @@ export const fetchParties = async (): Promise<PartyType[]> => {
   const parties: PartyType[] = await response.json();
   return parties;
 };
+
+// Fetch specific party
+export const fetchParty = async (share_link: string | number): Promise<PartyType> => {
+  const response = await fetch(`${API_URL}/party/${share_link}`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+
+  const party: PartyType = await response.json();
+  return party;
+};
+
+// Update a party prefrences
+export const patchPartyPrefrences = async (
+  id: string,
+  availableTime: number,
+  PreferredCuisines: Cuisine[],
+  aggregatedIngredients: string[],
+  excludedAllergens: string[],
+  preferredPrice: Price,
+  preferredDifficulty: Difficulty,
+): Promise<PartyPrefrenceType> => {
+    const response = await fetch(`${API_URL}/party/${id}/prefrences`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: 'include',
+      body: JSON.stringify({
+        availableTime,
+        PreferredCuisines,
+        aggregatedIngredients,
+        excludedAllergens,
+        preferredPrice,
+        preferredDifficulty,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`API request failed! with status: ${response.status}`);
+    }
+    const data: PartyPrefrenceType = await response.json();
+    return data;
+};
+
+// add a new member to a party
+export const addPartyMember = async (
+  share_link: string, 
+  ingredients: string[],
+  cookingAbility: Difficulty
+): Promise<PartyMemberType> => {
+  const response = await fetch(`${API_URL}/party/join/${share_link}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
+    body: JSON.stringify({
+      ingredients,
+      cookingAbility,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const data: PartyMemberType = await response.json();
+  return data;
+}

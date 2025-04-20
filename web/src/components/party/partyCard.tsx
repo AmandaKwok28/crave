@@ -1,14 +1,12 @@
 import { PartyType } from "@/data/types";
 import { $router } from "@/lib/router";
-import { Card, Button, Image, Text, Box, HStack } from "@chakra-ui/react";
+import { Card, Button, Text, Box, HStack } from "@chakra-ui/react";
 import { redirectPage } from "@nanostores/router";
 import { Avatar, AvatarGroup } from "@chakra-ui/react"
 
 const PartyCard = ({ party }: { party: PartyType }) => {
   const handleSeeMore = () => {
-    const id = party.id;
-    console.log("see more clicked")
-    //redirectPage($router, 'editDraft', { draft_id: id });
+    redirectPage($router, 'party', { share_link: party.shareLink });
   }
   return (
     <Card.Root 

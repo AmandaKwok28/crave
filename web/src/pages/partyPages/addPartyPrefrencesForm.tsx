@@ -1,70 +1,24 @@
 import { Field } from "@/components/ui/field";
 import { useState } from "react";
-import { Button, IconButton, Separator } from '@chakra-ui/react'
-import { PartyType, PartyStatus, PartyPrefrenceType, PartyMemberType, PartyRecommendationType, Difficulty, Cuisine } from "@/data/types";
-import { ButtonGroup, Flex, Input, Text, Textarea, VStack, RadioGroup } from "@chakra-ui/react";
+import { Button, IconButton, Separator, VStack } from '@chakra-ui/react'
+import { PartyType, Difficulty, Cuisine, Price } from "@/data/types";
+import { ButtonGroup, Flex, Input, Text, RadioGroup } from "@chakra-ui/react";
 import { InputGroup } from "@/components/ui/input-group";
 import { Trash } from "lucide-react";
 import CancelJoinPartyButton from "@/components/party/cancelJoinPartyButton";
 import JoinPartyButton from "@/components/party/joinPartyButton";
 
-const AddPartyPrefrencesForm = ({ shareLink }: { 
-    shareLink: string; 
+const AddPartyPrefrencesForm = ({ party }: { 
+  party: PartyType;
 }) => {
   const [ alergens, setAlergens ] = useState<string>('');
-  const [ selectedPrice, setSelectedPrice ] = useState<string>("$");
   const [ ingredients, setIngredients ] = useState<string[]>(['']);
   const [ cookTime, setCookTime ] = useState<string>("");
+  const [ selectedPrice, setSelectedPrice ] = useState<string>("$");
   const [ diff, setDiff ] = useState("1");
   const [ cuisine, setCuisine ] = useState("1");
   const [ currIndex, setCurrindex ] = useState<number>(0);
   const [ empty, setEmpty ] = useState<boolean>(false);
-
-
-  //TODO: update with fetch route for party
-  const currStatus: PartyStatus = PartyStatus["ACTIVE" as keyof typeof PartyStatus];
-  const currDificulty: Difficulty = Difficulty["EASY" as keyof typeof Difficulty];
-
-  const currPref: PartyPrefrenceType = {
-    id: 1,
-    partyId: "party_ID",
-    availableTime: 100,
-    PreferredCuisines: [],
-    aggregatedIngredients: [],
-    excludedAllergens: [],
-    preferredDifficulty: currDificulty,
-    createdAt: "created_date",
-    updatedAt: "updated_date",
-  }
-
-  const party: PartyType = {
-    id: "party_ID",
-    name: "Test Party 1",
-    createdAt: "created_date",
-    updatedAt: "updated_date",
-    shareLink: "curr_party_share_link",
-    ExpiresAt: "expiration_date",
-    hostId: "host_ID",
-    host: currhost,
-    status: currStatus,
-    members: [],
-    prefrences: currPref,
-    recomendations: [],
-  }
-
-  let priceValue = "CHEAP";
-  const handleSelect = (price: string) => {
-    setSelectedPrice(prev => (prev === price ? "$" : price)); // Toggle selection
-    if (price === "$") {
-      priceValue = "CHEAP";
-    } else if (price === "$$") {
-      priceValue = "MODERATE";
-    } else if (price === "$$$") {
-      priceValue = "PRICEY";
-    } else if (price === "$$$$") {
-      priceValue = "EXPENSIVE"
-    }
-  };
 
   const handleDiff = (option: string) => {
     setDiff(option);
@@ -111,6 +65,21 @@ const AddPartyPrefrencesForm = ({ shareLink }: {
       setEmpty(false);
     }
   }
+
+  let priceValue = "CHEAP";
+  const handleSelect = (price: string) => {
+    setSelectedPrice(prev => (prev === price ? "$" : price)); // Toggle selection
+    if (price === "$") {
+      priceValue = "CHEAP";
+    } else if (price === "$$") {
+      priceValue = "MODERATE";
+    } else if (price === "$$$") {
+      priceValue = "PRICEY";
+    } else if (price === "$$$$") {
+      priceValue = "EXPENSIVE"
+    }
+  };
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCookTime(e.target.value); // Update state with new value
@@ -178,6 +147,9 @@ const AddPartyPrefrencesForm = ({ shareLink }: {
 
                 <Separator w='50rem' maxW='80%' size="sm" mt="2"/>
 
+
+                <Separator w='50rem' maxW='80%' size="sm" mt="2"/>
+
                 {/* Price */}
                 <Field label='What is your prefered recipe Price Bucket?' required w='50rem' maxW='80%' ></Field>
                 <Flex direction="row" gap='23.5rem' maxW="80%">
@@ -198,8 +170,6 @@ const AddPartyPrefrencesForm = ({ shareLink }: {
                         ))}
                     </Flex>
                 </Flex>
-
-                <Separator w='50rem' maxW='80%' size="sm" mt="2"/>
                     
                 {/* Cuisine */}
                 <Flex flexDirection="column" gap={2}> 
@@ -247,7 +217,13 @@ const AddPartyPrefrencesForm = ({ shareLink }: {
             <Flex mt="16">
                 <ButtonGroup>
                     <CancelJoinPartyButton />
-                    {/* <JoinPartyButton> */}
+                    <JoinPartyButton party={party} 
+                    availableTime={Number(cookTime)} 
+                    preferredCuisine={Cuisine[cuisine as keyof typeof Cuisine]} 
+                    ingredients={ingredients} 
+                    excludedAllergens={alergens} 
+                    preferredDifficulty={Difficulty[diff as keyof typeof Difficulty]}
+                    preferredPrice={Price[priceValue as keyof typeof Price]} />
                 </ButtonGroup>
             </Flex>
 

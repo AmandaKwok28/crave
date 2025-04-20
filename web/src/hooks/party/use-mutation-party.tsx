@@ -1,5 +1,5 @@
-import { createNewParty, deleteParty } from "@/data/api";
-import { PartyType } from "@/data/types";
+import { addPartyMember, createNewParty, deleteParty, patchPartyPrefrences } from "@/data/api";
+import { Cuisine, Difficulty, PartyType, Price } from "@/data/types";
 import { addParty, removeParty } from "@/lib/store";
 //import { $parties, setParties } from "@/lib/store";
 
@@ -17,7 +17,9 @@ const useMutationParty = () => {
             if (!title) {
                 throw new Error("Title must have content to publish!")
             }
-            const party: PartyType = await createNewParty(title, new Date().toLocaleDateString());
+            var date: Date = new Date();
+            date.setDate(date.getDate() + 30);
+            const party: PartyType = await createNewParty(title, date.toLocaleDateString());
             addParty(party);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
@@ -25,9 +27,57 @@ const useMutationParty = () => {
         }
     };
 
+    const updatePartyPrefrences = async (
+        id: string,
+        availableTime: number,
+        preferredCuisines: Cuisine[],
+        aggregatedIngredients: string[],
+        excludedAllergens: string[],
+        preferredPrice: Price,
+        preferredDifficulty: Difficulty,
+    ) => {
+        try {
+            if (!availableTime || !preferredCuisines || !aggregatedIngredients || !excludedAllergens || !preferredDifficulty) {
+                throw new Error("All field must have content to publish!")
+            }
+            const partyPrefs = await patchPartyPrefrences(
+                id, 
+                availableTime,
+                preferredCuisines,
+                aggregatedIngredients,
+                excludedAllergens,
+                preferredPrice,
+                preferredDifficulty,
+            );
+            return partyPrefs;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            throw new Error("Error updating party prefrences")
+        }
+    }
+
+    const joinParty = async (
+        share_link: string, 
+        ingredients: string[], 
+        cookingAbility: Difficulty 
+    ) => {
+    try {
+        if (!ingredients || !cookingAbility) {
+            throw new Error("Title must have ability and ingredients to join!")
+        }
+        const newMember = await addPartyMember(share_link, ingredients, cookingAbility);
+        return newMember;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+        throw new Error("Error joining the Party")
+    }
+};
+
     return {
         addNewParty,
         deletePartyById,
+        updatePartyPrefrences,
+        joinParty,
     }
 }
 

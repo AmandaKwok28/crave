@@ -111,6 +111,8 @@ export interface PartyType {
   ExpiresAt: string;
   hostId: string;
   host: AuthorType;
+  isUserMember: Boolean;
+  isHost: Boolean;
   members: PartyMemberType[];
   prefrences: PartyPrefrenceType;
   recomendations: PartyRecommendationType[];
@@ -122,7 +124,7 @@ export interface PartyMemberType {
   userId: string;
   joinedAt: string;
   hasAccepted: Boolean;
-  ingredients: String[];
+  ingredients: string[];
   cookingAbility: Difficulty;
 }
 
@@ -130,9 +132,10 @@ export interface PartyPrefrenceType {
   id: number;
   partyId: string;
   availableTime: number;
-  PreferredCuisines: Cuisine[];
-  aggregatedIngredients: String[];
-  excludedAllergens: String[];
+  preferredCuisines: Cuisine[];
+  preferredPrice: Price;
+  aggregatedIngredients: string[];
+  excludedAllergens: string[];
   preferredDifficulty: Difficulty;
   createdAt: string;
   updatedAt: string;

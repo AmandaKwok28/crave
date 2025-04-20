@@ -10,7 +10,7 @@ import { useAuth } from "./hooks/use-auth";
 import ViewRecipe from "./pages/viewRecipe";
 import { Flex } from "@chakra-ui/react";
 import RecipeForm from "./pages/recipeForm";
-import AddPartyPrefrencesForm from "./pages/partyPages/addPartyPrefrencesForm";
+import ViewParty from "./pages/partyPages/viewParty";
 
 function App() {
   const page = useStore($router);
@@ -52,8 +52,8 @@ function App() {
       {page.route === "createRecipe" && (
         <RecipeForm />
       )}
-      {page.route === "addPartyPrefrences" && (
-        <AddPartyPrefrencesForm shareLink={""} />
+      {page.route === "party" && (
+        <ViewParty share_link={String(page.params.share_link)} />
       )}
       {page.route === "recipe" && (
         <ViewRecipe recipe_id={Number(page.params.recipe_id)}/>
