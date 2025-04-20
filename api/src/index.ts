@@ -60,6 +60,9 @@ app.get('*', (req, res) => {
 
 startBackgroundJobs();
 
-const server = app.listen(3000, () => {
-  console.log(`Listening @ http://localhost:3000`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(3000, () => {
+    console.log(`Listening @ http://localhost:3000`);
+  });
+}
+
