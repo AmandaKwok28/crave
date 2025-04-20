@@ -42,7 +42,7 @@ const port = Number(process.env.PORT) || 3000;   // app can dynamically listen t
 const corsOptions = {
   origin: (
     origin: string | undefined, 
-    callback: (err: Error | null, origin?: boolean | string | RegExp | (string | RegExp)[]) => void 
+    callback: (err: Error | null, origin?: boolean) => void
   ) => {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
@@ -51,13 +51,17 @@ const corsOptions = {
       'http://localhost:3000',
       'http://localhost:8080',
       'http://localhost:5173', // Vite default
-      'https://team05.zapto.org/'
+      'https://team05.zapto.org' // Removed trailing slash
     ];
 
-    if (allowedOrigins.includes(origin)) {
+    if (allowedOrigins.some(allowed => {
+      // Compare origins exactly (including protocol)
+      return origin === allowed;
+    })) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.warn(`Blocked CORS request from origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'), false);
     }
   },
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
