@@ -506,3 +506,17 @@ export const deleteParty = async (party_id: string) : Promise<boolean> => {
 
   return true;
 };
+
+// Fetch all parties for a curr user
+export const fetchParties = async (): Promise<PartyType[]> => {
+  const response = await fetch(`${API_URL}/party/my`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const parties: PartyType[] = await response.json();
+  return parties;
+};

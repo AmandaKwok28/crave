@@ -45,6 +45,7 @@ const AddPartyPrefrencesForm = ({ shareLink }: {
     shareLink: "curr_party_share_link",
     ExpiresAt: "expiration_date",
     hostId: "host_ID",
+    host: currhost,
     status: currStatus,
     members: [],
     prefrences: currPref,

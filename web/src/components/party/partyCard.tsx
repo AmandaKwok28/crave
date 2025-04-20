@@ -5,16 +5,15 @@ import { redirectPage } from "@nanostores/router";
 import { Avatar, AvatarGroup } from "@chakra-ui/react"
 
 const PartyCard = ({ party }: { party: PartyType }) => {
-  //const { loadParty } = useQueryParty(); TODO: use query party hook to get the party
-
   const handleSeeMore = () => {
     const id = party.id;
+    console.log("see more clicked")
     //redirectPage($router, 'editDraft', { draft_id: id });
   }
   return (
     <Card.Root 
       width="300px" 
-      maxH="400px" 
+      maxH="175px" 
       overflow="hidden" 
       borderRadius="20px"
       >

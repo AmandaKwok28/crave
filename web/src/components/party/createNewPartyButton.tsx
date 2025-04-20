@@ -14,7 +14,7 @@ import { redirectPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
 import { useState } from "react";
 import { Field } from "../ui/field";
-import useMutationParty from "@/hooks/use-mutation-party";
+import useMutationParty from "@/hooks/party/use-mutation-party";
 import { toaster } from "../ui/toaster";
 const CreateNewPartyButton = () => {
     const { addNewParty } = useMutationParty();

@@ -1,6 +1,8 @@
 import NavBar from "@/components/layout/navBar";
+import Parties from "@/components/party/parties";
 import Recipes from "@/components/recipie/recipes";
 import { Field } from "@/components/ui/field";
+import useQueryParties from "@/hooks/party/use-query-party";
 import { useAuth } from "@/hooks/use-auth";
 import useMutationUser from "@/hooks/use-mutation-user";
 import useQueryRecipes from "@/hooks/use-query-recipes";
@@ -31,6 +33,7 @@ const Profile = () => {
   const { user } = useAuth();
   const { updateAvatar } = useMutationUser();
   const { recipes, drafts, likes, bookmarks } = useQueryRecipes();
+  const { parties } = useQueryParties();
 
   const [ tab, setTab ] = useState<string>('recipes'); 
   const [ url, setUrl ] = useState<string>('');
@@ -136,7 +139,7 @@ const Profile = () => {
             {tab === 'drafts' && <Recipes recipes={drafts} />}
             {tab === 'likes' && <Recipes recipes={likes} />}
             {tab === 'bookmarks' && <Recipes recipes={bookmarks} />}
-            {tab === 'parties' && <Button> test </Button>}
+            {tab === 'parties' && <Parties parties={parties}/>}
           </Flex>
         </Flex>
       </Flex>

@@ -170,6 +170,10 @@ export function addComment(comment: CommentType) {
 // Party Store
 export const $parties = atom<PartyType[]>([]);
 
+export function setParties(parties: PartyType[]) {
+  $parties.set(parties)
+}
+
 export function removeParty(partyId: string) {
     $parties.set($parties.get().filter((party) => party.id !== partyId));
 }

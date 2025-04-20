@@ -3,6 +3,7 @@ import { Flex, Text } from "@chakra-ui/react";
 import PartyCard from "./partyCard";
 
 const Parties = ({parties}:{parties:PartyType[]}) => {
+
     if (parties.length === 0) {
         return (
             <Text mt='14' fontSize='xl'>No current parties found, create or join one to get started!</Text>
