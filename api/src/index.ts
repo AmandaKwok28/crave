@@ -39,19 +39,36 @@ const port = Number(process.env.PORT) || 3000;   // app can dynamically listen t
 //   credentials: true
 // }));
 
-app.use(cors({
-  origin: [
-      'http://localhost:3000', // frontend
-      'http://localhost:<your-frontend-port>'
-  ],
+const corsOptions = {
+  origin: (
+    origin: string | undefined, 
+    callback: (err: Error | null, origin?: boolean | string | RegExp | (string | RegExp)[]) => void 
+  ) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:8080',
+      'http://localhost:5173', // Vite default
+      'https://team05.zapto.org/'
+    ];
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization'
-  ],
-  credentials: true,
-  exposedHeaders: ['Set-Cookie']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Set-Cookie'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
+
+
 
 app.use(express.json());
 app.use(cookieParser());
