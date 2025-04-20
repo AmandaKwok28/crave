@@ -58,6 +58,7 @@ const JoinPartyButton = ({
         console.log([preferredCuisine]);
         console.log(ingredients);
         console.log([excludedAllergens]);
+        console.log(preferredPrice);
         console.log(preferredDifficulty);
         //join the party
         if (user.id != party.host.id) {
@@ -75,7 +76,9 @@ const JoinPartyButton = ({
             preferredPrice,
             preferredDifficulty,
         )
-        redirectPage($router, 'party', { share_link: party.shareLink });
+        console.log("def")
+        setIsOpen(false);
+        redirectPage($router, 'profile');
     };
 
     return (

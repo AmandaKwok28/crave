@@ -37,10 +37,10 @@ const useMutationParty = () => {
         preferredDifficulty: Difficulty,
     ) => {
         try {
-            if (!availableTime || !preferredCuisines || !aggregatedIngredients || !excludedAllergens || !preferredDifficulty) {
+            if (!availableTime || !preferredCuisines || !aggregatedIngredients || !excludedAllergens || !preferredPrice || !preferredDifficulty) {
                 throw new Error("All field must have content to publish!")
             }
-            const partyPrefs = await patchPartyPrefrences(
+            const newPartyPrefs = await patchPartyPrefrences(
                 id, 
                 availableTime,
                 preferredCuisines,
@@ -49,7 +49,7 @@ const useMutationParty = () => {
                 preferredPrice,
                 preferredDifficulty,
             );
-            return partyPrefs;
+            return newPartyPrefs;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             throw new Error("Error updating party prefrences")

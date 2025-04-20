@@ -539,19 +539,18 @@ export const fetchParty = async (share_link: string | number): Promise<PartyType
 export const patchPartyPrefrences = async (
   id: string,
   availableTime: number,
-  PreferredCuisines: Cuisine[],
+  preferredCuisines: Cuisine[],
   aggregatedIngredients: string[],
   excludedAllergens: string[],
   preferredPrice: Price,
   preferredDifficulty: Difficulty,
 ): Promise<PartyPrefrenceType> => {
-    const response = await fetch(`${API_URL}/party/${id}/prefrences`, {
+    const response = await fetch(`${API_URL}/party/${id}/preferences`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
       credentials: 'include',
       body: JSON.stringify({
         availableTime,
-        PreferredCuisines,
+        preferredCuisines,
         aggregatedIngredients,
         excludedAllergens,
         preferredPrice,
