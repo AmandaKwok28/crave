@@ -17,7 +17,7 @@ RUN pnpm install
 COPY . .
 
 # Build the application
-ARG VITE_API_URL=http://localhost:3000
+ARG VITE_API_URL=http://api:3000
 ENV VITE_API_URL=${VITE_API_URL}
 RUN pnpm run build
 
