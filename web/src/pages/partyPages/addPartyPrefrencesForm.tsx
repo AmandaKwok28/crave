@@ -147,9 +147,6 @@ const AddPartyPrefrencesForm = ({ party }: {
 
                 <Separator w='50rem' maxW='80%' size="sm" mt="2"/>
 
-
-                <Separator w='50rem' maxW='80%' size="sm" mt="2"/>
-
                 {/* Price */}
                 <Field label='What is your prefered recipe Price Bucket?' required w='50rem' maxW='80%' ></Field>
                 <Flex direction="row" gap='23.5rem' maxW="80%">
@@ -170,6 +167,8 @@ const AddPartyPrefrencesForm = ({ party }: {
                         ))}
                     </Flex>
                 </Flex>
+
+                <Separator w='50rem' maxW='80%' size="sm" mt="2"/>
                     
                 {/* Cuisine */}
                 <Flex flexDirection="column" gap={2}> 

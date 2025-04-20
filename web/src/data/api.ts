@@ -507,6 +507,20 @@ export const deleteParty = async (party_id: string) : Promise<boolean> => {
   return true;
 };
 
+// Remove member from party by id
+export const removeAPartyMember = async (party_id: string, user_id: string) : Promise<boolean> => {
+  const response = await fetch(`${API_URL}/party/${party_id}/members/${user_id}`, {
+    credentials: 'include',
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  return true;
+};
+
 // Fetch all parties for a curr user
 export const fetchParties = async (): Promise<PartyType[]> => {
   const response = await fetch(`${API_URL}/party/my`, {
@@ -536,7 +550,7 @@ export const fetchParty = async (share_link: string | number): Promise<PartyType
 };
 
 // Update a party prefrences
-export const patchPartyPrefrences = async (
+export const modPartyPrefrences = async (
   id: string,
   availableTime: number,
   preferredCuisines: Cuisine[],
@@ -545,9 +559,19 @@ export const patchPartyPrefrences = async (
   preferredPrice: Price,
   preferredDifficulty: Difficulty,
 ): Promise<PartyPrefrenceType> => {
+    console.log(availableTime);
+    console.log(preferredCuisines);
+    console.log(aggregatedIngredients);
+    console.log(excludedAllergens);
+    console.log(preferredPrice);
+    console.log(preferredDifficulty);
+
     const response = await fetch(`${API_URL}/party/${id}/preferences`, {
       method: "PUT",
       credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         availableTime,
         preferredCuisines,

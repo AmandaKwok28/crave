@@ -1,10 +1,12 @@
 import NavBar from "@/components/layout/navBar";
 import { fetchParty } from "@/data/api";
-import { PartyType } from "@/data/types";
-import { Center, Flex, Separator, Spinner, Text } from "@chakra-ui/react";
+import { PartyMemberType, PartyType } from "@/data/types";
+import { ButtonGroup, Center, Flex, Separator, Spinner, Text } from "@chakra-ui/react";
 import { SetStateAction, useEffect, useState } from "react";
 import AddPartyPrefrencesForm from "./addPartyPrefrencesForm";
-import { API_URL } from "@/env";
+import DeletePartyButton from "@/components/party/deletePartyButton";
+import { useAuth } from "@/hooks/use-auth";
+import LeavePartyButton from "@/components/party/leavePartyButton";
 
 // Recipe page
 const ViewParty = ({ share_link }: { 
@@ -12,6 +14,7 @@ const ViewParty = ({ share_link }: {
 }) => {
   const [ party, setParty ] = useState<PartyType | null>();
   const [ refresh, setRefresh ] = useState<boolean>(true);
+  const { user } = useAuth()
 
   useEffect(() => {
     if (!refresh) {
@@ -62,8 +65,33 @@ const ViewParty = ({ share_link }: {
                     >
                         {`http://localhost:5173/party/`}{party.shareLink}
                     </Text>
+                    <Separator w='50rem' maxW='80%' size="sm" mt="2"/>
+                    <Text
+                        textStyle="5xl"
+                        textAlign="left"
+                        fontWeight="bold"
+                        mt="5vh"
+                    >
+                       Current Party Members:
+                    </Text>
+                    <Flex direction="column" justifyContent="center" w="full">
+                      {party.members.map((member:PartyMemberType) => (
+                          <Text textStyle="2xl" textAlign="left" fontWeight="bold"  mt="5vh" >
+                          {member.user.name}
+                          </Text>
+                      ))}
+                    </Flex>
                 </Flex>
             </Flex>
+
+            <ButtonGroup m="8" position="fixed" bottom="0%" right="0%" gap="4">
+              {party.host.id === user.id && (
+                <DeletePartyButton party_id={party.id} />
+              )}
+              {party.host.id != user.id && (
+                <LeavePartyButton party_id={party.id} user_id={user.id} />
+              )}
+            </ButtonGroup>
         </Flex>
       )
 

@@ -53,16 +53,8 @@ const JoinPartyButton = ({
             setIsOpen(false);
             return;
         }
-        console.log(party.id);
-        console.log(availableTime);
-        console.log([preferredCuisine]);
-        console.log(ingredients);
-        console.log([excludedAllergens]);
-        console.log(preferredPrice);
-        console.log(preferredDifficulty);
         //join the party
         if (user.id != party.host.id) {
-            console.log("abc")
             await joinParty(party.shareLink, ingredients, preferredDifficulty);
         }
 
@@ -76,7 +68,6 @@ const JoinPartyButton = ({
             preferredPrice,
             preferredDifficulty,
         )
-        console.log("def")
         setIsOpen(false);
         redirectPage($router, 'profile');
     };

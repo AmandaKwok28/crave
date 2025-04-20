@@ -1,4 +1,4 @@
-import { addPartyMember, createNewParty, deleteParty, patchPartyPrefrences } from "@/data/api";
+import { addPartyMember, createNewParty, deleteParty, modPartyPrefrences, removeAPartyMember } from "@/data/api";
 import { Cuisine, Difficulty, PartyType, Price } from "@/data/types";
 import { addParty, removeParty } from "@/lib/store";
 //import { $parties, setParties } from "@/lib/store";
@@ -6,8 +6,12 @@ import { addParty, removeParty } from "@/lib/store";
 const useMutationParty = () => {
 
     const deletePartyById = async (party_id: string) => {
-            await deleteParty(party_id);
-            removeParty(party_id);
+        await deleteParty(party_id);
+        removeParty(party_id);
+    };
+
+    const deletePartyMemberById = async (party_id: string, user_id: string) => {
+        await removeAPartyMember(party_id, user_id);
     };
 
     const addNewParty = async (
@@ -40,7 +44,7 @@ const useMutationParty = () => {
             if (!availableTime || !preferredCuisines || !aggregatedIngredients || !excludedAllergens || !preferredPrice || !preferredDifficulty) {
                 throw new Error("All field must have content to publish!")
             }
-            const newPartyPrefs = await patchPartyPrefrences(
+            const newPartyPrefs = await modPartyPrefrences(
                 id, 
                 availableTime,
                 preferredCuisines,
@@ -49,6 +53,7 @@ const useMutationParty = () => {
                 preferredPrice,
                 preferredDifficulty,
             );
+            console.log(newPartyPrefs);
             return newPartyPrefs;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
@@ -75,6 +80,7 @@ const useMutationParty = () => {
 
     return {
         addNewParty,
+        deletePartyMemberById,
         deletePartyById,
         updatePartyPrefrences,
         joinParty,

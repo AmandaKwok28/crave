@@ -1,4 +1,4 @@
-import { Button, IconButton, Text } from "@chakra-ui/react"
+import { Button, Em, IconButton, Text } from "@chakra-ui/react"
 import {
   DialogActionTrigger,
   DialogBody,
@@ -12,15 +12,15 @@ import {
 } from "@/components/ui/dialog"
 import { redirectPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
-import { UserX } from "lucide-react";
+import { Trash } from "lucide-react";
 import { toaster } from "../ui/toaster";
 import useMutationParty from "@/hooks/party/use-mutation-party";
 
-const LeavePartyButton = ({ party_id, user_id }: { party_id: string, user_id: string} ) => {
-  const { deletePartyMemberById } = useMutationParty();
+const DeletePartyButton = ({ party_id }: { party_id: string } ) => {
+  const { deletePartyById } = useMutationParty();
 
   const handleDelete = () => {
-    deletePartyMemberById(party_id, user_id)
+    deletePartyById(party_id)
       .then(() => redirectPage($router, 'profile'))
       .catch(() => toaster.create({
         title: 'Error deleting party',
@@ -32,17 +32,20 @@ const LeavePartyButton = ({ party_id, user_id }: { party_id: string, user_id: st
     <DialogRoot size='md'>
       <DialogTrigger asChild>
         <IconButton variant='ghost' color='red.400'>
-          <UserX />
+          <Trash />
         </IconButton>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle textStyle="2xl" fontWeight="bold">Leave Party</DialogTitle>
+          <DialogTitle textStyle="2xl" fontWeight="bold">Delete Party</DialogTitle>
         </DialogHeader>
         <DialogBody>
           <Text whiteSpace='pre-line'>
-            Are you sure you want to leave this collaborative cooking Party?
+            Are you sure you want to delete this Party?{'\n\n'}
+            <Em color='orange.fg'>
+              You cannot undo this action.
+            </Em>
           </Text>
         </DialogBody>
         <DialogFooter>
@@ -53,7 +56,7 @@ const LeavePartyButton = ({ party_id, user_id }: { party_id: string, user_id: st
         </DialogActionTrigger>
         <DialogActionTrigger asChild>
           <Button p="4" size="lg" bgGradient="to-r" gradientFrom="red.300" gradientTo="orange.300" color="white" onClick={handleDelete}>
-            Leave
+            Delete
           </Button>
         </DialogActionTrigger>
         </DialogFooter>
@@ -63,4 +66,4 @@ const LeavePartyButton = ({ party_id, user_id }: { party_id: string, user_id: st
   )
 }
 
-export default LeavePartyButton;
+export default DeletePartyButton;

@@ -122,6 +122,7 @@ export interface PartyMemberType {
   id: number;
   partyId: string;
   userId: string;
+  user: AuthorType;
   joinedAt: string;
   hasAccepted: Boolean;
   ingredients: string[];
