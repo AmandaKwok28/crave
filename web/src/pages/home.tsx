@@ -254,8 +254,7 @@ const Home = () => {
                 </Button>
             </>
             )}
-
-            {/* Messaging button (only show when logged in) */}
+            
             {isLoggedIn && <MessagingDrawer />}
         </Flex>
     )

@@ -1,8 +1,9 @@
 import NavBar from "@/components/layout/navBar";
+import MessagingDrawer from "@/components/messaging/messagingDrawer";
 import Recipes from "@/components/recipie/recipes";
 import { Field } from "@/components/ui/field";
 import Network from "@/components/user/network";
-import { followUser, unfollowUser } from "@/data/api";
+import { createConversation, followUser, unfollowUser } from "@/data/api";
 import { useAuth } from "@/hooks/use-auth";
 import useMutationUser from "@/hooks/use-mutation-user";
 import useQueryRecipes from "@/hooks/use-query-recipes";
@@ -35,7 +36,7 @@ const Profile = ({ userId }: {userId: string}) => {
   const { viewingUser : user, followers, following, loading, refetch } = useQueryUser(userId);
   const isOwnProfile = loggedInUser?.id === user?.id;
   const isFollowing = followers?.some(f => f.id === loggedInUser?.id);
-
+  const isLoggedIn = !!user && !!user.id;
 
   
   const { updateAvatar } = useMutationUser();
@@ -104,8 +105,6 @@ const Profile = ({ userId }: {userId: string}) => {
               zIndex="100"
             >
 
-         
-
               <div className="max-h-sm h-auto flex flex-col self-start w-full">
   
                   {/* User info: avatar, email, username, followers, following */}
@@ -128,7 +127,30 @@ const Profile = ({ userId }: {userId: string}) => {
                     </Flex>
                   </Flex>
 
-                  <Flex p="4">
+                  {/* {!isOwnProfile && (
+                    <Flex m="3">
+                      <Button
+                          className="w-full" 
+                            bgGradient="to-l"
+                            gradientFrom="purple.300"
+                            gradientTo="blue.400"
+                          onClick={async () => {
+                              try {
+                                  const targetUserId = userId;
+                                  const result = await createConversation(targetUserId);
+                                  console.log("Conversation created:", result);
+                                  alert(`Conversation created with ID: ${result.id}`);
+                              } catch (error) {
+                                  console.error("Error creating test conversation:", error);
+                              }
+                          }}
+                          >
+                          Message
+                        </Button>
+                      </Flex>
+                    )}
+
+                  <Flex m="3">
                     {!isOwnProfile && (
                       <Button 
                         className="w-full" 
@@ -140,7 +162,36 @@ const Profile = ({ userId }: {userId: string}) => {
                         {isFollowing ? "Unfollow" : "Follow"}
                       </Button>
                     )}
-                  </Flex>
+                  </Flex> */}
+
+                  {!isOwnProfile && (
+                    <Flex m="3" gap="4" justify="center">
+                      <Button
+                        bgGradient="to-l"
+                        gradientFrom="purple.300"
+                        gradientTo="blue.400"
+                        onClick={async () => {
+                          try {
+                            const targetUserId = userId;
+                            await createConversation(targetUserId);
+                          } catch (error) {
+                            console.error("Error creating test conversation:", error);
+                          }
+                        }}
+                      >
+                        Message
+                      </Button>
+
+                      <Button 
+                        bgGradient="to-l"
+                        gradientFrom={isFollowing ? "red.300" : "teal.300"}
+                        gradientTo={isFollowing ? "red.500" : "blue.400"}
+                        onClick={() => handleFollowToggle(user?.id, isFollowing)}
+                      >
+                        {isFollowing ? "Unfollow" : "Follow"}
+                      </Button>
+                    </Flex>
+                  )}
 
                   <Flex align='center' p='4' color="white" bg='cyan.400'>
                     Chef Rating: {String(loggedInUser?.id === user.id? loggedInUser.rating : user.rating)}
@@ -181,6 +232,32 @@ const Profile = ({ userId }: {userId: string}) => {
               {tab === 'likes' && <Recipes recipes={likes} />}
               {tab === 'bookmarks' && <Recipes recipes={bookmarks} />}
             </Flex>
+            
+            {isLoggedIn && (
+            <>
+                <MessagingDrawer />
+                {/* <Button
+                position="fixed"
+                bottom="20"
+                right="4"
+                colorScheme="purple"
+                onClick={async () => {
+                    try {
+                        const targetUserId = userId;
+                        const result = await createConversation(targetUserId);
+                        console.log("Conversation created:", result);
+                        alert(`Conversation created with ID: ${result.id}`);
+                    } catch (error) {
+                        console.error("Error creating test conversation:", error);
+                    }
+                }}
+                >
+                Create Conversation
+                </Button> */}
+            </>
+            )}
+            {isLoggedIn && <MessagingDrawer />}
+
           </Flex>
         </Flex>
   
