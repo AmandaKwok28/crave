@@ -100,12 +100,6 @@ app.use('/gpt', gptRoutes);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(__dirname, '../../../web/dist')));
-
-app.get('*', (_, res) => {
-  res.sendFile(path.join(__dirname, '../../../web/dist/index.html'));
-});
-
 startBackgroundJobs();
 
 app.listen(port, '0.0.0.0', () => {
