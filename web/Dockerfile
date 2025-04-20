@@ -17,7 +17,7 @@ RUN pnpm install
 COPY . .
 
 # Build the application
-ARG VITE_API_URL=https://api:3000
+ARG VITE_API_URL=https://team05.zapto.org/api
 ENV VITE_API_URL=${VITE_API_URL}
 RUN pnpm run build
 
