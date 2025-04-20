@@ -28,15 +28,29 @@ import pdf_route from './routes/parse-pdf.js';
 export const app = express();
 const port = Number(process.env.PORT) || 3000;   // app can dynamically listen to port specified by the PORT env var
 
+// app.use(cors({
+//   origin: true,
+//   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+//   allowedHeaders: [
+//     'Content-Type',
+//     'Authorization'
+//   ],
+//   exposedHeaders: [ 'Set-Cookie' ],
+//   credentials: true
+// }));
+
 app.use(cors({
-  origin: true,
+  origin: [
+      'http://localhost:3000', // frontend
+      'http://localhost:<your-frontend-port>'
+  ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   allowedHeaders: [
     'Content-Type',
     'Authorization'
   ],
-  exposedHeaders: [ 'Set-Cookie' ],
-  credentials: true
+  credentials: true,
+  exposedHeaders: ['Set-Cookie']
 }));
 
 app.use(express.json());

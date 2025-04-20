@@ -78,37 +78,31 @@ export async function invalidateAllSessions(userId: string): Promise<void> {
 
 
 export function setSessionTokenCookie(response: Response, token: string, expiresAt: Date): void {
-	if (process.env.NODE_ENV === 'production') {
-		response.cookie('session', token, {
-			httpOnly: true,
-			sameSite: 'lax',
-			expires: expiresAt,
-			secure: true
-		});
-	} else {
-		response.cookie('session', token, {
-			httpOnly: true,
-			sameSite: 'lax',
-			expires: expiresAt
-		});
-	}
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    response.cookie('session', token, {
+        httpOnly: true,
+        sameSite: isProduction ? 'none' : 'lax',
+        expires: expiresAt,
+        secure: isProduction,
+        domain: process.env.COOKIE_DOMAIN || 
+               (isProduction ? 'yourdomain.com' : 'localhost'),
+        path: '/'
+    });
 }
 
 export function deleteSessionTokenCookie(response: Response): void {
-	if (process.env.NODE_ENV === 'production') {
-		response.cookie('session', '', {
-			httpOnly: true,
-			sameSite: 'lax',
-			maxAge: 0,
-			secure: true
-		});
-	} else {
-		response.cookie('session', '', {
-			httpOnly: true,
-			sameSite: 'lax',
-			maxAge: 0
-		});
-	}
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    response.cookie('session', '', {
+        httpOnly: true,
+        sameSite: isProduction ? 'none' : 'lax',
+        secure: isProduction,
+        domain: process.env.COOKIE_DOMAIN || 
+               (isProduction ? 'yourdomain.com' : 'localhost'),
+        path: '/',
+        expires: new Date(0)
+    });
 }
 
 export type SessionValidationResult =
