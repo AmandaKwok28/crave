@@ -155,6 +155,108 @@ router.post('/join/:shareLink', authGuard, async (req, res) => {
   }
 });
 
+// Get a singular party by share link
+router.get('/:shareLink', authGuard, async (req, res) => {
+  try {
+    const { shareLink } = req.params;
+    
+    // Find the party by share link
+    const party = await prisma.cookingParty.findUnique({
+      where: { shareLink },
+      include: {
+        members: {
+          select: {
+            userId: true,
+            hasAccepted: true,
+            cookingAbility: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                avatarImage: true
+              }
+            }
+          }
+        },
+        host: {
+          select: {
+            id: true,
+            name: true,
+            avatarImage: true
+          }
+        },
+        preferences: true
+      }
+    });
+    
+    if (!party) {
+      res.status(404).json({ message: 'Party not found or invite link is invalid' });
+      return;
+    }
+    
+    // Check if the party has expired
+    if (party.expiresAt && new Date(party.expiresAt) < new Date()) {
+      res.status(400).json({ message: 'This invite has expired' });
+      return;
+    }
+    
+    // Check if the user is already a member
+    const isUserMember = party.members.some(member => member.userId === res.locals.user!.id);
+    
+    // Return the party with additional context for the user
+    res.json({
+      ...party,
+      isUserMember,
+      isHost: party.hostId === res.locals.user!.id,
+      memberCount: party.members.length
+    });
+    
+  } catch (error) {
+    console.error('Error fetching party by share link:', error);
+    res.status(500).json({ message: 'Failed to fetch party details' });
+  }
+});
+
+// Update party preferences
+router.put('/:id/preferences', authGuard, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { 
+      availableTime, 
+      preferredCuisines, 
+      preferredPrice, 
+      aggregatedIngredients, 
+      excludedAllergens, 
+      preferredDifficulty 
+    } = req.body;
+    
+    // Prepare data for upsert
+    const preferencesData = {
+      availableTime,
+      preferredCuisines,
+      preferredPrice,
+      aggregatedIngredients,
+      excludedAllergens,
+      preferredDifficulty,
+      partyId: id
+    };
+    
+    // Upsert the preferences (update if exists, create if not)
+    const updatedPreferences = await prisma.partyPreference.upsert({
+      where: { 
+        partyId: id 
+      },
+      update: preferencesData,
+      create: preferencesData
+    });
+    
+    res.json(updatedPreferences);
+  } catch (error) {
+    console.error('Error updating party preferences:', error);
+    res.status(500).json({ message: 'Failed to update party preferences' });
+  }
+});
+
 // Remove a user from a party
 router.delete('/:partyId/members/:userId', authGuard, async (req, res) => {
   try {
@@ -201,58 +303,6 @@ router.delete('/:partyId/members/:userId', authGuard, async (req, res) => {
   } catch (error) {
     console.error('Error removing user from party:', error);
     res.status(500).json({ message: 'Failed to remove user from party' });
-  }
-});
-
-// Get a single party by ID
-router.get('/:id', authGuard, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const userId = res.locals.user!.id;
-    
-    // Find the party with all its related data
-    const party = await prisma.cookingParty.findUnique({
-      where: { id },
-      include: {
-        members: {
-          include: {
-            user: true
-          }
-        },
-        preferences: true,
-        host: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            avatarImage: true
-          }
-        }
-      }
-    });
-    
-    // Check if party exists
-    if (!party) {
-      res.status(404).json({ message: 'Party not found' });
-      return;
-    }
-    
-    // Check if the current user is allowed to view this party
-    // (either as the host or as a member)
-    const isHost = party.hostId === userId;
-    const isMember = party.members.some(member => member.userId === userId);
-    
-    if (!isHost && !isMember) {
-      res.status(403).json({ 
-        message: 'You do not have permission to view this party' 
-      });
-      return;
-    }
-    
-    res.json(party);
-  } catch (error) {
-    console.error('Error fetching party:', error);
-    res.status(500).json({ message: 'Failed to fetch party' });
   }
 });
 
