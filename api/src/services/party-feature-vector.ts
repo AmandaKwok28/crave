@@ -9,47 +9,41 @@ import { stringify } from 'querystring';
 
 const execAsync = promisify(exec);
 
-export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<Map<number, number[]>> {
+export async function generatePartyVector(partyId: string[]): Promise<Map<string, number[]>> {
   let tempFile = '';
   
   try {
-    // Fetch all recipes in one database query
-    const recipes = await prisma.recipe.findMany({
-      where: { 
-        id: { in: recipeIds } 
-      },
-      select: {
-        id: true,
-        title: true,
-        ingredients: true,
-        instructions: true,
-        description: true,
-        mealTypes: true,       // added these things
-        difficulty: true,
-        price: true,
-        cuisine: true,
-        allergens: true,
-        sources: true,
-        prepTime: true,
-        likes: true,
-        bookmarks: true
+    // Fetch the party with partyId
+    const party = await prisma.cookingParty.findUnique({
+      where: { id: partyId[0] },
+      include: {
+        preferences: {
+          select: {
+            availableTime: true,
+            preferredCuisines: true,
+            preferredPrice: true,
+            aggregatedIngredients: true,
+            excludedAllergens: true,
+            preferredDifficulty: true
+          }
+        }
       }
     });
 
-    if (recipes.length === 0) {
+    if (!party) {
       throw new Error(`No recipes found with the provided IDs`);
     }
     
     // Remove 'const' to update the outer variable instead of creating a new one
     tempFile = path.join(os.tmpdir(), `recipes_${Date.now()}.json`);
-    console.log(JSON.stringify(recipes))
-    fs.writeFileSync(tempFile, JSON.stringify(recipes), 'utf8');
+    console.log(JSON.stringify(party?.preferences))
+    fs.writeFileSync(tempFile, JSON.stringify(party?.preferences), 'utf8');
     console.log(`Wrote recipe data to temporary file: ${tempFile}`);
     
     // Define __dirname for ES module
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    const scriptPath = path.join(__dirname, '../../scripts/generate_vector.py');
+    const scriptPath = path.join(__dirname, '../../scripts/generate_party_vector.py');
     const quotedScriptPath = `"${scriptPath}"`; // Wrap in quotes for paths with spaces
     const quotedTempFile = `"${tempFile}"`;
     
@@ -62,23 +56,8 @@ export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<
 
     // Parse the result - expects format { recipeId: vector, ... }
     const vectorResults = JSON.parse(stdout.trim());
-    const resultMap = new Map<number, number[]>();
+    const resultMap = new Map<string, number[]>();
 
-    // Process the results and store in database
-    const upsertPromises = Object.entries(vectorResults).map(async ([idStr, vector]) => {
-      const recipeId = parseInt(idStr);
-      resultMap.set(recipeId, vector as number[]);
-      
-      // Store in database
-      return prisma.recipeFeatureVector.upsert({
-        where: { recipeId },
-        update: { vector: vector as number[] },
-        create: { recipeId, vector: vector as number[] }
-      });
-    });
-    // Execute all database updates in parallel
-    await Promise.all(upsertPromises);
-    
     return resultMap;
   } catch (error) {
     console.error('Error generating batch feature vectors:', error);
@@ -96,11 +75,11 @@ export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<
   }
 }
 
-export async function generateFeatureVector(recipeId: number): Promise<number[]> {
-  const resultMap = await generateBatchFeatureVectors([recipeId]);
-  const vector = resultMap.get(recipeId);
+export async function generateFeaturePartyVector(partyId: string): Promise<number[]> {
+  const resultMap = await generatePartyVector([partyId]);
+  const vector = resultMap.get(partyId);
   if (!vector) {
-    throw new Error(`Failed to generate vector for recipe ${recipeId}`);
+    throw new Error(`Failed to generate vector for recipe ${partyId}`);
   }
   return vector;
 }

@@ -1,5 +1,6 @@
 import { prisma } from '../../prisma/db.js';
 import { generateBatchFeatureVectors } from './feature-vector.js';
+import { generateFeaturePartyVector } from './party-feature-vector.js';
 import { batchProcessRecipeSimilarities, calculateCosineSimilarity } from './recipe-similarity.js';
 
 export async function processUnvectorizedRecipes(batchSize = 10, maxSimilarities = 10) {
@@ -145,4 +146,57 @@ export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
     console.log('Error using history to generate recommended recipes')
   }
 
+}
+
+// get the recommendation recipes for a party
+export async function recommendedPartyRecipes(partyId: string, maxSimilarities=5) {
+
+  try {
+    // get a party vector
+    const partyVector = await generateFeaturePartyVector(partyId);      
+
+      // get all published recipes with vectors
+      const otherRecipes = await prisma.recipeFeatureVector.findMany({
+        where: {
+          recipe: {
+            published: true
+          }
+        },
+        select: { recipeId: true, vector: true },
+      });
+
+      // calculate similarity between the party vector and all other recipes
+      const similarityScores = otherRecipes
+        .map(({ recipeId, vector }) => ({
+          recipeId,
+          similarity: calculateCosineSimilarity(partyVector, vector),
+        }))
+        .filter(({ similarity }) => !isNaN(similarity)); // Only valid scores
+
+
+      // sort by similarity and return the top recommended recipes
+      similarityScores.sort((a, b) => b.similarity - a.similarity);
+      const topRecommended = similarityScores.slice(0, maxSimilarities);
+
+      //empty recommendations for this particular party
+      await prisma.partyRecommendation.deleteMany({
+        where: {
+          partyId: partyId,
+        }
+      });
+      
+      // Add the new recommended recipes
+      await prisma.partyRecommendation.createMany({
+        data: topRecommended.map(rec => ({
+          partyId: partyId,
+          recipeId: rec.recipeId,
+          similarityScore: rec.similarity,
+        }))
+      });
+
+      // console.log('Finished generating recommended recipes!')
+
+    } catch (error) {
+    console.log('Error using history to generate recommended recipes')
+  }
 }

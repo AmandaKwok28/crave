@@ -11,6 +11,9 @@ try:
     with open(json_file_path, 'r') as file:
         recipes = json.load(file)
 
+    print(f"Loaded recipes: {json.dumps(recipes, indent=2)}", file=sys.stderr)
+
+
     # Import and initialize the model only once
     from sentence_transformers import SentenceTransformer
     cache_dir = os.path.join(os.path.dirname(__file__), 'model_cache')

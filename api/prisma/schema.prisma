@@ -235,7 +235,7 @@ model PartyRecommendation {
   id             Int             @id @default(autoincrement())
   partyId        String          
   recipeId       Int
-  matchScore     Float
+  similarityScore     Float
   createdAt      DateTime        @default(now())
   party          CookingParty    @relation(fields: [partyId], references: [id], onDelete: Cascade)
   recipe         Recipe          @relation(fields: [recipeId], references: [id], onDelete: Cascade)
