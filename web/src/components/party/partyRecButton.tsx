@@ -1,4 +1,4 @@
-import { Button, Flex, Stack } from "@chakra-ui/react"
+import { Button, Flex, Spinner, Stack } from "@chakra-ui/react"
 import { fetchPartyRecs, runPartyRecommendedAlgo } from "@/data/api";
 import { PartyRecommendationType, PartyType } from "@/data/types";
 import PartyRecs from "./recommendedPartyRecipes";
@@ -9,11 +9,14 @@ const PartyRecButton = ({party}:{party: PartyType}) => {
     const [ partyRecs, setPartyRecs ] = useState<PartyRecommendationType[]>([]);
     const partyId = party.id;
     const shareLink = party.shareLink;
+    const [ loading, setLoading ] = useState<boolean>(false);
 
     const handleShowRecs = async () => {
+        setLoading(true);
         await runPartyRecommendedAlgo(partyId);
         const partyrecs: PartyRecommendationType[] = await fetchPartyRecs(shareLink);
         setPartyRecs(partyrecs);
+        setLoading(false);
         setShowRecs(true);
         return <PartyRecs partyRecs={partyrecs}/>
     }
@@ -21,7 +24,8 @@ const PartyRecButton = ({party}:{party: PartyType}) => {
     return (
         <Flex> 
             <Stack >
-                {showRecs && <PartyRecs partyRecs={partyRecs}/>}
+                {loading && <Spinner size="xl" color= "real.500"/> }
+                {!loading && showRecs && <PartyRecs partyRecs={partyRecs}/> }
                 <Button 
                     variant="subtle" 
                     color="white" 
