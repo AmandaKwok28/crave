@@ -6,12 +6,15 @@ import { PartyStatus } from '@prisma/client';
 
 const router = Router();
 
-// Get all parties for the current user (as host)
+// Get all parties for the current user (as host or member)
 router.get('/my', authGuard, async (req, res) => {
   try {
     const parties = await prisma.cookingParty.findMany({
       where: {
-        hostId: res.locals.user!.id
+        OR: [
+          { hostId: res.locals.user!.id },
+          { members: { some: { userId: res.locals.user!.id } } }
+        ]
       },
       include: {
         members: {
@@ -19,11 +22,24 @@ router.get('/my', authGuard, async (req, res) => {
             user: true
           }
         },
+        host: {
+          select: {
+            id: true,
+            name: true,
+            avatarImage: true
+          }
+        },
         preferences: true
       }
     });
     
-    res.json(parties);
+    // Add a field to each party indicating if the user is the host
+    const partiesWithRole = parties.map(party => ({
+      ...party,
+      isHost: party.hostId === res.locals.user!.id
+    }));
+    
+    res.json(partiesWithRole);
   } catch (error) {
     console.error('Error fetching parties:', error);
     res.status(500).json({ message: 'Failed to fetch parties' });
@@ -214,6 +230,44 @@ router.get('/:shareLink', authGuard, async (req, res) => {
   } catch (error) {
     console.error('Error fetching party by share link:', error);
     res.status(500).json({ message: 'Failed to fetch party details' });
+  }
+});
+
+// Get party prefrences by share link
+router.get('/pref/:shareLink', authGuard, async (req, res) => {
+  try {
+    const { shareLink } = req.params;
+    
+    // Find the party by share link
+    const partyPrefs = await prisma.cookingParty.findUnique({
+      where: { shareLink },
+      include: {
+        preferences: {
+          select: {
+            availableTime: true,
+            preferredCuisines: true,
+            aggregatedIngredients: true,
+            excludedAllergens: true,
+            preferredPrice: true,
+            preferredDifficulty: true,
+          }
+        }
+      }
+    });
+    
+    if (!partyPrefs) {
+      res.status(404).json({ message: 'Party not found or invite link is invalid' });
+      return;
+    }
+
+    // Return the partyPrefs with additional context for the user
+    res.json({
+      ...partyPrefs.preferences,
+    });
+    
+  } catch (error) {
+    console.error('Error fetching partyPrefs by share link:', error);
+    res.status(500).json({ message: 'Failed to fetch partyPref details' });
   }
 });
 

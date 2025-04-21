@@ -25,6 +25,7 @@ const useMutationParty = () => {
             date.setDate(date.getDate() + 30);
             const party: PartyType = await createNewParty(title, date.toLocaleDateString());
             addParty(party);
+            return party;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             throw new Error("Error adding a new Party")
@@ -53,7 +54,6 @@ const useMutationParty = () => {
                 preferredPrice,
                 preferredDifficulty,
             );
-            console.log(newPartyPrefs);
             return newPartyPrefs;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {

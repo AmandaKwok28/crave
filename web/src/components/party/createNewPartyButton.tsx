@@ -16,6 +16,7 @@ import { useState } from "react";
 import { Field } from "../ui/field";
 import useMutationParty from "@/hooks/party/use-mutation-party";
 import { toaster } from "../ui/toaster";
+
 const CreateNewPartyButton = () => {
     const { addNewParty } = useMutationParty();
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -29,8 +30,8 @@ const CreateNewPartyButton = () => {
             });
             return;
         } else {
-            addNewParty(title);
-            redirectPage($router, `profile`);   
+            const newParty = await addNewParty(title);  
+            redirectPage($router, 'createParty', { share_link: newParty.shareLink });
             setTitle("");
             setIsOpen(false);
         }

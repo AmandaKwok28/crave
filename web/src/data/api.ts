@@ -549,6 +549,20 @@ export const fetchParty = async (share_link: string | number): Promise<PartyType
   return party;
 };
 
+// Fetch specific party Prefs
+export const fetchPartyPrefs = async (share_link: string | number): Promise<PartyPrefrenceType> => {
+  const response = await fetch(`${API_URL}/party/pref/${share_link}`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+
+  const partyPref: PartyPrefrenceType = await response.json();
+  return partyPref;
+};
+
 // Update a party prefrences
 export const modPartyPrefrences = async (
   id: string,
@@ -559,13 +573,6 @@ export const modPartyPrefrences = async (
   preferredPrice: Price,
   preferredDifficulty: Difficulty,
 ): Promise<PartyPrefrenceType> => {
-    console.log(availableTime);
-    console.log(preferredCuisines);
-    console.log(aggregatedIngredients);
-    console.log(excludedAllergens);
-    console.log(preferredPrice);
-    console.log(preferredDifficulty);
-
     const response = await fetch(`${API_URL}/party/${id}/preferences`, {
       method: "PUT",
       credentials: 'include',

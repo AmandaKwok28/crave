@@ -16,8 +16,6 @@ import { Cuisine, Difficulty, PartyType, Price } from "@/data/types";
 import { toaster } from "../ui/toaster";
 import { useState } from "react";
 import useMutationParty from "@/hooks/party/use-mutation-party";
-import { useAuth } from "@/hooks/use-auth";
-import { fetchPartyPrefs } from "@/data/api";
 
 type JoinPartyProps = {
     party: PartyType,
@@ -29,7 +27,7 @@ type JoinPartyProps = {
     preferredDifficulty: Difficulty 
 }
 
-const JoinPartyButton = ({ 
+const HostPrefButton = ({ 
     party, 
     availableTime, 
     preferredCuisine, 
@@ -38,8 +36,7 @@ const JoinPartyButton = ({
     preferredPrice,
     preferredDifficulty
 }: JoinPartyProps ) => {
-    const { user } = useAuth()
-    const { updatePartyPrefrences, joinParty } = useMutationParty();
+    const { updatePartyPrefrences } = useMutationParty();
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     
@@ -54,32 +51,14 @@ const JoinPartyButton = ({
             setIsOpen(false);
             return;
         }
-        //join the party
-        if (user.id != party.host.id) {
-           await joinParty(party.shareLink, ingredients, preferredDifficulty);
-        }
-        const partyPrefs = await fetchPartyPrefs(party.shareLink)
-
-        if (partyPrefs.availableTime < availableTime) {
-            availableTime = partyPrefs.availableTime;
-        }
-        if (partyPrefs.preferredPrice < preferredPrice) {
-            preferredPrice = partyPrefs.preferredPrice;
-        }
-        if (partyPrefs.preferredDifficulty < preferredDifficulty) {
-            preferredDifficulty = partyPrefs.preferredDifficulty;
-        }
-        const preferredCuisines: Cuisine[] = partyPrefs.preferredCuisines.concat([preferredCuisine]);
-        const updatedingredients: string[] = partyPrefs.aggregatedIngredients.concat(ingredients);
-        const updatedAllergens: string[] = partyPrefs.excludedAllergens.concat([excludedAllergens]);
 
         // update the partyPrefrences
         await updatePartyPrefrences(
             party.id,
             availableTime,
-            preferredCuisines,
-            updatedingredients,
-            updatedAllergens,
+            [preferredCuisine],
+            ingredients,
+            [excludedAllergens],
             preferredPrice,
             preferredDifficulty,
         )
@@ -98,7 +77,7 @@ const JoinPartyButton = ({
             border="non"
             bg="cyan.700"
             >
-                Join Party
+                Create Party
             </Button>
             </DialogTrigger>
             <DialogContent>
@@ -107,7 +86,7 @@ const JoinPartyButton = ({
             </DialogHeader>
             <DialogBody>
             <p>
-                Are you sure you want to join this cooking party? You will not be able to further update your prefrences after doing so.
+                Are you sure you want to create a new collaborative cooking party? You will not be able to further update your prefrences after doing so.
             </p>
             </DialogBody>
             <DialogFooter>
@@ -126,4 +105,4 @@ const JoinPartyButton = ({
     )
 }
 
-export default JoinPartyButton;
+export default HostPrefButton;
