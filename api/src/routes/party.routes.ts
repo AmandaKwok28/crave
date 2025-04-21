@@ -461,7 +461,7 @@ router.post('/:partyId/gen/recommendations', authGuard, async (req, res) => {
       return;
     }
     //call generate party recommendations algorithm
-    recommendedPartyRecipes(partyId);
+    await recommendedPartyRecipes(partyId);
     res.status(200).json({ message: 'Party Recommendations updated successfully' });
     return;
   } catch (error) {
