@@ -133,8 +133,6 @@ const Profile = ({ userId }: {userId: string}) => {
                   {/* Follow & Messaging Buttons */}
                   {!isOwnProfile && (
                     <Flex m="4" gap="1" justify="center">
-
-                      {isFollowing && (
                         <Button
                           className="w-1/2" 
                           bgGradient="to-l"
@@ -162,10 +160,9 @@ const Profile = ({ userId }: {userId: string}) => {
                         >
                           Message
                         </Button>
-                      )}
 
                       <Button 
-                        className={isFollowing ? "w-1/2" : "w-full"}
+                        className="w-1/2"
                         bgGradient="to-l"
                         gradientFrom={isFollowing ? "red.300" : "teal.300"}
                         gradientTo={isFollowing ? "red.500" : "blue.400"}
