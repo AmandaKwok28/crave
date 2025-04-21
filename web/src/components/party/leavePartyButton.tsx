@@ -29,7 +29,7 @@ const LeavePartyButton = ({ party_id, user_id }: { party_id: string, user_id: st
   };
 
   return (
-    <DialogRoot size='md'>
+    <DialogRoot size='xl'>
       <DialogTrigger asChild>
         <IconButton variant='ghost' color='red.400'>
           <UserX />

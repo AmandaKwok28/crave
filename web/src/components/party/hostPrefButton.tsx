@@ -75,14 +75,14 @@ const HostPrefButton = ({
             color="white" 
             //borderRadius="15px" 
             border="non"
-            bg="cyan.700"
+            bg="blue.400"
             >
                 Create Party
             </Button>
             </DialogTrigger>
             <DialogContent>
             <DialogHeader>
-            <DialogTitle textStyle="2xl" fontWeight="bold">Join Collaborative Cooking Session?</DialogTitle>
+            <DialogTitle textStyle="2xl" fontWeight="bold">Create New Collaborative Cooking Session?</DialogTitle>
             </DialogHeader>
             <DialogBody>
             <p>

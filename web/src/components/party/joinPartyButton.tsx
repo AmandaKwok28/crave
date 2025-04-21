@@ -96,7 +96,7 @@ const JoinPartyButton = ({
             color="white" 
             //borderRadius="15px" 
             border="non"
-            bg="cyan.700"
+            bg="blue.400"
             >
                 Join Party
             </Button>

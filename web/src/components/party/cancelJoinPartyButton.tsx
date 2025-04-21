@@ -20,7 +20,7 @@ const CancelJoinPartyButton = () => {
     <Button 
         variant="subtle" 
         //bgImage="linear-gradient({colors.blue.500}, {colors.cyan.200})"
-        bg="cyan.500"
+        bg="cyan.400"
         color="white" 
         //borderRadius="15px" 
         border="non"

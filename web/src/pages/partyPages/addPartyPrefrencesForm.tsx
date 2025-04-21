@@ -87,7 +87,7 @@ const AddPartyPrefrencesForm = ({ party }: {
 
   return (
     <Flex gap='4' flexDir='column' minW='100vw' align='center' justify='center'>
-        <Flex pos='fixed' zIndex="100" top='0' left='0' w='100vw' h='10' bg="cyan.700" align='center' justify='center'>
+        <Flex pos='fixed' zIndex="100" top='0' left='0' w='100vw' h='10' bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400" align='center' justify='center'>
             <Text color='bg' fontWeight='bold' fontSize='2xl'>
                 {party.name + " Collaborative Cooking Intake Form"}
             </Text>
@@ -117,7 +117,7 @@ const AddPartyPrefrencesForm = ({ party }: {
                         Cannot add an empty ingredient!
                         </Text>
                     )}
-                    <Button bgGradient="to-r" bg="cyan.500" onClick={handleAddIngredient}>
+                    <Button bgGradient="to-r" bg="blue.400" onClick={handleAddIngredient}>
                         Add Ingredient
                     </Button>
                 </Flex>

@@ -42,7 +42,7 @@ const useMutationParty = () => {
         preferredDifficulty: Difficulty,
     ) => {
         try {
-            if (!availableTime || !preferredCuisines || !aggregatedIngredients || !excludedAllergens || !preferredPrice || !preferredDifficulty) {
+            if (!availableTime || !preferredCuisines || !aggregatedIngredients || !preferredPrice || !preferredDifficulty) {
                 throw new Error("All field must have content to publish!")
             }
             const newPartyPrefs = await modPartyPrefrences(

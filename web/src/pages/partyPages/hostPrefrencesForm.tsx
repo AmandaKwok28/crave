@@ -5,7 +5,6 @@ import { PartyType, Difficulty, Cuisine, Price } from "@/data/types";
 import { ButtonGroup, Flex, Input, Text, RadioGroup } from "@chakra-ui/react";
 import { InputGroup } from "@/components/ui/input-group";
 import { Trash } from "lucide-react";
-import CancelJoinPartyButton from "@/components/party/cancelJoinPartyButton";
 import HostPrefButton from "@/components/party/hostPrefButton";
 import { fetchParty } from "@/data/api";
 
@@ -106,7 +105,7 @@ const HostPrefrencesForm = ({ share_link }: {
   } else {
     return (
         <Flex gap='4' flexDir='column' minW='100vw' align='center' justify='center'>
-            <Flex pos='fixed' zIndex="100" top='0' left='0' w='100vw' h='10' bg="cyan.700" align='center' justify='center'>
+            <Flex pos='fixed' zIndex="100" top='0' left='0' w='100vw' h='10' bgGradient="to-r" gradientFrom="cyan.300" gradientTo="blue.400" align='center' justify='center'>
                 <Text color='bg' fontWeight='bold' fontSize='2xl'>
                     {party.name + " Collaborative Cooking Intake Form"}
                 </Text>
@@ -136,7 +135,7 @@ const HostPrefrencesForm = ({ share_link }: {
                             Cannot add an empty ingredient!
                             </Text>
                         )}
-                        <Button bgGradient="to-r" bg="cyan.500" onClick={handleAddIngredient}>
+                        <Button bgGradient="to-r" bg="blue.400" onClick={handleAddIngredient}>
                             Add Ingredient
                         </Button>
                     </Flex>
@@ -234,7 +233,6 @@ const HostPrefrencesForm = ({ share_link }: {
             
                 <Flex mt="16">
                     <ButtonGroup>
-                        <CancelJoinPartyButton />
                         <HostPrefButton party={party} 
                         availableTime={Number(cookTime)} 
                         preferredCuisine={Cuisine[cuisine as keyof typeof Cuisine]} 

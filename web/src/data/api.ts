@@ -50,6 +50,12 @@ export const fetchRecipes = async (
   if (filters.major) {
     filterParams.push(`major=${filters.major}`);
   }
+  if (filters.dateMin) {
+    filterParams.push(`dateMin=${filters.dateMin}`);
+  }
+  if (filters.dateMax) {
+    filterParams.push(`dateMax=${filters.dateMax}`);
+  }
 
   if (search) {
     filterParams.push(`search=${search}`)

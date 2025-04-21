@@ -103,7 +103,9 @@ export const $filters = atom({
   ingredients: [],    
   allergens: [],      
   sources: [],       // optional
-  major: null         
+  major: null,
+  dateMin: null,  
+  dateMax: null,          
 })
 
 
@@ -122,7 +124,9 @@ export function clearFilters() {
     ingredients: [],
     allergens: [],
     sources: [],
-    major: null
+    major: null,
+    dateMin: null,  
+    dateMax: null,  
   });
 }
 
