@@ -41,12 +41,12 @@ app.use(allergen_route);
 app.use(comments_route);    
 app.use(rating_route);
 app.use('/recipe', recipeRoutes);
-app.use('/user', userRoutes);
-app.use('/feed', feedRoutes);
-app.use('/like', likeRoutes);
+app.use('/user', userRoutes);         // untested
+app.use('/feed', feedRoutes);         // untested
+app.use('/like', likeRoutes);         
 app.use('/bookmark', bookmarkRoutes);
-app.use('/gpt', gptRoutes);
-app.use('/users', usersRoutes);
+app.use('/gpt', gptRoutes);           // untested
+app.use('/users', usersRoutes);       // untested
 
 // Define __dirname for ES module
 const __filename = fileURLToPath(import.meta.url);
