@@ -82,7 +82,7 @@ const ViewParty = ({ share_link }: {
                     >
                       Recomended Recipes:
                     </Text>
-                    <PartyRecButton shareLink={party.shareLink} />
+                    <PartyRecButton party={party} />
                     <Separator w='50rem' maxW='100%' size="sm" mt="2"/>
                     <Text
                         textStyle="2xl"

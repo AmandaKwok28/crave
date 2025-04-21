@@ -3,6 +3,7 @@ import { prisma } from '../../prisma/db.js';
 import { authGuard } from '../middleware/auth.js';
 import { v4 as uuidv4 } from 'uuid';
 import { PartyStatus } from '@prisma/client';
+import { recommendedPartyRecipes } from '../services/background-vector-update.js';
 
 const router = Router();
 
@@ -438,6 +439,29 @@ router.post('/:partyId/add/:recipeID/recommendation', authGuard, async (req, res
       }
     });
 
+    res.status(200).json({ message: 'Party Recommendations updated successfully' });
+    return;
+  } catch (error) {
+    console.error('Error updating party recommendations:', error);
+    res.status(500).json({ message: 'Failed to update party recommendation' });
+  }
+});
+
+
+// call python script to update recommended recipes
+router.post('/:partyId/gen/recommendations', authGuard, async (req, res) => {
+  try {
+    const { partyId } = req.params;
+    // Check if party exists
+    const party = await prisma.cookingParty.findUnique({
+      where: { id: partyId }
+    });
+    if (!party) {
+      res.status(404).json({ message: 'Party not found' });
+      return;
+    }
+    //call generate party recommendations algorithm
+    recommendedPartyRecipes(partyId);
     res.status(200).json({ message: 'Party Recommendations updated successfully' });
     return;
   } catch (error) {

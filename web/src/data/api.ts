@@ -636,3 +636,14 @@ export const fetchPartyRecs = async (share_link: string | number): Promise<Party
   const partyRecs: PartyRecommendationType[] = await response.json();
   return partyRecs;
 };
+
+// call route to run party recommendation algorithm
+export const runPartyRecommendedAlgo = async (partyId: string ): Promise<void> => {
+  const response = await fetch(`${API_URL}/party/${partyId}/gen/recommendations`, {
+    method: "POST",
+    credentials: 'include'
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+};
