@@ -16,6 +16,7 @@ import { fileURLToPath } from 'url';
 import comments_route from './routes/comments.js';
 import rating_route from './routes/rating.js';
 import pdf_route from './routes/parse-pdf.js';
+import usersRoutes from './routes/users.routes.js';
 
 export const app = express();
 
@@ -45,6 +46,7 @@ app.use('/feed', feedRoutes);
 app.use('/like', likeRoutes);
 app.use('/bookmark', bookmarkRoutes);
 app.use('/gpt', gptRoutes);
+app.use('/users', usersRoutes);
 
 // Define __dirname for ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -58,6 +60,9 @@ app.get('*', (req, res) => {
 
 startBackgroundJobs();
 
-const server = app.listen(3000, () => {
-  console.log(`Listening @ http://localhost:3000`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(3000, () => {
+    console.log(`Listening @ http://localhost:3000`);
+  });
+}
+

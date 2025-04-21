@@ -13,6 +13,18 @@ export const fetchUsers = async (): Promise<UserType[]> => {
   return data;
 };
 
+// Fetch user by id
+export const fetchUser = async (userId: string): Promise<UserType> => {
+  const response = await fetch(`${API_URL}/users/${userId}`, {
+    credentials: 'include'
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const data: UserType = await response.json();
+  return data;
+}
+
 // Fetch all recipes with query
 export const fetchRecipes = async (
   filters?: any,
@@ -428,3 +440,111 @@ export const fetchUserRecommendedRecipes = async (limit?: number): Promise<Recip
   const recommendedRecipes: RecipeType[] = await response.json();
   return recommendedRecipes;
 }
+
+// Fetch all comments for a given recipe
+export const fetchComments = async (recipe_id: string | number): Promise<CommentType[]> => {
+  const response = await fetch(`${API_URL}/recipe/${recipe_id}/comments`, {
+    method: 'GET',
+    credentials: 'include'
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const comments: CommentType[] = await response.json();
+  return comments;
+};
+
+// Create comment on a recipe
+export const createComment = async (recipe_id: string | number, content: string, userId: string): Promise<CommentType> => {
+  const response = await fetch(`${API_URL}/recipe/${recipe_id}/comments`, {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
+    body: JSON.stringify({
+      content,
+      id: recipe_id,
+      authorId: userId,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const comment: CommentType = await response.json();
+  return comment;
+};
+
+// Delete comment on a recipe
+export const deleteComment = async (recipe_id: string | number, commentId: number) : Promise<boolean> => {
+  const response = await fetch(`${API_URL}/recipe/${recipe_id}/comments/${commentId}`, {
+    credentials: 'include',
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  return true;
+};
+
+// Fetch followers
+export const fetchFollowers = async (userId: string): Promise<UserType[]> => {
+  const response = await fetch(`${API_URL}/users/${userId}/followers`, {
+    method: 'GET',
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+
+  const followers: UserType[] = await response.json();
+  return followers;
+};
+
+// Fetch following
+export const fetchFollowing = async (userId: string): Promise<UserType[]> => {
+  const response = await fetch(`${API_URL}/users/${userId}/following`, {
+    method: 'GET',
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+
+  const following: UserType[] = await response.json();
+  return following;
+};
+
+// Follow a user
+export const followUser = async (targetUserId: string, followerId: string): Promise<boolean> => {
+  const response = await fetch(`${API_URL}/users/${targetUserId}/follow`, {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
+    body: JSON.stringify({ followerId })
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+
+  return true;
+};
+
+// Unfollow a user
+export const unfollowUser = async (targetUserId: string, followerId: string): Promise<boolean> => {
+  const response = await fetch(`${API_URL}/users/${targetUserId}/unfollow`, {
+    method: 'DELETE',
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
+    body: JSON.stringify({ followerId })
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+
+  return true;
+};

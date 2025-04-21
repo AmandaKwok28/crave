@@ -26,6 +26,19 @@ export function clearUser() {
   });
 }
 
+export const $viewingUser = atom<UserType>({
+    id: '',
+    email: '',
+    name: '',
+    school: '',
+    major: '',
+    rating: 0
+});
+
+export function setViewingUser(user: UserType) {
+  $viewingUser.set(user);
+}
+
 export function setUser(user: UserType) {
   $user.set(user);
 }
