@@ -5,11 +5,10 @@ import path from 'path';
 import fs from 'fs';
 import os from 'os';
 import { fileURLToPath } from 'url';
-import { stringify } from 'querystring';
 
 const execAsync = promisify(exec);
 
-export async function generatePartyVector(partyId: string[]): Promise<Map<string, number[]>> {
+export async function generatePartyVector(partyId: string[]): Promise<number[]> {
   let tempFile = '';
   
   try {
@@ -31,14 +30,12 @@ export async function generatePartyVector(partyId: string[]): Promise<Map<string
     });
 
     if (!party) {
-      throw new Error(`No recipes found with the provided IDs`);
+      throw new Error(`No party found with the provided ID`);
     }
     
-    // Remove 'const' to update the outer variable instead of creating a new one
-    tempFile = path.join(os.tmpdir(), `recipes_${Date.now()}.json`);
-    console.log(JSON.stringify(party?.preferences))
+    tempFile = path.join(os.tmpdir(), `party_preferences_${Date.now()}.json`);
     fs.writeFileSync(tempFile, JSON.stringify(party?.preferences), 'utf8');
-    console.log(`Wrote recipe data to temporary file: ${tempFile}`);
+    console.log(`Wrote party preferences to temporary file: ${tempFile}`);
     
     // Define __dirname for ES module
     const __filename = fileURLToPath(import.meta.url);
@@ -47,20 +44,18 @@ export async function generatePartyVector(partyId: string[]): Promise<Map<string
     const quotedScriptPath = `"${scriptPath}"`; // Wrap in quotes for paths with spaces
     const quotedTempFile = `"${tempFile}"`;
     
-    // Run the Python script with the batch of recipes
+    // Run the Python script with the party preferences
     const { stdout, stderr } = await execAsync(`python ${quotedScriptPath} ${quotedTempFile}`);
     
     if (stderr) {
       console.log('Python:', stderr);
     }
 
-    // Parse the result - expects format { recipeId: vector, ... }
+    // Parse the result - expects format { party_vector: [...] }
     const vectorResults = JSON.parse(stdout.trim());
-    const resultMap = new Map<string, number[]>();
-
-    return resultMap;
+    return vectorResults.party_vector;
   } catch (error) {
-    console.error('Error generating batch feature vectors:', error);
+    console.error('Error generating party feature vector:', error);
     throw error;
   } finally {
     // Clean up the temporary file
@@ -76,10 +71,5 @@ export async function generatePartyVector(partyId: string[]): Promise<Map<string
 }
 
 export async function generateFeaturePartyVector(partyId: string): Promise<number[]> {
-  const resultMap = await generatePartyVector([partyId]);
-  const vector = resultMap.get(partyId);
-  if (!vector) {
-    throw new Error(`Failed to generate vector for recipe ${partyId}`);
-  }
-  return vector;
+  return await generatePartyVector([partyId]);
 }

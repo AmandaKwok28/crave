@@ -153,50 +153,80 @@ export async function recommendedPartyRecipes(partyId: string, maxSimilarities=5
 
   try {
     // get a party vector
-    const partyVector = await generateFeaturePartyVector(partyId);      
-
-      // get all published recipes with vectors
-      const otherRecipes = await prisma.recipeFeatureVector.findMany({
-        where: {
-          recipe: {
-            published: true
+    console.log(`Generating recommendations for party: ${partyId}`);
+    
+    // Get the party vector based on preferences
+    const partyVector = await generateFeaturePartyVector(partyId);
+    
+    if (!partyVector || partyVector.length === 0) {
+      console.log(`Could not generate feature vector for party ${partyId}`);
+      return [];
+    }
+    
+    console.log(`Successfully generated party vector with ${partyVector.length} dimensions`);
+      
+    // Get all published recipes with their feature vectors
+    const recipesWithVectors = await prisma.recipeFeatureVector.findMany({
+      where: {
+        recipe: {
+          published: true
+        }
+      },
+      select: { 
+        recipeId: true, 
+        vector: true,
+        recipe: {
+          select: {
+            title: true
           }
-        },
-        select: { recipeId: true, vector: true },
-      });
+        }
+      },
+    });
 
-      // calculate similarity between the party vector and all other recipes
-      const similarityScores = otherRecipes
-        .map(({ recipeId, vector }) => ({
-          recipeId,
-          similarity: calculateCosineSimilarity(partyVector, vector),
-        }))
-        .filter(({ similarity }) => !isNaN(similarity)); // Only valid scores
+    console.log(`Found ${recipesWithVectors.length} published recipes with vectors`);
+
+    if (recipesWithVectors.length === 0) {
+      console.log('No recipes with vectors available for recommendations');
+      return [];
+    }
+
+
+    // Calculate similarity between the party vector and all recipe vectors
+    const similarityScores = recipesWithVectors
+      .map(({ recipeId, vector, recipe }) => ({
+        recipeId,
+        title: recipe?.title,
+        similarity: calculateCosineSimilarity(partyVector, vector),
+      }))
+      .filter(({ similarity }) => !isNaN(similarity)); // Remove invalid scores
 
 
       // sort by similarity and return the top recommended recipes
       similarityScores.sort((a, b) => b.similarity - a.similarity);
       const topRecommended = similarityScores.slice(0, maxSimilarities);
 
-      //empty recommendations for this particular party
-      await prisma.partyRecommendation.deleteMany({
-        where: {
-          partyId: partyId,
-        }
-      });
-      
-      // Add the new recommended recipes
-      await prisma.partyRecommendation.createMany({
-        data: topRecommended.map(rec => ({
-          partyId: partyId,
-          recipeId: rec.recipeId,
-          similarityScore: rec.similarity,
-        }))
-      });
+      console.log(`Top ${topRecommended.length} recommended recipes for party ${partyId}:`);
 
-      // console.log('Finished generating recommended recipes!')
+
+    // Clear existing recommendations for this party
+    await prisma.partyRecommendation.deleteMany({
+      where: { partyId }
+    });
+      
+    // Add the new recommended recipes
+    await prisma.partyRecommendation.createMany({
+      data: topRecommended.map(rec => ({
+        partyId,
+        recipeId: rec.recipeId,
+        similarityScore: rec.similarity,
+      }))
+    });
+
+    console.log(`Successfully saved ${topRecommended.length} recommendations for party ${partyId}`);
+    return topRecommended;
 
     } catch (error) {
-    console.log('Error using history to generate recommended recipes')
+    console.error(`Error generating recommendations for party ${partyId}:`, error);
+    return [];
   }
 }

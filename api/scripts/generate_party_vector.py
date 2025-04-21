@@ -9,10 +9,9 @@ try:
     
     # Read the JSON data from the file
     with open(json_file_path, 'r') as file:
-        recipes = json.load(file)
+        preferences = json.load(file)
 
-    print(f"Loaded recipes: {json.dumps(recipes, indent=2)}", file=sys.stderr)
-
+    print(f"Loaded party preferences: {json.dumps(preferences, indent=2)}", file=sys.stderr)
 
     # Import and initialize the model only once
     from sentence_transformers import SentenceTransformer
@@ -20,49 +19,52 @@ try:
     os.makedirs(cache_dir, exist_ok=True)
     print(f"Using model cache at: {cache_dir}", file=sys.stderr)
 
-
-    # model = SentenceTransformer('sentence-transformers/paraphrase-TinyBERT-L4-v2', cache_folder=cache_dir) 
     model = SentenceTransformer('paraphrase-MiniLM-L3-v2', cache_folder=cache_dir) 
-    # model = SentenceTransformer('all-MiniLM-L6-v2', cache_folder=cache_dir) 
-    # model = SentenceTransformers('all-mpnet-base-v2')  # More accurate, slower
 
-    # Process all recipes in batch
-    recipe_texts = []
-    recipe_ids = []
+    # Format the preference data for embedding
+    preference_text = []
     
-    for recipe in recipes:
-        # Prepare the text for embedding
-        # add tags, number of likes, bookmarks
-        recipe_text = f"{recipe['title']} {recipe['description'] or ''} {' '.join(recipe['ingredients'])} {' '.join(recipe['instructions'])}"
-        recipe_texts.append(recipe_text)
-        recipe_tags = f"meal types: {' '.join(recipe['mealTypes']) if len(recipe['mealTypes']) > 0 else 'not listed'}, " \
-              f"difficulty: {recipe['difficulty'] if recipe['difficulty'] else 'not listed'}, " \
-              f"cuisine: {recipe['cuisine'] if recipe['cuisine'] else 'not listed'}, " \
-              f"allergens: {' '.join(recipe['allergens']) if len(recipe['allergens']) > 0 else 'not listed'}, " \
-              f"sources: {' '.join(recipe['sources']) if len(recipe['sources']) > 0 else 'not listed'}, " \
-              f"prep time: {recipe['prepTime'] if recipe['prepTime'] else 'not listed'}" \
-              f"likes: {len(recipe['likes'])}" \
-              f"bookmarks: {len(recipe['bookmarks'])}"
-
-
-        # recipe_tags = f" meal types: {' '.join(recipe['mealTypes'])}, difficulty: {recipe['difficulty']}, cuisine: {recipe['cuisine']}, allergens: {' '.join(recipe['allergens'])}, sources: {' '.join(recipe['sources'])}, prep time: {recipe['prepTime']}"
-        recipe_texts.append(recipe_tags)
-        recipe_ids.append(recipe['id'])
-
-    # Generate embeddings in a single batch call
-    embeddings = model.encode(recipe_texts)
-
-    # May use PCA to reduce dimensionality if calcualtion is too slow
-
-    # Create a dictionary mapping recipe ID to its embedding
-    result = {}
-    for i, recipe_id in enumerate(recipe_ids):
-        result[recipe_id] = embeddings[i].tolist()
-
+    # Process the available time
+    available_time = f"available time: {preferences.get('availableTime', 'not specified')}"
+    preference_text.append(available_time)
+    
+    # Process preferred cuisines
+    cuisines = preferences.get('preferredCuisines', [])
+    cuisines_text = f"preferred cuisines: {' '.join(cuisines) if cuisines else 'not specified'}"
+    preference_text.append(cuisines_text)
+    
+    # Process price preference
+    price_text = f"price preference: {preferences.get('preferredPrice', 'not specified')}"
+    preference_text.append(price_text)
+    
+    # Process ingredients
+    ingredients = preferences.get('aggregatedIngredients', [])
+    ingredients_text = f"ingredients: {' '.join(ingredients) if ingredients else 'not specified'}"
+    preference_text.append(ingredients_text)
+    
+    # Process allergens
+    allergens = preferences.get('excludedAllergens', [])
+    allergens_text = f"allergens to avoid: {' '.join(allergens) if allergens else 'none'}"
+    preference_text.append(allergens_text)
+    
+    # Process difficulty
+    difficulty_text = f"preferred difficulty: {preferences.get('preferredDifficulty', 'not specified')}"
+    preference_text.append(difficulty_text)
+    
+    # Combine all preference texts
+    combined_preference_text = " ".join(preference_text)
+    print(f"Combined preference text: {combined_preference_text}", file=sys.stderr)
+    
+    # Generate embedding
+    embedding = model.encode(combined_preference_text)
+    
+    # Create the result (using party_id as key, but this will be handled in the TypeScript code)
+    result = {'party_vector': embedding.tolist()}
+    
     # Output the results
     print(json.dumps(result))
 except IndexError:
-    print("Usage: generate_vector.py <recipe_json>", file=sys.stderr)
+    print("Usage: generate_party_vector.py <preferences_json>", file=sys.stderr)
     sys.exit(1)
 except json.JSONDecodeError:
     print("Error: Invalid JSON input", file=sys.stderr)
