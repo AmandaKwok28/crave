@@ -6,7 +6,7 @@ const PartyRecs = ({partyRecs}:{partyRecs: PartyRecommendationType[] }) => {
 
     const arr = Object.values(partyRecs);
 
-    if (partyRecs.length === 0) {
+    if (arr.length === 0) {
         return (
             <Text mt='14' fontSize='xl'>No recommendations found, Please try again later!</Text> 
         );

@@ -25,7 +25,7 @@ const Search = () => {
                 gap="2" 
                 wrap="wrap" 
                 w="full">
-                <Center mt="2rem" gap="10" align-items="center" w="full"> 
+                <Center mt="2rem" gap="10" align-items="center" w="100%"> 
                     <Button variant="plain" disabled={!showSearchTrending}> 
                         <Text textStyle="2xl" fontWeight="semibold" onClick={() => setShowSearchTrending(false)} > 
                             Search
