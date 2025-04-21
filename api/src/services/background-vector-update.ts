@@ -149,7 +149,7 @@ export async function recommendedRecipes(batchSize=5, maxSimilarities=10) {
 }
 
 // get the recommendation recipes for a party
-export async function recommendedPartyRecipes(partyId: string, maxSimilarities=5) {
+export async function recommendedPartyRecipes(partyId: string, maxSimilarities=3) {
 
   try {
     // get a party vector
