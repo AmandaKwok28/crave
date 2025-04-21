@@ -8,8 +8,9 @@ import DeletePartyButton from "@/components/party/deletePartyButton";
 import { useAuth } from "@/hooks/use-auth";
 import LeavePartyButton from "@/components/party/leavePartyButton";
 import PartyMembers from "@/components/party/partyMembers";
+import PartyRecButton from "@/components/party/partyRecButton";
 
-// Recipe page
+// Party page
 const ViewParty = ({ share_link }: { 
   share_link: string; 
 }) => {
@@ -81,6 +82,7 @@ const ViewParty = ({ share_link }: {
                     >
                       Recomended Recipes:
                     </Text>
+                    <PartyRecButton shareLink={party.shareLink} />
                     <Separator w='50rem' maxW='100%' size="sm" mt="2"/>
                     <Text
                         textStyle="2xl"

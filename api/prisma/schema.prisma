@@ -233,7 +233,7 @@ model PartyPreference {
 
 model PartyRecommendation {
   id             Int             @id @default(autoincrement())
-  partyId        String
+  partyId        String          
   recipeId       Int
   matchScore     Float
   createdAt      DateTime        @default(now())

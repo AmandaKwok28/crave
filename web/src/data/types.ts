@@ -146,6 +146,7 @@ export interface PartyRecommendationType {
   id: number;
   partyId: string;
   recipeID: number;
+  recipe: RecipeType;
   matchScore: number;
   createdAt: string;
 }

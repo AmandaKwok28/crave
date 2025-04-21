@@ -360,4 +360,90 @@ router.delete('/:partyId/members/:userId', authGuard, async (req, res) => {
   }
 });
 
+// Get party recommendations by share link
+router.get('/recommendations/:shareLink', authGuard, async (req, res) => {
+  try {
+    const { shareLink } = req.params;
+    
+    // Find the party by share link
+    const partyRecs = await prisma.cookingParty.findUnique({
+      where: { shareLink },
+      include: {
+        recommendations: {
+          select: {
+            id: true,
+            partyId: true,
+            recipeId: true,
+            createdAt: true,
+            recipe: true,
+          }
+        }
+      }
+    });
+    
+    if (!partyRecs) {
+      res.status(404).json({ message: 'Recomendations not found or invite link is invalid' });
+      return;
+    }
+    // Return the partyRecomendations
+    res.json({
+      ...partyRecs.recommendations,
+    });
+    
+  } catch (error) {
+    console.error('Error fetching partyPrefs by share link:', error);
+    res.status(500).json({ message: 'Failed to fetch partyPref details' });
+  }
+});
+
+// Add new party recommendation
+router.post('/:partyId/add/:recipeID/recommendation', authGuard, async (req, res) => {
+  try {
+    const recipeId = parseInt(req.params.recipeID, 10);
+    const { partyId } = req.params;
+    const { 
+      matchScore
+    } = req.body;
+
+    // Check if recipe exists
+    const recipe = await prisma.recipe.findUnique({
+      where: { id: recipeId }
+    });
+    // Check if party exists
+    const party = await prisma.cookingParty.findUnique({
+      where: { id: partyId }
+    });
+
+    if (!recipe) {
+      res.status(404).json({ message: 'Recipe not found' });
+      return;
+    }
+    if (!party) {
+      res.status(404).json({ message: 'Party not found' });
+      return;
+    }
+
+    // Create or update recently viewed entry
+    await prisma.partyRecommendation.upsert({
+      where: {
+        partyId_recipeId: { partyId, recipeId }
+      },
+      update: {
+        matchScore: matchScore,
+      },
+      create: {
+        partyId,
+        recipeId,
+        matchScore: matchScore,
+      }
+    });
+
+    res.status(200).json({ message: 'Party Recommendations updated successfully' });
+    return;
+  } catch (error) {
+    console.error('Error updating party recommendations:', error);
+    res.status(500).json({ message: 'Failed to update party recommendation' });
+  }
+});
+
 export default router;

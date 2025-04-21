@@ -1,4 +1,4 @@
-import { CommentType, Cuisine, Difficulty, PartyMemberType, PartyPrefrenceType, PartyType, Price, RecipeType, TagsResponse, UserType } from "./types";
+import { CommentType, Cuisine, Difficulty, PartyMemberType, PartyPrefrenceType, PartyRecommendationType, PartyType, Price, RecipeType, TagsResponse, UserType } from "./types";
 import { API_URL } from "@/env";
 
 // Fetch all users
@@ -622,3 +622,17 @@ export const addPartyMember = async (
   const data: PartyMemberType = await response.json();
   return data;
 }
+
+// Fetch specific party Recommendations
+export const fetchPartyRecs = async (share_link: string | number): Promise<PartyRecommendationType[]> => {
+  const response = await fetch(`${API_URL}/party/recommendations/${share_link}`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+
+  const partyRecs: PartyRecommendationType[] = await response.json();
+  return partyRecs;
+};
