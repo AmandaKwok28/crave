@@ -520,6 +520,10 @@ export const deleteParty = async (party_id: string) : Promise<boolean> => {
 
   if (!response.ok) {
     throw new Error(`API request failed with status ${response.status}`);
+  }
+  return true;
+};
+
 // Fetch followers
 export const fetchFollowers = async (userId: string): Promise<UserType[]> => {
   const response = await fetch(`${API_URL}/users/${userId}/followers`, {
@@ -699,6 +703,9 @@ export const runPartyRecommendedAlgo = async (partyId: string ): Promise<void> =
   if (!response.ok) {
     throw new Error(`API request failed! with status: ${response.status}`);
   }
+  return;
+}
+
 // Unfollow a user
 export const unfollowUser = async (targetUserId: string, followerId: string): Promise<boolean> => {
   const response = await fetch(`${API_URL}/users/${targetUserId}/unfollow`, {
