@@ -42,7 +42,7 @@ function App() {
         <Login/>
       )}
       {page.route === "profile" && (
-        <Profile/>
+        <Profile userId={page.params.userId}/>
       )}
       {page.route === "register" && (
         <Register />

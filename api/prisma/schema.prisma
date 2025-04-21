@@ -59,6 +59,19 @@ model User {
   recommendedRecipes RecommendedRecipe[]
   hostedParties  CookingParty[]  @relation("PartyHost")
   partyMemberships PartyMember[]
+  rating       Float        @default(0)
+  followedBy   Follow[]     @relation("UserFollowedBy")
+  following    Follow[]     @relation("UserFollowing")
+}
+
+model Follow {
+  followerId   String
+  followingId  String
+  follower     User         @relation("UserFollowing", fields: [followerId], references: [id])
+  following    User         @relation("UserFollowedBy", fields: [followingId], references: [id])
+  createdAt  DateTime  @default(now())
+
+  @@id([followerId, followingId])
 }
 
 model Session {

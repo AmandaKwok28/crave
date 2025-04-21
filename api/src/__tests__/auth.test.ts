@@ -18,7 +18,8 @@ const exampleUser = {
   major: 'Example Major',
   likes: [],
   bookmarks: [],
-  avatarImage: ''
+  avatarImage: '',
+  rating: 0
 };
 
 describe('Account registration', () => {
