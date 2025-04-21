@@ -22,10 +22,7 @@ import { Slider } from "@/components/ui/slider";
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
 import useQueryUser from "@/hooks/use-query-user";
-import MessagingDrawer from "@/components/messaging/messagingDrawer";
 import { useAuth } from "@/hooks/use-auth";
-import { createConversation } from "@/data/api"; // for testing purposes
-
 
 const Home = () => {
     const { user } = useAuth();
@@ -34,9 +31,6 @@ const Home = () => {
     const { recommendedRecipes, isLoading, error } = useRecommendedRecipes(10);
     const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
     
-    // Derive isLoggedIn from user object
-    const isLoggedIn = !!user && !!user.id;
-
     const handleCookTimeChange = (details: { value: [number, number] }) => {
         setCookTime(details.value);
         const change = {
@@ -230,32 +224,6 @@ const Home = () => {
                     />
                 </Flex>
             </Flex>
-
-            {isLoggedIn && (
-            <>
-                <MessagingDrawer />
-                <Button
-                position="fixed"
-                bottom="20"
-                right="4"
-                colorScheme="purple"
-                onClick={async () => {
-                    try {
-                        const targetUserId = "1abc";
-                        const result = await createConversation(targetUserId);
-                        console.log("Conversation created:", result);
-                        alert(`Conversation created with ID: ${result.id}`);
-                    } catch (error) {
-                        console.error("Error creating test conversation:", error);
-                    }
-                }}
-                >
-                Test: Create Conversation
-                </Button>
-            </>
-            )}
-            
-            {isLoggedIn && <MessagingDrawer />}
         </Flex>
     )
 }

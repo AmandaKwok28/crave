@@ -181,3 +181,17 @@ export function removeComment(commentId: number) {
 export function addComment(comment: CommentType) {
     $comments.set([...$comments.get(), comment]);
 }
+
+// Messaging Store
+export const $drawerOpen = atom<boolean>(false);
+
+export function setDrawerOpen(isOpen: boolean) {
+    $drawerOpen.set(isOpen);
+}
+
+export const $selectedConvo = atom<number | null>(null);
+
+export function setSelectedConvo(convoId: number | null) {
+  $selectedConvo.set(convoId);
+}
+

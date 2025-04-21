@@ -8,6 +8,8 @@ import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
 import { Message, fetchRecipe } from "@/data/api"; // Import fetchRecipe from api.ts
 import { useLayoutEffect } from "react";
+import { useStore } from "@nanostores/react";
+import { $drawerOpen, $selectedConvo, setDrawerOpen, setSelectedConvo } from "@/lib/store";
 
 // Update the recipe fetching function to use the correct API endpoint
 const fetchRecipeById = async (recipeId: number) => {
@@ -120,6 +122,9 @@ const MessagingDrawer = () => {
   // Add a new state for sorted messages
   const [sortedMessages, setSortedMessages] = useState<Message[]>([]);
 
+  const drawerOpen = useStore($drawerOpen);
+  const selectedConvo = useStore($selectedConvo);
+
   const { 
     conversations,
     messages,
@@ -141,6 +146,11 @@ const MessagingDrawer = () => {
       setSortedMessages([]);
     }
   }, [messages]);
+
+  useEffect(() => {
+    setOpen(drawerOpen);
+    setSelectedConversationId(selectedConvo);
+  }, [drawerOpen, selectedConvo]);
 
   // Load conversations when drawer opens (similar to how comments work)
   useEffect(() => {
@@ -236,7 +246,7 @@ const MessagingDrawer = () => {
   };
 
   return (
-    <Drawer.Root open={open} onOpenChange={(e) => setOpen(e.open)}>
+    <Drawer.Root open={open} onOpenChange={(e) => setDrawerOpen(e.open)}>
       <Drawer.Trigger asChild>
         <Button 
           position="fixed"
@@ -283,7 +293,7 @@ const MessagingDrawer = () => {
                     "Messages"}
                 </Drawer.Title>
                 <Drawer.CloseTrigger asChild>
-                  <CloseButton size="sm" />
+                  <CloseButton size="sm"  onClick={() => setSelectedConvo(null)} />
                 </Drawer.CloseTrigger>
               </Flex>
             </Drawer.Header>
