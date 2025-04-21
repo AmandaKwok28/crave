@@ -1,4 +1,4 @@
-import { RecipeType } from "@/data/types";
+import { RatingType, RecipeType } from "@/data/types";
 import { $router } from "@/lib/router";
 import { Card, Button, Image, Text, Tag, Box, HStack } from "@chakra-ui/react";
 import { redirectPage } from "@nanostores/router";
@@ -6,10 +6,15 @@ import { Avatar, AvatarGroup } from "@chakra-ui/react"
 import { Bookmark, Heart } from "lucide-react";
 import { bookmarkRecipe, likeRecipe, unbookmarkRecipe, unlikeRecipe } from "@/data/api";
 import useQueryRecipes from "@/hooks/use-query-recipes";
+import { useRating } from "@/hooks/ratings/use-rating";
+import { useStore } from "@nanostores/react";
+import { $isMobile } from "@/lib/store";
 
 const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
   // Whatever makes sense
   const { loadRecipes } = useQueryRecipes();
+  const { updateUserRating } = useRating();
+  const isMobile = useStore($isMobile);
 
   const likeCallback = () => {
     if (!recipe) {
@@ -20,10 +25,13 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
       unlikeRecipe(recipe.id)
         .then(() => loadRecipes())
         .catch(console.error);
+      updateUserRating(recipe.authorId, RatingType.UNLIKE);  // update user rating
     } else {
       likeRecipe(recipe.id)
         .then(() => loadRecipes())
         .catch(console.error);
+      updateUserRating(recipe.authorId, RatingType.LIKE);
+
     }
   }
 
@@ -36,10 +44,12 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
       unbookmarkRecipe(recipe.id)
         .then(() => loadRecipes())
         .catch(console.error);
+      updateUserRating(recipe.authorId, RatingType.UNBOOKMARK);
     } else {
       bookmarkRecipe(recipe.id)
         .then(() => loadRecipes())
         .catch(console.error);
+      updateUserRating(recipe.authorId, RatingType.BOOKMARK);
     }
   }
 
@@ -65,8 +75,8 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
 
   return (
     <Card.Root 
-      width="300px" 
-      maxH="400px" 
+      w={isMobile ? "150px" : "300px"} 
+      h={isMobile ? "200px" : "400px"}  
       overflow="hidden" 
       borderRadius="20px"
       >
@@ -79,7 +89,7 @@ const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
         />
       <Card.Body gap="1">
         <Card.Title>
-          <Text textStyle="lg" fontWeight="medium" letterSpacing="tight"> 
+          <Text textStyle={isMobile ? "xs" : "lg"} fontWeight="medium" letterSpacing="tight"> 
             {recipe.title}
           </Text>
         </Card.Title>

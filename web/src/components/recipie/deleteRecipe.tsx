@@ -15,9 +15,18 @@ import { redirectPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
 import { Trash } from "lucide-react";
 import { toaster } from "../ui/toaster";
+import { useRating } from "@/hooks/ratings/use-rating";
+import { RatingType } from "@/data/types";
 
-const DeleteRecipe = ({ recipe_id }: { recipe_id: number } ) => {
+const DeleteRecipe = ({ 
+  recipe_id,
+  user_id
+}: { 
+  recipe_id: number, 
+  user_id: string
+} ) => {
   const { deleteRecipeById } = useMutationRecipe();
+  const { updateUserRating } = useRating();
 
   const handleDelete = () => {
     deleteRecipeById(recipe_id)
@@ -26,6 +35,7 @@ const DeleteRecipe = ({ recipe_id }: { recipe_id: number } ) => {
         title: 'Error deleting recipe',
         description: 'Please try again later'
       }));
+    updateUserRating(user_id, RatingType.DELETE);
   };
 
   return (

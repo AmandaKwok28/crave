@@ -8,7 +8,7 @@
     "build": "tsc && pnpm run copy-assets",
     "copy-assets": "copyfiles -u 0 \"scripts/**/*\" dist/",
     "start": "node dist/src/index.js",
-    "test": "API_PORT=0 pnpm vitest"
+    "test": "cross-env NODE_ENV=test API_PORT=0 vitest --sequence.hook=stack"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.0.2",
@@ -30,6 +30,7 @@
     "@types/node-cron": "^3.0.11",
     "@types/supertest": "^6.0.2",
     "copyfiles": "^2.4.1",
+    "cross-env": "^7.0.3",
     "prisma": "6.5.0",
     "prisma-mock-vitest": "^0.1.6",
     "supertest": "^7.0.0",

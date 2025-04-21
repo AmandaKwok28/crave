@@ -15,9 +15,10 @@ import { useAuth } from "@/hooks/use-auth";
 import { publishRecipe } from "@/data/api";
 import { redirectPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
-import { Cuisine, Difficulty, Price } from "@/data/types";
+import { Cuisine, Difficulty, Price, RatingType } from "@/data/types";
 import { toaster } from "../ui/toaster";
 import { useState } from "react";
+import { useRating } from "@/hooks/ratings/use-rating";
 
 type PublishRecipeProps = {
     title: string;
@@ -51,6 +52,7 @@ const PublishRecipeButton = ({
     image, 
 }: PublishRecipeProps ) => {
     const { user } = useAuth();
+    const { updateUserRating } = useRating();
     const { addNewRecipe, editRecipe } = useMutationRecipes();
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -92,6 +94,7 @@ const PublishRecipeButton = ({
                 image 
             );
             await publishRecipe(id);    
+            updateUserRating(user.id, RatingType.CREATE);
             redirectPage($router, `recipe`, { recipe_id: id });
         } else {
             console.log(difficulty)

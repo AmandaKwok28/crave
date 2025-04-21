@@ -4,7 +4,7 @@ import { createRouter } from "@nanostores/router";
 export const $router = createRouter({
   home: `${BASE_URL}`, // home page
   login: `${BASE_URL}login`, // login page
-  profile: `${BASE_URL}profile`, // prifle page
+  profile: `${BASE_URL}profile/:userId`, // profle page
   register: `${BASE_URL}register`,
   search: `${BASE_URL}search`,
   createRecipe: `${BASE_URL}create`, // create recipe page

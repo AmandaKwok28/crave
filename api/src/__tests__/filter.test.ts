@@ -20,7 +20,8 @@ const exampleUser = {
     school: 'Example University',
     major: 'Example Major',
     likes: [],
-    bookmarks: []
+    bookmarks: [],
+    rating: 0
   };
 
 // Sample recipe data

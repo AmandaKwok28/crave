@@ -8,7 +8,8 @@ export const $user = persistentAtom<UserType>('user', {
   email: '',
   name: '',
   school: '',
-  major: ''
+  major: '',
+  rating: 0
 }, {
   encode: JSON.stringify,
   decode: JSON.parse
@@ -20,8 +21,22 @@ export function clearUser() {
     email: '',
     name: '',
     school: '',
-    major: ''
+    major: '',
+    rating: 0
   });
+}
+
+export const $viewingUser = atom<UserType>({
+    id: '',
+    email: '',
+    name: '',
+    school: '',
+    major: '',
+    rating: 0
+});
+
+export function setViewingUser(user: UserType) {
+  $viewingUser.set(user);
 }
 
 export function setUser(user: UserType) {
@@ -159,10 +174,23 @@ export function setComments(comments: CommentType[]) {
     $comments.set(comments)
 }
 
-export function removeComment(commentId: number) {
-    $comments.set($comments.get().filter((comment) => comment.id !== commentId));
+export function removeAComment(comment_id: number) {
+  $comments.set($comments.get().filter((comment) => comment.id !== comment_id));
 }
 
-export function addComment(comment: CommentType) {
-    $comments.set([...$comments.get(), comment]);
+export function addAComment(comment: CommentType) {
+  $comments.set([comment, ...$comments.get()]);
 }
+
+
+
+// check if we're in mobile mode
+export const $isMobile = atom<boolean>(window.innerWidth < 768);
+export function setIsMobile(flag: boolean) {
+  $isMobile.set(flag);
+}
+
+// export const $mobileClicked = atom<boolean>(false);
+// export function setMobileClicked(flag: boolean) {
+//   $mobileClicked.set(flag);
+// }

@@ -10,11 +10,19 @@ import { useAuth } from "./hooks/use-auth";
 import ViewRecipe from "./pages/viewRecipe";
 import { Flex } from "@chakra-ui/react";
 import RecipeForm from "./pages/recipeForm";
+import { useEffect } from "react";
+import { setIsMobile } from "./lib/store";
 
 function App() {
   const page = useStore($router);
-
+  
   const { user } = useAuth();
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   if (!page) {
     return (
@@ -40,7 +48,7 @@ function App() {
         <Login/>
       )}
       {page.route === "profile" && (
-        <Profile/>
+        <Profile userId={page.params.userId}/>
       )}
       {page.route === "register" && (
         <Register />
