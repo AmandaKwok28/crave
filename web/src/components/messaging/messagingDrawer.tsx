@@ -67,10 +67,9 @@ const MessageBubble = ({ message, isCurrentUser, currentUser }: MessageBubblePro
             p={2} 
             mb={1}
             onClick={() => {
-              console.log("Recipe clicked:", message.recipe);
               if (message.recipe) {
-                console.log("Navigating to recipe page!");
                 openPage($router, "recipe", { recipe_id: message.recipe.id });
+                setDrawerOpen(false);
               }
             }}
             cursor="pointer"
@@ -217,15 +216,13 @@ const MessagingDrawer = ({ hiddenButton = false }: {hiddenButton?: boolean}) => 
     
     // If the last character typed is a space, check if previous content has a recipe tag
     if (value.endsWith(' ')) {
-      console.log("ends in space!");
       const previousContent = value.slice(0, -1);
       const match = previousContent.match(/@(\d+)$/);
       
       if (match && match[1] && !selectedRecipeId) {
         console.log(match, match[1], !selectedRecipeId);
         const recipeId = parseInt(match[1], 10);
-        console.log("getting recipe details!");
-        
+                
         // Fetch recipe details
         const recipeDetails = await fetchRecipeById(recipeId);
         if (recipeDetails) {
