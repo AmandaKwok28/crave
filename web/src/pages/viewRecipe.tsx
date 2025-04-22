@@ -14,6 +14,9 @@ import { useEffect, useState } from "react";
 import { useRating } from "@/hooks/ratings/use-rating";
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
+import { GoPaperAirplane } from "react-icons/go";
+import { setDrawerOpen, setSelectedRecipeForMessage } from "@/lib/store";
+import MessagingDrawer from "@/components/messaging/messagingDrawer";
 
 // Recipe page
 const ViewRecipe = ({ recipe_id }: { 
@@ -156,6 +159,13 @@ const ViewRecipe = ({ recipe_id }: {
                   onClick={bookmarkCallback}
                 >
                   <Bookmark />
+                </Button>
+
+                <Button variant="ghost">
+                    <GoPaperAirplane onClick={() => {
+                      setSelectedRecipeForMessage(recipe.id);
+                      setDrawerOpen(true);
+                      }}/>
                 </Button>
               </HStack>
 
@@ -373,6 +383,7 @@ const ViewRecipe = ({ recipe_id }: {
           <DeleteRecipe recipe_id={recipe.id} user_id={recipe.authorId}/>
         )}
          <CommentList recipe_id={recipe.id} user_id={recipe.authorId}/>
+         <MessagingDrawer hiddenButton={true} />
       </ButtonGroup>
 
     </Flex>

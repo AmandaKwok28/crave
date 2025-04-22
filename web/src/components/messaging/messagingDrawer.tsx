@@ -9,7 +9,7 @@ import { $router } from "@/lib/router";
 import { Message, fetchRecipe } from "@/data/api"; // Import fetchRecipe from api.ts
 import { useLayoutEffect } from "react";
 import { useStore } from "@nanostores/react";
-import { $drawerOpen, $selectedConvo, setDrawerOpen, setSelectedConvo } from "@/lib/store";
+import { $drawerOpen, $selectedConvo, $selectedRecipeForMessage, setDrawerOpen, setSelectedConvo, setSelectedRecipeForMessage, setShowSearchTrending } from "@/lib/store";
 
 // Update the recipe fetching function to use the correct API endpoint
 const fetchRecipeById = async (recipeId: number) => {
@@ -66,7 +66,13 @@ const MessageBubble = ({ message, isCurrentUser, currentUser }: MessageBubblePro
             borderRadius="md" 
             p={2} 
             mb={1}
-            onClick={() => message.recipe && openPage($router, "recipe", { recipe_id: message.recipe.id })}
+            onClick={() => {
+              console.log("Recipe clicked:", message.recipe);
+              if (message.recipe) {
+                console.log("Navigating to recipe page!");
+                openPage($router, "recipe", { recipe_id: message.recipe.id });
+              }
+            }}
             cursor="pointer"
             _hover={{ bg: "gray.50" }}
           >
@@ -109,7 +115,7 @@ const MessageBubble = ({ message, isCurrentUser, currentUser }: MessageBubblePro
   );
 };
 
-const MessagingDrawer = () => {
+const MessagingDrawer = ({ hiddenButton = false }: {hiddenButton?: boolean}) => {
   const [open, setOpen] = useState(false);
   const [messageText, setMessageText] = useState('');
   const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null);
@@ -124,6 +130,7 @@ const MessagingDrawer = () => {
 
   const drawerOpen = useStore($drawerOpen);
   const selectedConvo = useStore($selectedConvo);
+  const selectedRecipeForSharing = useStore($selectedRecipeForMessage);
 
   const { 
     conversations,
@@ -150,9 +157,17 @@ const MessagingDrawer = () => {
   useEffect(() => {
     setOpen(drawerOpen);
     setSelectedConversationId(selectedConvo);
-  }, [drawerOpen, selectedConvo]);
+    if (selectedRecipeForSharing) {
+      handleInputChange({
+        target: {
+          value: `@${selectedRecipeForSharing} `,
+        },
+      } as React.ChangeEvent<HTMLInputElement>);
+      setSelectedRecipeForMessage(null);
+    }
+  }, [drawerOpen, selectedConvo, selectedRecipeForSharing]);
 
-  // Load conversations when drawer opens (similar to how comments work)
+  // Load conversations when drawer opens
   useEffect(() => {
     if (open) {
       loadConversations();
@@ -162,27 +177,18 @@ const MessagingDrawer = () => {
   // Load messages when a conversation is selected
   useEffect(() => {
     if (selectedConversationId) {
-      // Initial load - show loading state
       loadMessages(selectedConversationId, 0, 20, true);
-      
-      // Set up polling for new messages every 3 seconds - without loading state
       const intervalId = setInterval(() => {
         loadMessages(selectedConversationId, 0, 20, false);
       }, 3000);
-      
-      // Clean up interval on unmount or when conversation changes
       return () => clearInterval(intervalId);
     }
   }, [selectedConversationId, loadMessages]);
 
-  // Replace just the useLayoutEffect for scroll behavior
   useLayoutEffect(() => {
-    // Only modify scroll if messages aren't empty
     if (messagesContainerRef.current && sortedMessages.length > 0) {
-      // Use requestAnimationFrame to ensure DOM is fully updated
       requestAnimationFrame(() => {
         if (messagesContainerRef.current) {
-          // Smoothly maintain position at bottom
           messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
         }
       });
@@ -193,12 +199,10 @@ const MessagingDrawer = () => {
   const handleSendMessage = async () => {
     if (selectedConversationId && (messageText.trim() || selectedRecipeId)) {
       const messageToSend = messageText.trim();
-      // Clear input and recipe selection immediately for better UX
       setMessageText('');
       const recipeId = selectedRecipeId;
       setSelectedRecipeId(null);
       setSelectedRecipeDetails(null);
-      
       try {
         await sendNewMessage(selectedConversationId, messageToSend, recipeId || undefined);
       } catch (error) {
@@ -213,11 +217,14 @@ const MessagingDrawer = () => {
     
     // If the last character typed is a space, check if previous content has a recipe tag
     if (value.endsWith(' ')) {
+      console.log("ends in space!");
       const previousContent = value.slice(0, -1);
       const match = previousContent.match(/@(\d+)$/);
       
       if (match && match[1] && !selectedRecipeId) {
+        console.log(match, match[1], !selectedRecipeId);
         const recipeId = parseInt(match[1], 10);
+        console.log("getting recipe details!");
         
         // Fetch recipe details
         const recipeDetails = await fetchRecipeById(recipeId);
@@ -240,46 +247,47 @@ const MessagingDrawer = () => {
     }
   };
 
-  // Helper to select a conversation
-  const selectConversation = (conversationId: number) => {
+  const selectConversation = async (conversationId: number) => {
     setSelectedConversationId(conversationId);
   };
 
   return (
     <Drawer.Root open={open} onOpenChange={(e) => setDrawerOpen(e.open)}>
       <Drawer.Trigger asChild>
-        <Button 
-          position="fixed"
-          bottom="4"
-          right="4"
-          borderRadius="full"
-          bgGradient="to-r"
-          gradientFrom="cyan.400"
-          gradientTo="purple.600"
-          color="white"
-          size="lg"
-          zIndex="10"
-        >
-          <MessageSquare size={24} />
-          {unreadCount > 0 && (
-            <Badge 
-              position="absolute"
-              top="-2"
-              right="-2"
-              borderRadius="full"
-              bg="red.500"
-              color="white"
-              fontSize="xs"
-              minW="5"
-              minH="5"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              {unreadCount}
-            </Badge>
-          )}
-        </Button>
+      {hiddenButton ? <span /> : (
+          <Button 
+            position="fixed"
+            bottom="4"
+            right="4"
+            borderRadius="full"
+            bgGradient="to-r"
+            gradientFrom="cyan.400"
+            gradientTo="purple.600"
+            color="white"
+            size="lg"
+            zIndex="10"
+          >
+            <MessageSquare size={24} />
+            {unreadCount > 0 && (
+              <Badge 
+                position="absolute"
+                top="-2"
+                right="-2"
+                borderRadius="full"
+                bg="red.500"
+                color="white"
+                fontSize="xs"
+                minW="5"
+                minH="5"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                {unreadCount}
+              </Badge>
+            )}
+          </Button>
+        )}
       </Drawer.Trigger>
       <Portal>
         <Drawer.Backdrop />
@@ -293,7 +301,13 @@ const MessagingDrawer = () => {
                     "Messages"}
                 </Drawer.Title>
                 <Drawer.CloseTrigger asChild>
-                  <CloseButton size="sm"  onClick={() => setSelectedConvo(null)} />
+                  <CloseButton 
+                  size="sm"  
+                  onClick={() => {
+                    setSelectedConvo(null);
+                    setSelectedRecipeId(null);
+                    setSelectedRecipeDetails(null);
+                  }} />
                 </Drawer.CloseTrigger>
               </Flex>
             </Drawer.Header>

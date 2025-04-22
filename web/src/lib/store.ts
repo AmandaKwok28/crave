@@ -195,3 +195,8 @@ export function setSelectedConvo(convoId: number | null) {
   $selectedConvo.set(convoId);
 }
 
+export const $selectedRecipeForMessage = atom<number | null>(null);
+
+export function setSelectedRecipeForMessage(recipeId: number | null) {
+  $selectedRecipeForMessage.set(recipeId);
+}
