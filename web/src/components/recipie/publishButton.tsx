@@ -97,7 +97,6 @@ const PublishRecipeButton = ({
             updateUserRating(user.id, RatingType.CREATE);
             redirectPage($router, `recipe`, { recipe_id: id });
         } else {
-            console.log(difficulty)
             await editRecipe(
                 draft_id, 
                 title, 

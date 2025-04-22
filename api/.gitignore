@@ -4,3 +4,4 @@ dist/
 
 scripts/model_cache/
 scripts/__pycache__/
+venv/

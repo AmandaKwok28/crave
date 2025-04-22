@@ -1,4 +1,4 @@
-import { Cuisine, Difficulty, Price, RecipeType, TagsResponse, UserType } from "./types";
+import { Cuisine, Difficulty, PartyMemberType, PartyPrefrenceType, PartyRecommendationType, PartyType, Price, RecipeType, TagsResponse, UserType } from "./types";
 import { API_URL } from "@/env";
 
 // Fetch all users
@@ -61,6 +61,12 @@ export const fetchRecipes = async (
   }
   if (filters.major) {
     filterParams.push(`major=${filters.major}`);
+  }
+  if (filters.dateMin) {
+    filterParams.push(`dateMin=${filters.dateMin}`);
+  }
+  if (filters.dateMax) {
+    filterParams.push(`dateMax=${filters.dateMax}`);
   }
 
   if (search) {
@@ -441,6 +447,37 @@ export const fetchUserRecommendedRecipes = async (limit?: number): Promise<Recip
   return recommendedRecipes;
 }
 
+// create a new party
+export const createNewParty = async (title: string, expirationDate: String): Promise<PartyType> => {
+  const response = await fetch(`${API_URL}/party/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
+    body: JSON.stringify({
+      name: title,
+      expiresAt: expirationDate,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const data: PartyType = await response.json();
+  return data;
+}
+
+// Delete party by id
+export const deleteParty = async (party_id: string) : Promise<boolean> => {
+  const response = await fetch(`${API_URL}/party/${party_id}`, {
+    credentials: 'include',
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+  return true;
+};
+
 // Fetch followers
 export const fetchFollowers = async (userId: string): Promise<UserType[]> => {
   const response = await fetch(`${API_URL}/users/${userId}/followers`, {
@@ -486,6 +523,142 @@ export const followUser = async (targetUserId: string, followerId: string): Prom
 
   return true;
 };
+
+// Remove member from party by id
+export const removeAPartyMember = async (party_id: string, user_id: string) : Promise<boolean> => {
+  const response = await fetch(`${API_URL}/party/${party_id}/members/${user_id}`, {
+    credentials: 'include',
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  return true;
+};
+
+// Fetch all parties for a curr user
+export const fetchParties = async (): Promise<PartyType[]> => {
+  const response = await fetch(`${API_URL}/party/my`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const parties: PartyType[] = await response.json();
+  return parties;
+};
+
+// Fetch specific party
+export const fetchParty = async (share_link: string | number): Promise<PartyType> => {
+  const response = await fetch(`${API_URL}/party/${share_link}`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+
+  const party: PartyType = await response.json();
+  return party;
+};
+
+// Fetch specific party Prefs
+export const fetchPartyPrefs = async (share_link: string | number): Promise<PartyPrefrenceType> => {
+  const response = await fetch(`${API_URL}/party/pref/${share_link}`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+
+  const partyPref: PartyPrefrenceType = await response.json();
+  return partyPref;
+};
+
+// Update a party prefrences
+export const modPartyPrefrences = async (
+  id: string,
+  availableTime: number,
+  preferredCuisines: Cuisine[],
+  aggregatedIngredients: string[],
+  excludedAllergens: string[],
+  preferredPrice: Price,
+  preferredDifficulty: Difficulty,
+): Promise<PartyPrefrenceType> => {
+    const response = await fetch(`${API_URL}/party/${id}/preferences`, {
+      method: "PUT",
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        availableTime,
+        preferredCuisines,
+        aggregatedIngredients,
+        excludedAllergens,
+        preferredPrice,
+        preferredDifficulty,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`API request failed! with status: ${response.status}`);
+    }
+    const data: PartyPrefrenceType = await response.json();
+    return data;
+};
+
+// add a new member to a party
+export const addPartyMember = async (
+  share_link: string, 
+  ingredients: string[],
+  cookingAbility: Difficulty
+): Promise<PartyMemberType> => {
+  const response = await fetch(`${API_URL}/party/join/${share_link}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
+    body: JSON.stringify({
+      ingredients,
+      cookingAbility,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const data: PartyMemberType = await response.json();
+  return data;
+}
+
+// Fetch specific party Recommendations
+export const fetchPartyRecs = async (share_link: string | number): Promise<PartyRecommendationType[]> => {
+  const response = await fetch(`${API_URL}/party/recommendations/${share_link}`, {
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+
+  const partyRecs: PartyRecommendationType[] = await response.json();
+  return partyRecs;
+};
+
+// call route to run party recommendation algorithm
+export const runPartyRecommendedAlgo = async (partyId: string ): Promise<void> => {
+  const response = await fetch(`${API_URL}/party/${partyId}/gen/recommendations`, {
+    method: "POST",
+    credentials: 'include'
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  return;
+}
 
 // Unfollow a user
 export const unfollowUser = async (targetUserId: string, followerId: string): Promise<boolean> => {

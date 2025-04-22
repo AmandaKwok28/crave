@@ -21,7 +21,9 @@ router.get('/', async (req, res) => {
       sources,
       prepTimeMin,
       prepTimeMax,
-      major
+      major,
+      dateMin,
+      dateMax
     } = req.query
 
     // Validate enum parameters (difficulty, price, cuisine)
@@ -52,6 +54,8 @@ router.get('/', async (req, res) => {
           ],
         }
       : {}
+
+    // Date
 
     // Ingredients - Tag-Input
     const ingredientsArray = (ingredients as string)?.split(',');
@@ -100,6 +104,14 @@ router.get('/', async (req, res) => {
       },
     };
 
+    // Date Range
+    const dateFilter: Prisma.RecipeWhereInput = {
+      createdAt: {
+        ...(dateMin ? { gte: new Date(dateMin as string) } : {}),
+        ...(dateMax ? { lte: new Date(dateMax as string) } : {})
+      }
+    };
+
     // Majors - Tag-Input
     const majorsArray = (major as string)?.split(',');
     const majorsFilter: Prisma.RecipeWhereInput = majorsArray && majorsArray.length > 0
@@ -118,7 +130,8 @@ router.get('/', async (req, res) => {
         ...priceFilter,
         ...sourcesFilter,
         ...prepTimeFilter,
-        ...majorsFilter
+        ...majorsFilter,
+        ...dateFilter,
       },
       include: {
         author: true,

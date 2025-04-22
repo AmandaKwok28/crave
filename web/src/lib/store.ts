@@ -1,4 +1,4 @@
-import { AllergenType, CommentType, RecipeType, UserType } from "@/data/types";
+import { AllergenType, CommentType, PartyType, RecipeType, UserType } from "@/data/types";
 import { persistentAtom } from "@nanostores/persistent";
 import { atom } from "nanostores";
 
@@ -118,7 +118,9 @@ export const $filters = atom({
   ingredients: [],    
   allergens: [],      
   sources: [],       // optional
-  major: null         
+  major: null,
+  dateMin: null,  
+  dateMax: null,          
 })
 
 
@@ -137,7 +139,9 @@ export function clearFilters() {
     ingredients: [],
     allergens: [],
     sources: [],
-    major: null
+    major: null,
+    dateMin: null,  
+    dateMax: null,  
   });
 }
 
@@ -194,3 +198,18 @@ export function setIsMobile(flag: boolean) {
 // export function setMobileClicked(flag: boolean) {
 //   $mobileClicked.set(flag);
 // }
+
+// Party Store
+export const $parties = atom<PartyType[]>([]);
+
+export function setParties(parties: PartyType[]) {
+  $parties.set(parties);
+}
+
+export function removeParty(partyId: string) {
+    $parties.set($parties.get().filter((party) => party.id !== partyId));
+}
+
+export function addParty(party: PartyType) {
+    $parties.set([...$parties.get(), party]);
+}
