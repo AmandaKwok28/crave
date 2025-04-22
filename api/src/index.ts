@@ -80,9 +80,9 @@ app.use(allergen_route);
 app.use(comments_route);    
 app.use(rating_route);
 app.use('/recipe', recipeRoutes);
-app.use('/user', userRoutes);
-app.use('/feed', feedRoutes);
-app.use('/like', likeRoutes);
+app.use('/user', userRoutes);         // untested
+app.use('/feed', feedRoutes);         // untested
+app.use('/like', likeRoutes);         
 app.use('/bookmark', bookmarkRoutes);
 app.use('/gpt', gptRoutes);
 app.use('/party', partyRoutes);
@@ -101,6 +101,7 @@ app.get('*', (_, res) => {
 
 startBackgroundJobs();
 
+// make sure to not bind to a specific port during testing to avoid port already in use conflicts
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port, '0.0.0.0', () => {
     console.log(`Listening @ http://localhost:3000`);
