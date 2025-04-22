@@ -66,7 +66,7 @@ const DraftButton = ({
             prepTime,
             image
         );
-        openPage($router, "profile");
+        openPage($router, "profile",  { userId: user.id });
     };
 
   return (

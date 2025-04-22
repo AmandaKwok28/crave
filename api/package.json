@@ -7,7 +7,7 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc && pnpm run copy-assets",
     "copy-assets": "copyfiles -u 0 \"scripts/**/*\" dist/",
-    "start": "node dist/src/index.js",
+    "start": "tsx src/index.ts",
     "test": "cross-env NODE_ENV=test API_PORT=0 vitest --sequence.hook=stack"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "@prisma/client": "6.5.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
     "express": "4.21.2",
     "node-cron": "^3.0.3",
     "uuid": "^11.1.0",
