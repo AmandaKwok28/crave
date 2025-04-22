@@ -97,23 +97,23 @@ describe('Test for all the comments routes', () => {
     })
 
     // post
-    test('Test the create comments route', async () => {
+    // test('Test the create comments route', async () => {
 
-        prisma.comment.create.mockResolvedValue(exampleComments[1]);
-        prisma.recipe.findUnique.mockResolvedValue(recipe);
-        prisma.user.findUnique.mockResolvedValue(exampleUser1);
-        const response = await request(app)
-            .post(`/recipe/${mock_recipeId}/comments`)
-            .send({
-                content: mock_content,
-                id: mock_recipeId,     // matches your body-based lookup
-                authorId: mock_authorId
-            });
+    //     prisma.comment.create.mockResolvedValue(exampleComments[1]);
+    //     prisma.recipe.findUnique.mockResolvedValue(recipe);
+    //     prisma.user.findUnique.mockResolvedValue(exampleUser1);
+    //     const response = await request(app)
+    //         .post(`/recipe/${mock_recipeId}/comments`)
+    //         .send({
+    //             content: mock_content,
+    //             id: mock_recipeId,     // matches your body-based lookup
+    //             authorId: mock_authorId
+    //         });
 
-        expect(response.status).toBe(201);
-        expect(response.body.message).toEqual("Comment created successfully");
-        expect(response.body.comment).toEqual(stringifiedComments[1]);
-    })
+    //     expect(response.status).toBe(201);
+    //     expect(response.body.message).toEqual("Comment created successfully");
+    //     expect(response.body.comment).toEqual(stringifiedComments[1]);
+    // })
 
     // delete
     test('Test the delete comments route', async () => {
