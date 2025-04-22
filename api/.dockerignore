@@ -3,6 +3,7 @@
 
 # Ignore node modules
 node_modules/
+venv/
 
 # Ignore logs
 logs
@@ -16,7 +17,7 @@ npm-debug.log*
 # Ignore build output directories
 /dist
 /out
-build
+/build
 
 # Ignore temporary files
 *.tmp
