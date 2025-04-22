@@ -28,7 +28,6 @@ import useQueryUser from "@/hooks/use-query-user";
 const Home = () => {
     const { user } = useAuth();
     const { following } = useQueryUser(user.id);
-    console.log(user);
     const { recipes } = useQueryRecipes(true);
     const { recommendedRecipes, isLoading, error } = useRecommendedRecipes(10);
     const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
