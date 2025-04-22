@@ -16,6 +16,7 @@ npm-debug.log*
 # Ignore build output directories
 /dist
 /out
+build
 
 # Ignore temporary files
 *.tmp
@@ -26,6 +27,8 @@ npm-debug.log*
 Dockerfile
 *.md
 LICENSE
+.DS_Store
+*.pem
 
 # Local database files
 *.db
