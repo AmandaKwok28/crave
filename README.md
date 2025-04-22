@@ -116,13 +116,25 @@ Adding additional frontend & E2E tests is also easy. Navigate to the `web/cypres
 
 ## Deployment
 
-To build a docker image for deployment, run ```docker build --platform linux/amd64 -t <image_name> .``` at the root directory.
-To deploy, push the docker image to docker hub, ssh to the gcp-vm and pull it down, run:
+To build a docker image for deployment, create a .env.production file in the root of the api folder with the same information as the .env
+file in api. There, you can replace the DATABASE_URL with a production specific one. To test the health of the docker container run the following
+command in the api folder or the web folder to test their respective containers:
 
-```sudo docker run -d -p 3000:3000 --name <container_name> <repository>/<image_name>:<tag>``` 
+```
+docker build -t container_name .
+```
 
-e.g. : ```sudo docker run -d -p 3000:3000 --name Crave-container lllllaplus/team05-app_amd64:latest```
+When you're building this, make sure your docker desktop is running. If you want to compose both api and web containers, cd to 
+the root directory of the app and cd to crave-app-development/ folder. Then run the command: 
 
+```
+docker-compose up -d
+```
+
+The working link should be hosted at https://team05.zapto.org/api for the api container and https://team05.zapto.org/web for the web container.
+To deploy on the cloud, you need to connect to an existing cloud provider. We chose to use AWS free trial.
+
+For our application:
 You can access the app at <https://team05.zapto.org/>.
 
 
