@@ -1,6 +1,8 @@
 import NavBar from "@/components/layout/navBar";
+import Parties from "@/components/party/parties";
 import Recipes from "@/components/recipie/recipes";
 import { Field } from "@/components/ui/field";
+import useQueryParties from "@/hooks/party/use-query-party";
 import Network from "@/components/user/network";
 import { followUser, unfollowUser } from "@/data/api";
 import { useAuth } from "@/hooks/use-auth";
@@ -40,6 +42,7 @@ const Profile = ({ userId }: {userId: string}) => {
   
   const { updateAvatar } = useMutationUser();
   const { recipes, drafts, likes, bookmarks } = useQueryRecipes();
+  const { parties } = useQueryParties();
 
   const [ tab, setTab ] = useState<string>('recipes'); 
   const [ url, setUrl ] = useState<string>('');
@@ -91,42 +94,39 @@ const Profile = ({ userId }: {userId: string}) => {
   
         <NavBar />
   
-        {/* Sidebar */}
-        <Flex bg="white" w="100vw" minH="100vh" mt="4vh" overflowY="auto">
-          <Flex direction="row" minH="100vh" overflowY="auto">                
-            <Box 
-              direction="row"
-              minH="100vh"
-              h="100vh"
-              w="20vw"
-              bgGradient="to-l" gradientFrom="green.200" gradientTo="blue.300"
-              position="fixed"
-              zIndex="100"
-            >
+      {/* Sidebar */}
+      <Flex bg="white" w="100vw" minH="100vh" mt="4vh" overflowY="auto">
+        <Flex direction="row" minH="100vh" overflowY="auto">                
+          <Box 
+            direction="row"
+            minH="100vh"
+            h="100vh"
+            w="20vw"
+            bgGradient="to-l" gradientFrom="green.200" gradientTo="blue.300"
+            position="fixed"
+            zIndex="100"
+          >
+            <div className="flex flex-col self-start w-full h-auto max-h-sm">
 
-         
-
-              <div className="max-h-sm h-auto flex flex-col self-start w-full">
-  
-                  {/* User info: avatar, email, username, followers, following */}
-                  <Flex direction="row" align="center" p="2" mt="2" mr="2">
-                    <Flex direction="row" align="center" spaceX="2">
-                      <Box p="1">
-                          <Image borderRadius="full" src={user.avatarImage ? user.avatarImage : '/anon.jpg'} boxSize="50px"/>
-                      </Box>
-                      <Flex direction="column">
-                          <h2 className="text-white text-xl font-bold">
-                              {user.name}
-                          </h2>
-                          <h1 className="text-white">
-                              {user.email}
-                          </h1>
-                          <Flex direction="row" color="white" gap="2">
-                            {followers.length} <Network group={followers} name="Followers"/> {following.length} <Network group={following} name="Following"/>
-                          </Flex>
-                      </Flex>
+                {/* User info: avatar, email, username, followers, following */}
+                <Flex direction="row" align="center" p="2" mt="2" mr="2">
+                  <Flex direction="row" align="center" spaceX="2">
+                    <Box p="1">
+                        <Image borderRadius="full" src={user.avatarImage ? user.avatarImage : '/anon.jpg'} boxSize="50px"/>
+                    </Box>
+                    <Flex direction="column">
+                        <h2 className="text-xl font-bold text-white">
+                            {user.name}
+                        </h2>
+                        <h1 className="text-white">
+                            {user.email}
+                        </h1>
+                        <Flex direction="row" color="white" gap="2">
+                          {followers.length} <Network group={followers} name="Followers"/> {following.length} <Network group={following} name="Following"/>
+                        </Flex>
                     </Flex>
                   </Flex>
+                </Flex>
 
                   <Flex p="4">
                     {!isOwnProfile && (
@@ -163,6 +163,7 @@ const Profile = ({ userId }: {userId: string}) => {
                         <TabButton label='My Drafts' value='drafts' curtab={tab} callback={setTab} />
                         <TabButton label='My Likes' value='likes' curtab={tab} callback={setTab} />
                         <TabButton label='My Bookmarks' value='bookmarks' curtab={tab} callback={setTab} />
+                        <TabButton label='My Collaborative Parties' value='parties' curtab={tab} callback={setTab} />
                       </>
                     ) : (
                       <>
@@ -174,17 +175,17 @@ const Profile = ({ userId }: {userId: string}) => {
                   </div>
               </div>
             </Box>
-              
-            <Flex direction="row" m="3" wrap="wrap" ml="22vw" mt="5vh">
-              {tab === 'recipes' && <Recipes recipes={recipes.filter((r) => r.authorId === user.id)} />}
-              {tab === 'drafts' && <Recipes recipes={drafts} />}
-              {tab === 'likes' && <Recipes recipes={likes} />}
-              {tab === 'bookmarks' && <Recipes recipes={bookmarks} />}
-            </Flex>
+
+          <Flex direction="row" m="3" wrap="wrap" ml="22vw" mt="5vh">
+            {tab === 'recipes' && <Recipes recipes={recipes.filter((r) => r.authorId === user.id)} />}
+            {tab === 'drafts' && <Recipes recipes={drafts} />}
+            {tab === 'likes' && <Recipes recipes={likes} />}
+            {tab === 'bookmarks' && <Recipes recipes={bookmarks} />}
+            {tab === 'parties' && <Parties parties={parties}/>}
           </Flex>
         </Flex>
-  
       </Flex>
+    </Flex>
   );
 }
 

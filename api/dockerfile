@@ -1,0 +1,44 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    postgresql-client \
+    curl \
+    python3 \
+    python3-pip \
+    python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install pnpm
+RUN npm install -g pnpm@latest
+
+# Copy package files first (better caching)
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install
+
+# Python environment setup
+RUN python3 -m venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
+
+# Copy Python requirements
+COPY scripts/requirements.txt ./scripts/
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r scripts/requirements.txt
+
+# Copy application code
+COPY . .
+
+# Explicitly set production environment
+ENV NODE_ENV=production
+
+# Generate Prisma client and build
+RUN pnpm prisma generate && pnpm build
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "pnpm prisma migrate deploy && pnpm start"]

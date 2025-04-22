@@ -8,6 +8,13 @@ export interface UserType {
   rating: Number
 }
 
+export enum PartyStatus {
+  PENDING = "PENDING",
+  ACTIVE = "ACTIVE",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+}
+
 export enum Price {
   CHEAP = "CHEAP",
   MODERATE = "MODERATE",
@@ -120,3 +127,54 @@ export interface LikeType {
   userId: string;
   date: string;
 }
+
+export interface PartyType {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  status: PartyStatus;
+  shareLink: string;
+  ExpiresAt: string;
+  hostId: string;
+  host: AuthorType;
+  isUserMember: Boolean;
+  isHost: Boolean;
+  members: PartyMemberType[];
+  prefrences: PartyPrefrenceType;
+  recomendations: PartyRecommendationType[];
+}
+
+export interface PartyMemberType {
+  id: number;
+  partyId: string;
+  userId: string;
+  user: AuthorType;
+  joinedAt: string;
+  hasAccepted: Boolean;
+  ingredients: string[];
+  cookingAbility: Difficulty;
+}
+
+export interface PartyPrefrenceType {
+  id: number;
+  partyId: string;
+  availableTime: number;
+  preferredCuisines: Cuisine[];
+  preferredPrice: Price;
+  aggregatedIngredients: string[];
+  excludedAllergens: string[];
+  preferredDifficulty: Difficulty;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PartyRecommendationType {
+  id: number;
+  partyId: string;
+  recipeID: number;
+  recipe: RecipeType;
+  matchScore: number;
+  createdAt: string;
+}
+

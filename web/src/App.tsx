@@ -10,11 +10,21 @@ import { useAuth } from "./hooks/use-auth";
 import ViewRecipe from "./pages/viewRecipe";
 import { Flex } from "@chakra-ui/react";
 import RecipeForm from "./pages/recipeForm";
+import ViewParty from "./pages/partyPages/viewParty";
+import HostPrefrencesForm from "./pages/partyPages/hostPrefrencesForm";
+import { useEffect } from "react";
+import { setIsMobile } from "./lib/store";
 
 function App() {
   const page = useStore($router);
-
+  
   const { user } = useAuth();
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   if (!page) {
     return (
@@ -23,7 +33,7 @@ function App() {
       </div>
     )
   }
-
+ 
  // if the user hasn't been set, they shouldn't access pages other than login / register
   if (!user.id) {
     if (page.route === "home" || page.route === "profile") {
@@ -50,6 +60,12 @@ function App() {
       )}
       {page.route === "createRecipe" && (
         <RecipeForm />
+      )}
+      {page.route === "party" && (
+        <ViewParty share_link={String(page.params.share_link)} />
+      )}
+      {page.route === "createParty" && (
+        <HostPrefrencesForm share_link={String(page.params.share_link)} />
       )}
       {page.route === "recipe" && (
         <ViewRecipe recipe_id={Number(page.params.recipe_id)}/>

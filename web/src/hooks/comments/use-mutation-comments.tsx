@@ -1,16 +1,13 @@
-import { createComment, deleteComment } from "@/data/api";
-import { $comments, setComments } from "@/lib/store";
-import { useStore } from "@nanostores/react";
+import { createComment, deleteComment } from "@/data/comments-api";
+import { addAComment, removeAComment } from "@/lib/store";
 
 const useMutationComment = (recipeId: number) => {
-  const comments = useStore($comments);
-
   const addComment = async (content: string, userId: string) => {
-    if (!content.trim()) return;
+    if (!content.trim()) return; 
 
     try {
       const newComment = await createComment(recipeId, content, userId);
-      setComments([newComment, ...comments]);
+      addAComment(newComment); 
     } catch (error) {
       console.error("Error creating comment:", error);
     }
@@ -19,7 +16,7 @@ const useMutationComment = (recipeId: number) => {
   const removeComment = async (commentId: number) => {
     try {
       await deleteComment(recipeId, commentId);
-      setComments(comments.filter((comment) => comment.id !== commentId));
+      removeAComment(commentId); 
     } catch (error) {
       console.error("Error deleting comment:", error);
     }

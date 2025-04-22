@@ -5,8 +5,7 @@ import Comment from "./comment";
 import { useAuth } from "@/hooks/use-auth";
 import useMutationComment from "@/hooks/comments/use-mutation-comments";
 import useQueryComments from "@/hooks/comments/use-query-comments";
-import { fetchComments } from "@/data/api";
-import { setComments } from "@/lib/store";
+
 import { useRating } from "@/hooks/ratings/use-rating";
 import { RatingType } from "@/data/types";
 
@@ -28,14 +27,12 @@ const CommentList = ({
     const handleCreateComment = async () => {
       if (commentText.trim()) {
         try {
-          await addComment(commentText, user.id);
-          const updatedComments = await fetchComments(recipe_id);
-          setComments(updatedComments);
           setCommentText('');
+          await addComment(commentText, user.id);
           updateUserRating(user_id, RatingType.COMMENT);
         } catch (error) {
           console.error('Error creating comment:', error);
-        }
+        } 
       }
     };
 
@@ -66,11 +63,14 @@ const CommentList = ({
               </Flex>
             </Drawer.Header>
             <Drawer.Body display="flex" flexDirection="column" justifyContent="space-between" height="full">
+            {/* temporary fix to make comment id unique... */}
             <Flex direction="column">
                 {comments && comments.length > 0 ? (
                   comments
                     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                    .map((comment) => <Comment key={comment.id} comment={comment} user_id={user_id}/>)
+                    .map((comment) => (
+                      <Comment key={comment.id} comment={comment} user_id={user_id} />
+                    ))
                 ) : (
                   <Text>No comments yet.</Text>
                 )}

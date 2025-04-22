@@ -14,6 +14,8 @@ import { Cuisine, Difficulty } from "@/data/types";
 const Sidebar = () => {
     const searchTerm = useStore($searchTerm);
     const filters = useStore($filters);
+    const [minDateCreated, setMinDateCreated] = useState("");
+    const [maxDateCreated, setMaxDateCreated] = useState("");
     
     const [cookTime, setCookTime] = useState<[number, number]>([
         filters.prepTimeMin ?? 10, 
@@ -27,6 +29,50 @@ const Sidebar = () => {
             prepTimeMax: details.value[1],
         }
         setFilters(change);
+    }
+
+    const handleMinDateChange = (e: any) => {
+        setMinDateCreated(e.target.value);
+    };
+
+    const handleMinDateKeyDown = (e: any) => {
+        const value = minDateCreated.trim().toLowerCase();   
+        const date = new Date(value);
+        if (e.key === "Enter" ) {
+            if (value !== "" && !isNaN(date.getTime()) ) {
+                let change = {
+                    "dateMin": value
+                }
+                setFilters(change);
+            } else {
+                let change = {
+                    "dateMin": null
+                }
+                setFilters(change);
+            }
+        } 
+    }
+
+    const handleMaxDateChange = (e: any) => {
+        setMaxDateCreated(e.target.value);
+    };
+
+    const handleMaxDateKeyDown = (e: any) => {
+        const value = maxDateCreated.trim().toLowerCase(); 
+        const date = new Date(value);
+        if (e.key === "Enter" ) {
+            if (value !== "" && !isNaN(date.getTime()) ) {
+                let change = {
+                    "dateMax": value
+                }
+                setFilters(change);
+            } else {
+                let change = {
+                    "dateMax": null
+                }
+                setFilters(change);
+            }
+        } 
     }
 
     return (
@@ -136,6 +182,41 @@ const Sidebar = () => {
                 title={"Meal Type"}
                 placeholder={"snack, dinner, brunch, etc..."}
             />
+
+            {/* Date filtering */}
+            <Flex direction="column">
+                <Text
+                    fontSize="sm"
+                    mb="5px"
+                    color="white"
+                >
+                    Earliest Date Created
+                </Text>
+                <Input
+                    placeholder={`e.g. 01-22-2023`}
+                    variant="subtle"
+                    color="black"
+                    value={minDateCreated}
+                    onChange={handleMinDateChange}
+                    onKeyDown={handleMinDateKeyDown}>
+                </Input>
+
+                <Text
+                    fontSize="sm"
+                    mb="5px"
+                    color="white"
+                >
+                    Latest Date Created
+                </Text>
+                <Input
+                    placeholder={`e.g. 01-22-2027`}
+                    variant="subtle"
+                    color="black"
+                    value={maxDateCreated}
+                    onChange={handleMaxDateChange}
+                    onKeyDown={handleMaxDateKeyDown}>
+                </Input>
+            </Flex>
             
             <Box mb="12">
 
