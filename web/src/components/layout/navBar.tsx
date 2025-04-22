@@ -13,7 +13,7 @@ const NavBar = () => {
     const { user, logout } = useAuth();
     const handleLogout = async () => {
         logout()
-            .then(() => redirectPage($router, 'login'))
+            .then(() => redirectPage($router, 'profile',  { userId: user.id }))
             .catch(() => {
                 toaster.create({
                     title: 'Error signing out',
