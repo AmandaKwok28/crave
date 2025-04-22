@@ -2,8 +2,8 @@
 .env*
 
 # Ignore node modules
-node_modules/
-venv/
+**/node_modules
+**/venv
 
 # Ignore logs
 logs
