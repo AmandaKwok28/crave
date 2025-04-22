@@ -397,56 +397,6 @@ router.get('/recommendations/:shareLink', authGuard, async (req, res) => {
   }
 });
 
-// Add new party recommendation
-router.post('/:partyId/add/:recipeID/recommendation', authGuard, async (req, res) => {
-  try {
-    const recipeId = parseInt(req.params.recipeID, 10);
-    const { partyId } = req.params;
-    const { 
-      matchScore
-    } = req.body;
-
-    // Check if recipe exists
-    const recipe = await prisma.recipe.findUnique({
-      where: { id: recipeId }
-    });
-    // Check if party exists
-    const party = await prisma.cookingParty.findUnique({
-      where: { id: partyId }
-    });
-
-    if (!recipe) {
-      res.status(404).json({ message: 'Recipe not found' });
-      return;
-    }
-    if (!party) {
-      res.status(404).json({ message: 'Party not found' });
-      return;
-    }
-
-    // Create or update recently viewed entry
-    await prisma.partyRecommendation.upsert({
-      where: {
-        partyId_recipeId: { partyId, recipeId }
-      },
-      update: {
-        matchScore: matchScore,
-      },
-      create: {
-        partyId,
-        recipeId,
-        matchScore: matchScore,
-      }
-    });
-
-    res.status(200).json({ message: 'Party Recommendations updated successfully' });
-    return;
-  } catch (error) {
-    console.error('Error updating party recommendations:', error);
-    res.status(500).json({ message: 'Failed to update party recommendation' });
-  }
-});
-
 
 // call python script to update recommended recipes
 router.post('/:partyId/gen/recommendations', authGuard, async (req, res) => {
