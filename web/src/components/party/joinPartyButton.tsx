@@ -38,7 +38,7 @@ const JoinPartyButton = ({
     preferredPrice,
     preferredDifficulty
 }: JoinPartyProps ) => {
-    const { user } = useAuth()
+    const { user } = useAuth();
     const { updatePartyPrefrences, joinParty } = useMutationParty();
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -84,7 +84,7 @@ const JoinPartyButton = ({
             preferredDifficulty,
         )
         setIsOpen(false);
-        redirectPage($router, 'profile');
+        redirectPage($router, 'profile',  { userId: user.id });
     };
 
     return (
