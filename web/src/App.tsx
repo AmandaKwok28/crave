@@ -33,7 +33,7 @@ function App() {
       </div>
     )
   }
-
+ 
  // if the user hasn't been set, they shouldn't access pages other than login / register
   if (!user.id) {
     if (page.route === "home" || page.route === "profile") {
