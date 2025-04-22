@@ -1,7 +1,9 @@
 import NavBar from "@/components/layout/navBar";
 import MessagingDrawer from "@/components/messaging/messagingDrawer";
+import Parties from "@/components/party/parties";
 import Recipes from "@/components/recipie/recipes";
 import { Field } from "@/components/ui/field";
+import useQueryParties from "@/hooks/party/use-query-party";
 import Network from "@/components/user/network";
 import { followUser, unfollowUser } from "@/data/api";
 import { useAuth } from "@/hooks/use-auth";
@@ -44,6 +46,7 @@ const Profile = ({ userId }: {userId: string}) => {
   
   const { updateAvatar } = useMutationUser();
   const { recipes, drafts, likes, bookmarks } = useQueryRecipes();
+  const { parties } = useQueryParties();
 
   const [ tab, setTab ] = useState<string>('recipes'); 
   const [ url, setUrl ] = useState<string>('');
@@ -197,6 +200,7 @@ const Profile = ({ userId }: {userId: string}) => {
                         <TabButton label='My Drafts' value='drafts' curtab={tab} callback={setTab} />
                         <TabButton label='My Likes' value='likes' curtab={tab} callback={setTab} />
                         <TabButton label='My Bookmarks' value='bookmarks' curtab={tab} callback={setTab} />
+                        <TabButton label='My Collaborative Parties' value='parties' curtab={tab} callback={setTab} />
                       </>
                     ) : (
                       <>
@@ -208,20 +212,20 @@ const Profile = ({ userId }: {userId: string}) => {
                   </div>
               </div>
             </Box>
-              
-            <Flex direction="row" m="3" wrap="wrap" ml="22vw" mt="5vh">
-              {tab === 'recipes' && <Recipes recipes={recipes.filter((r) => r.authorId === user.id)} />}
-              {tab === 'drafts' && <Recipes recipes={drafts} />}
-              {tab === 'likes' && <Recipes recipes={likes} />}
-              {tab === 'bookmarks' && <Recipes recipes={bookmarks} />}
-            </Flex>
+
+          <Flex direction="row" m="3" wrap="wrap" ml="22vw" mt="5vh">
+            {tab === 'recipes' && <Recipes recipes={recipes.filter((r) => r.authorId === user.id)} />}
+            {tab === 'drafts' && <Recipes recipes={drafts} />}
+            {tab === 'likes' && <Recipes recipes={likes} />}
+            {tab === 'bookmarks' && <Recipes recipes={bookmarks} />}
+            {tab === 'parties' && <Parties parties={parties}/>}
             
             {isLoggedIn && <MessagingDrawer />}
 
           </Flex>
         </Flex>
-  
       </Flex>
+    </Flex>
   );
 }
 

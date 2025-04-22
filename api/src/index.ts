@@ -11,6 +11,7 @@ import bookmarkRoutes from './routes/bookmark.routes.js';
 import gptRoutes from './routes/gpt.routes.js';
 import allergen_route from './routes/allergens.js';
 import messageRoutes from './routes/message.routes.js'
+import partyRoutes from './routes/party.routes.js';
 import { startBackgroundJobs } from './services/scheduler.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -47,6 +48,7 @@ app.use('/feed', feedRoutes);
 app.use('/like', likeRoutes);
 app.use('/bookmark', bookmarkRoutes);
 app.use('/gpt', gptRoutes);
+app.use('/party', partyRoutes);
 app.use('/users', usersRoutes);
 app.use('/message', messageRoutes);
 
@@ -62,6 +64,9 @@ app.get('*', (req, res) => {
 
 startBackgroundJobs();
 
-const server = app.listen(3000, () => {
-  console.log(`Listening @ http://localhost:3000`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(3000, () => {
+    console.log(`Listening @ http://localhost:3000`);
+  });
+}
+
