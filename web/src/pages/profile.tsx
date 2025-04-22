@@ -1,12 +1,17 @@
 import NavBar from "@/components/layout/navBar";
+import MessagingDrawer from "@/components/messaging/messagingDrawer";
+import Parties from "@/components/party/parties";
 import Recipes from "@/components/recipie/recipes";
 import { Field } from "@/components/ui/field";
+import useQueryParties from "@/hooks/party/use-query-party";
 import Network from "@/components/user/network";
 import { followUser, unfollowUser } from "@/data/api";
 import { useAuth } from "@/hooks/use-auth";
+import { useMessaging } from "@/hooks/use-messaging";
 import useMutationUser from "@/hooks/use-mutation-user";
 import useQueryRecipes from "@/hooks/use-query-recipes";
 import useQueryUser from "@/hooks/use-query-user";
+import { setDrawerOpen, setSelectedConvo } from "@/lib/store";
 import { Box, Button, Flex, Input, Spinner } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react"
 import { KeyboardEvent, useState } from "react";
@@ -35,11 +40,13 @@ const Profile = ({ userId }: {userId: string}) => {
   const { viewingUser : user, followers, following, loading, refetch } = useQueryUser(userId);
   const isOwnProfile = loggedInUser?.id === user?.id;
   const isFollowing = followers?.some(f => f.id === loggedInUser?.id);
-
+  const isLoggedIn = !!user && !!user.id;
+  const { conversations, setCurrentConversation, startConversation } = useMessaging();
 
   
   const { updateAvatar } = useMutationUser();
   const { recipes, drafts, likes, bookmarks } = useQueryRecipes();
+  const { parties } = useQueryParties();
 
   const [ tab, setTab ] = useState<string>('recipes'); 
   const [ url, setUrl ] = useState<string>('');
@@ -104,8 +111,6 @@ const Profile = ({ userId }: {userId: string}) => {
               zIndex="100"
             >
 
-         
-
               <div className="max-h-sm h-auto flex flex-col self-start w-full">
   
                   {/* User info: avatar, email, username, followers, following */}
@@ -128,10 +133,39 @@ const Profile = ({ userId }: {userId: string}) => {
                     </Flex>
                   </Flex>
 
-                  <Flex p="4">
-                    {!isOwnProfile && (
+                  {/* Follow & Messaging Buttons */}
+                  {!isOwnProfile && (
+                    <Flex m="4" gap="1" justify="center">
+                        <Button
+                          className="w-1/2" 
+                          bgGradient="to-l"
+                          gradientFrom="purple.300"
+                          gradientTo="blue.400"
+                          onClick={async () => {
+                            try {
+                              const targetUserId = userId;
+                              const existingConversation = conversations.find(
+                                (conv) => conv.otherUser.id === targetUserId
+                              );
+                              let conversationId: number;
+                              if (existingConversation) {
+                                conversationId = existingConversation.id;
+                              } else {
+                                conversationId = await startConversation(targetUserId);
+                              }
+                              setCurrentConversation(conversationId);
+                              setSelectedConvo(conversationId);
+                              setDrawerOpen(true);
+                            } catch (error) {
+                              console.error("Error creating or opening conversation:", error);
+                            }
+                          }}
+                        >
+                          Message
+                        </Button>
+
                       <Button 
-                        className="w-full" 
+                        className="w-1/2"
                         bgGradient="to-l"
                         gradientFrom={isFollowing ? "red.300" : "teal.300"}
                         gradientTo={isFollowing ? "red.500" : "blue.400"}
@@ -139,13 +173,16 @@ const Profile = ({ userId }: {userId: string}) => {
                       >
                         {isFollowing ? "Unfollow" : "Follow"}
                       </Button>
-                    )}
-                  </Flex>
 
+                    </Flex>
+                  )}
+
+                  {/* Chef Rating */}
                   <Flex align='center' p='4' color="white" bg='cyan.400'>
                     Chef Rating: {String(loggedInUser?.id === user.id? loggedInUser.rating : user.rating)}
                   </Flex>
-  
+                  
+                  {/* Recipes, Drafts, Likes, and Bookmarks  */}
                   <div className="max-h-sm h-auto p-4 text-white w-full space-y-2">
                     {loggedInUser?.id === user?.id ? (
                       <>
@@ -163,6 +200,7 @@ const Profile = ({ userId }: {userId: string}) => {
                         <TabButton label='My Drafts' value='drafts' curtab={tab} callback={setTab} />
                         <TabButton label='My Likes' value='likes' curtab={tab} callback={setTab} />
                         <TabButton label='My Bookmarks' value='bookmarks' curtab={tab} callback={setTab} />
+                        <TabButton label='My Collaborative Parties' value='parties' curtab={tab} callback={setTab} />
                       </>
                     ) : (
                       <>
@@ -174,17 +212,20 @@ const Profile = ({ userId }: {userId: string}) => {
                   </div>
               </div>
             </Box>
-              
-            <Flex direction="row" m="3" wrap="wrap" ml="22vw" mt="5vh">
-              {tab === 'recipes' && <Recipes recipes={recipes.filter((r) => r.authorId === user.id)} />}
-              {tab === 'drafts' && <Recipes recipes={drafts} />}
-              {tab === 'likes' && <Recipes recipes={likes} />}
-              {tab === 'bookmarks' && <Recipes recipes={bookmarks} />}
-            </Flex>
+
+          <Flex direction="row" m="3" wrap="wrap" ml="22vw" mt="5vh">
+            {tab === 'recipes' && <Recipes recipes={recipes.filter((r) => r.authorId === user.id)} />}
+            {tab === 'drafts' && <Recipes recipes={drafts} />}
+            {tab === 'likes' && <Recipes recipes={likes} />}
+            {tab === 'bookmarks' && <Recipes recipes={bookmarks} />}
+            {tab === 'parties' && <Parties parties={parties}/>}
+            
+            {isLoggedIn && <MessagingDrawer />}
+
           </Flex>
         </Flex>
-  
       </Flex>
+    </Flex>
   );
 }
 

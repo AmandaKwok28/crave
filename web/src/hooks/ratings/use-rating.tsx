@@ -5,8 +5,6 @@ import { useAuth } from "../use-auth";
 
 export function useRating() {
 
-    const { user } = useAuth();
-
     // function to update the user rating
     async function updateUserRating(id: string, type: RatingType) {
         const updatedUser = await updateRating(id, type);

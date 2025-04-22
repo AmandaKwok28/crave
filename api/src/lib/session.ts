@@ -81,7 +81,7 @@ export function setSessionTokenCookie(response: Response, token: string, expires
 	if (process.env.NODE_ENV === 'production') {
 		response.cookie('session', token, {
 			httpOnly: true,
-			sameSite: 'lax',
+			sameSite: 'none',
 			expires: expiresAt,
 			secure: true
 		});
@@ -98,7 +98,7 @@ export function deleteSessionTokenCookie(response: Response): void {
 	if (process.env.NODE_ENV === 'production') {
 		response.cookie('session', '', {
 			httpOnly: true,
-			sameSite: 'lax',
+			sameSite: 'none',
 			maxAge: 0,
 			secure: true
 		});

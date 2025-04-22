@@ -1,0 +1,43 @@
+# Ignore environment settings
+.env*
+
+# Ignore node modules
+**/node_modules
+node_modules
+/node_modules
+node_modules/
+**/venv
+
+# Ignore logs
+logs
+*.log
+npm-debug.log*
+
+# Ignore version control directories
+.git
+.gitignore
+
+# Ignore build output directories
+/dist
+/out
+dist
+build
+coverage
+.vscode
+.idea
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.tsbuildinfo
+
+# Ignore configuration files that are not needed
+.dockerignore
+Dockerfile
+*.md
+LICENSE
+.DS_Store
+*.pem
+
+# Local database files
+*.db

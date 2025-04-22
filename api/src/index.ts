@@ -1,3 +1,10 @@
+import dotenv from 'dotenv';
+
+// set the env
+const envFile = `.env.${process.env.NODE_ENV || '.env'}`;
+dotenv.config({ path: envFile });
+
+
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -10,6 +17,8 @@ import likeRoutes from './routes/like.routes.js';
 import bookmarkRoutes from './routes/bookmark.routes.js';
 import gptRoutes from './routes/gpt.routes.js';
 import allergen_route from './routes/allergens.js';
+import messageRoutes from './routes/message.routes.js'
+import partyRoutes from './routes/party.routes.js';
 import { startBackgroundJobs } from './services/scheduler.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -18,35 +27,67 @@ import rating_route from './routes/rating.js';
 import pdf_route from './routes/parse-pdf.js';
 import usersRoutes from './routes/users.routes.js';
 
-export const app = express();
 
-app.use(cors({
-  origin: true,
+
+export const app = express();
+const port = Number(process.env.PORT) || 3000;   // app can dynamically listen to port specified by the PORT env var
+
+const corsOptions = {
+  origin: (
+    origin: string | undefined, 
+    callback: (err: Error | null, origin?: boolean) => void
+  ) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:8080',
+      'http://localhost:5173', // Vite default
+      'https://team05.zapto.org' // Removed trailing slash
+    ];
+
+    if (allowedOrigins.some(allowed => {
+      // Compare origins exactly (including protocol)
+      return origin === allowed;
+    })) {
+      callback(null, true);
+    } else {
+      console.warn(`Blocked CORS request from origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'), false);
+    }
+  },
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization'
-  ],
-  exposedHeaders: [ 'Set-Cookie' ],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Set-Cookie'],
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
+
+app.get('/', (_ , res) => {
+  res.status(200).json({
+    message: 'Hello Express!'
+  })
+});
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(auth);
-
 app.use(pdf_route);
 app.use(auth_route);
 app.use(allergen_route);
 app.use(comments_route);    
 app.use(rating_route);
 app.use('/recipe', recipeRoutes);
-app.use('/user', userRoutes);
-app.use('/feed', feedRoutes);
-app.use('/like', likeRoutes);
+app.use('/user', userRoutes);         // untested
+app.use('/feed', feedRoutes);         // untested
+app.use('/like', likeRoutes);         
 app.use('/bookmark', bookmarkRoutes);
 app.use('/gpt', gptRoutes);
+app.use('/party', partyRoutes);
 app.use('/users', usersRoutes);
+app.use('/message', messageRoutes);
 
 // Define __dirname for ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -54,14 +95,15 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, '../../../web/dist')));
 
-app.get('*', (req, res) => {
+app.get('*', (_, res) => {
   res.sendFile(path.join(__dirname, '../../../web/dist/index.html'));
 });
 
 startBackgroundJobs();
 
+// make sure to not bind to a specific port during testing to avoid port already in use conflicts
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(3000, () => {
+  app.listen(port, '0.0.0.0', () => {
     console.log(`Listening @ http://localhost:3000`);
   });
 }
