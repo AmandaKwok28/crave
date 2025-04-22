@@ -15,13 +15,15 @@ import { $router } from "@/lib/router";
 import { UserX } from "lucide-react";
 import { toaster } from "../ui/toaster";
 import useMutationParty from "@/hooks/party/use-mutation-party";
+import { useAuth } from "@/hooks/use-auth";
 
 const LeavePartyButton = ({ party_id, user_id }: { party_id: string, user_id: string} ) => {
   const { deletePartyMemberById } = useMutationParty();
+  const { user } = useAuth();
 
   const handleDelete = () => {
     deletePartyMemberById(party_id, user_id)
-      .then(() => redirectPage($router, 'profile'))
+      .then(() => redirectPage($router, 'profile',  { userId: user.id }))
       .catch(() => toaster.create({
         title: 'Error deleting party',
         description: 'Please try again later'

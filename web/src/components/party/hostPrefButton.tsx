@@ -16,6 +16,7 @@ import { Cuisine, Difficulty, PartyType, Price } from "@/data/types";
 import { toaster } from "../ui/toaster";
 import { useState } from "react";
 import useMutationParty from "@/hooks/party/use-mutation-party";
+import { useAuth } from "@/hooks/use-auth";
 
 type JoinPartyProps = {
     party: PartyType,
@@ -38,6 +39,7 @@ const HostPrefButton = ({
 }: JoinPartyProps ) => {
     const { updatePartyPrefrences } = useMutationParty();
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const { user } = useAuth();
 
     
 
@@ -63,7 +65,7 @@ const HostPrefButton = ({
             preferredDifficulty,
         )
         setIsOpen(false);
-        redirectPage($router, 'profile');
+        redirectPage($router, 'profile',  { userId: user.id });
     };
 
     return (
