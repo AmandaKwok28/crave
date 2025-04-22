@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  api:
+    image: ghcr.io/cs421sp25-homework/team-05-api:latest
+    volumes:
+      - api-data:/app/data
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ../api/.env.production
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  web:
+    image: ghcr.io/cs421sp25-homework/team-05-web:latest
+    environment:
+      - VITE_API_URL=http://api:3000
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  api-data:

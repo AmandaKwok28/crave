@@ -4,7 +4,6 @@ import { setUser, setViewingUser } from "@/lib/store";
 import { useAuth } from "../use-auth";
 
 export function useRating() {
-
     const { user } = useAuth();
 
     // function to update the user rating

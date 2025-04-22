@@ -178,13 +178,26 @@ export function setComments(comments: CommentType[]) {
     $comments.set(comments)
 }
 
-export function removeComment(commentId: number) {
-    $comments.set($comments.get().filter((comment) => comment.id !== commentId));
+export function removeAComment(comment_id: number) {
+  $comments.set($comments.get().filter((comment) => comment.id !== comment_id));
 }
 
-export function addComment(comment: CommentType) {
-    $comments.set([...$comments.get(), comment]);
+export function addAComment(comment: CommentType) {
+  $comments.set([comment, ...$comments.get()]);
 }
+
+
+
+// check if we're in mobile mode
+export const $isMobile = atom<boolean>(window.innerWidth < 768);
+export function setIsMobile(flag: boolean) {
+  $isMobile.set(flag);
+}
+
+// export const $mobileClicked = atom<boolean>(false);
+// export function setMobileClicked(flag: boolean) {
+//   $mobileClicked.set(flag);
+// }
 
 // Party Store
 export const $parties = atom<PartyType[]>([]);
