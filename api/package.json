@@ -8,7 +8,7 @@
     "build": "tsc && pnpm run copy-assets",
     "copy-assets": "copyfiles -u 0 \"scripts/**/*\" dist/",
     "start": "tsx src/index.ts",
-    "test": "cross-env API_PORT=0 vitest"
+    "test": "cross-env NODE_ENV=test API_PORT=0 vitest --sequence.hook=stack"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.0.2",

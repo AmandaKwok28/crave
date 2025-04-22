@@ -22,8 +22,13 @@ import { Slider } from "@/components/ui/slider";
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
 import { useStore } from "@nanostores/react";
+import { useAuth } from "@/hooks/use-auth";
+import useQueryUser from "@/hooks/use-query-user";
 
 const Home = () => {
+    const { user } = useAuth();
+    const { following } = useQueryUser(user.id);
+    console.log(user);
     const { recipes } = useQueryRecipes(true);
     const { recommendedRecipes, isLoading, error } = useRecommendedRecipes(10);
     const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
@@ -210,7 +215,7 @@ const Home = () => {
                 </Box>
 
 
-            {/* Trending Section */}
+            {/* Following Section */}
             <Flex 
                 bg="white" 
                 w="100vw"
@@ -220,10 +225,8 @@ const Home = () => {
                     textStyle="2xl"
                     color="black"
                     fontWeight="bold"
-                    m="4"
-                    p={2}
-                > 
-                    Recipes:
+                    m="4"> 
+                    Following
                 </Text>
                 <Flex 
                     direction="row" 
@@ -236,7 +239,13 @@ const Home = () => {
                     justify="center"
                     justifyContent="center"
                 >
-                    <Recipes recipes={recipes}/>
+                    <Recipes 
+                        recipes={recipes.filter(recipe => 
+                            following && following.length > 0 && 
+                            following.some(follow => follow.id === recipe.author.id)
+                        )}
+                        showEmptyImage={false}
+                    />
                 </Flex>
             </Flex>
         </Flex>
