@@ -72,7 +72,7 @@ const ViewParty = ({ share_link }: {
                         textAlign="left"
                         mt="1vh"
                     >
-                      {`http://localhost:5173/party/`}{party.shareLink}
+                      {`https://team05.zapto.org/party/`}{party.shareLink}
                     </Text>
                     <Separator w='50rem' maxW='100%' size="sm" mt="2"/>
                     <Text
