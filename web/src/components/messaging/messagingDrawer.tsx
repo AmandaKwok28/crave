@@ -9,7 +9,7 @@ import { $router } from "@/lib/router";
 import { Message, fetchRecipe } from "@/data/api"; // Import fetchRecipe from api.ts
 import { useLayoutEffect } from "react";
 import { useStore } from "@nanostores/react";
-import { $drawerOpen, $selectedConvo, $selectedRecipeForMessage, setDrawerOpen, setSelectedConvo, setSelectedRecipeForMessage, setShowSearchTrending } from "@/lib/store";
+import { $drawerOpen, $selectedConvo, $selectedRecipeForMessage, setDrawerOpen, setSelectedConvo, setSelectedRecipeForMessage } from "@/lib/store";
 
 // Update the recipe fetching function to use the correct API endpoint
 const fetchRecipeById = async (recipeId: number) => {
