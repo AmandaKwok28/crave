@@ -11,5 +11,7 @@ export const $router = createRouter({
   party: `${BASE_URL}party/:share_link`, // view/join party page
   createParty: `${BASE_URL}party/create/:share_link`,
   recipe: `${BASE_URL}recipe/:recipe_id`, // recipie page with specific recipie by id
-  editDraft: `${BASE_URL}edit/:draft_id`
+  editDraft: `${BASE_URL}edit/:draft_id`,
+  messages: `${BASE_URL}messages`, // messages list page
+  conversation: `${BASE_URL}messages/:conversation_id` // specific conversation
 });

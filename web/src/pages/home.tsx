@@ -22,8 +22,8 @@ import { Slider } from "@/components/ui/slider";
 import { openPage } from "@nanostores/router";
 import { $router } from "@/lib/router";
 import { useStore } from "@nanostores/react";
-import { useAuth } from "@/hooks/use-auth";
 import useQueryUser from "@/hooks/use-query-user";
+import { useAuth } from "@/hooks/use-auth";
 
 const Home = () => {
     const { user } = useAuth();
@@ -34,6 +34,7 @@ const Home = () => {
     const isMobile = useStore($isMobile);
 
 
+    
     const handleCookTimeChange = (details: { value: [number, number] }) => {
         setCookTime(details.value);
         const change = {

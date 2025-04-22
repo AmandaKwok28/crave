@@ -194,6 +194,26 @@ export function setIsMobile(flag: boolean) {
   $isMobile.set(flag);
 }
 
+// Messaging Store
+export const $drawerOpen = atom<boolean>(false);
+
+export function setDrawerOpen(isOpen: boolean) {
+    $drawerOpen.set(isOpen);
+}
+
+export const $selectedConvo = atom<number | null>(null);
+
+export function setSelectedConvo(convoId: number | null) {
+  $selectedConvo.set(convoId);
+}
+
+export const $selectedRecipeForMessage = atom<number | null>(null);
+
+export function setSelectedRecipeForMessage(recipeId: number | null) {
+  $selectedRecipeForMessage.set(recipeId);
+}
+
+
 // export const $mobileClicked = atom<boolean>(false);
 // export function setMobileClicked(flag: boolean) {
 //   $mobileClicked.set(flag);
