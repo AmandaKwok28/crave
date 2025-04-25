@@ -2,7 +2,7 @@ import { PartyRecommendationType } from "@/data/types";
 import { Flex, Text } from "@chakra-ui/react";
 import RecipeCard from "../layout/recipeCard";
 
-const PartyRecs = ({partyRecs}:{partyRecs: PartyRecommendationType[] }) => {
+const PartyRecs = ({partyRecs, loadRecipes}:{partyRecs: PartyRecommendationType[], loadRecipes: any }) => {
 
     const arr = Object.values(partyRecs);
 
@@ -15,7 +15,7 @@ const PartyRecs = ({partyRecs}:{partyRecs: PartyRecommendationType[] }) => {
     return (
         <Flex gap="10" wrap="wrap" justifyContent="center" w="full">
             {arr.map((card:PartyRecommendationType) => (
-                <RecipeCard key={card.id} recipe={card.recipe} /> 
+                <RecipeCard key={card.id} recipe={card.recipe} loadRecipes={loadRecipes}/> 
             ))}
         </Flex>
     )

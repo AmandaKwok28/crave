@@ -1,8 +1,6 @@
 import { faker } from '@faker-js/faker';
 
 faker.seed(42)
-
-const number_recipes = 50;
     
 const apiKey = process.env.OPENAI_API_KEY;
 
@@ -145,7 +143,7 @@ const generateRecipes = async (): Promise<Recipe[]> => {
 
     let recipes = [];
 
-    for (let i=0; i < 25; i++) {
+    for (let i=0; i < 20; i++) {
 
         const prompt = getPrompt(titles[i])
         const response = await fetch('https://api.openai.com/v1/chat/completions', {

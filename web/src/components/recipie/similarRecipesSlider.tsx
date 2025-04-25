@@ -8,6 +8,7 @@ import { Global, css } from '@emotion/react';
 import Slider from 'react-slick';
 import { useStore } from "@nanostores/react";
 import { $isMobile } from "@/lib/store";
+import useQueryRecipes from "@/hooks/use-query-recipes";
 
 interface SimilarRecipesSliderProps {
   recipes: RecipeType[];
@@ -65,6 +66,7 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
   const sliderRef = useRef<any>(null);
   const [isDebounced, setIsDebounced] = useState(false);
   const isMobile = useStore($isMobile);
+  const { loadRecipes } = useQueryRecipes();
 
   const similarRecipes = recipes;
 
@@ -170,7 +172,7 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
           <Slider ref={sliderRef} {...slickSettings}>
             {similarRecipes.map((card: RecipeType) => (
               <Box key={card.id} px={2} maxW="350px" w="100%" mx="auto">
-                <RecipeCard recipe={card} />
+                <RecipeCard recipe={card} loadRecipes={loadRecipes}/>
               </Box>
             ))}
           </Slider>

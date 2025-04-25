@@ -34,11 +34,11 @@ const allergens = [/* your allergen list, unchanged */];
 
 const exampleUser1 = {
   id: '1abc',
-  name: 'Example User 1',
-  email: 'example1@example.com',
+  name: 'Gordon Ramsey',
+  email: 'ramsey@example.com',
   school: 'Example University',
   major: 'Example Major',
-  rating: 0,
+  rating: 0
 };
 
 const imagesUrls = [
