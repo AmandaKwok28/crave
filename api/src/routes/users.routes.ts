@@ -16,6 +16,7 @@ router.get('/:userId', async (req, res) => {
       },
     });
 
+    console.log('here!')
     if (!user) {
       res.status(404).json({ error: "User not found" });
       return;

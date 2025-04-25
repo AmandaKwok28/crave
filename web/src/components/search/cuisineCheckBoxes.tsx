@@ -36,7 +36,7 @@ const CuisineCheckBoxes = ({
         }
         
         setFilters(change);
-        console.log(filters)
+        // console.log(filters)
     }
 
 

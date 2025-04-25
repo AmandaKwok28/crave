@@ -2,31 +2,6 @@ import { faker } from '@faker-js/faker';
 
 faker.seed(41)
 
-// enum Difficulty {
-//   EASY = "EASY",
-//   MEDIUM = "MEDIUM",
-//   HARD = "HARD",
-// }
-
-// enum Price {
-//   CHEAP = "CHEAP",
-//   MODERATE = "MODERATE",
-//   PRICEY = "PRICEY",
-//   EXPENSIVE = "EXPENSIVE",
-// }
-
-// enum Cuisine {
-//   ITALIAN = "ITALIAN",
-//   MEXICAN = "MEXICAN",
-//   CHINESE = "CHINESE",
-//   INDIAN = "INDIAN",
-//   JAPANESE = "JAPANESE",
-//   FRENCH = "FRENCH",
-//   MEDITERRANEAN = "MEDITERRANEAN",
-//   AMERICAN = "AMERICAN",
-// }
-
-
 
 const num_base_recipies = 2;
 const num_variations = 4;
