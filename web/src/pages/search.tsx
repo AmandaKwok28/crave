@@ -9,7 +9,7 @@ import { $showSearchTrending, setShowSearchTrending } from "@/lib/store";
 import Trending from "@/components/search/trending";
 
 const Search = () => {
-    const { recipes } = useQueryRecipes();
+    const { recipes, loadRecipes } = useQueryRecipes();
     const showSearchTrending = useStore($showSearchTrending);
 
     return (
@@ -37,7 +37,7 @@ const Search = () => {
                         </Text>
                     </Button>
                 </Center>
-                {!showSearchTrending && (<Stack> <SearchSummary /> <Recipes recipes={recipes} /> </Stack>)}
+                {!showSearchTrending && (<Stack> <SearchSummary /> <Recipes recipes={recipes} loadRecipes={loadRecipes}/> </Stack>)}
                 {showSearchTrending && (<Trending recipes={recipes} />)}  
             </Flex>
         </Flex>

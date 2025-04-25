@@ -45,7 +45,7 @@ const Profile = ({ userId }: {userId: string}) => {
 
   
   const { updateAvatar } = useMutationUser();
-  const { recipes, drafts, likes, bookmarks } = useQueryRecipes();
+  const { recipes, drafts, likes, bookmarks, loadRecipes } = useQueryRecipes();
   const { parties } = useQueryParties();
 
   const [ tab, setTab ] = useState<string>('recipes'); 
@@ -214,10 +214,10 @@ const Profile = ({ userId }: {userId: string}) => {
             </Box>
 
           <Flex direction="row" m="3" wrap="wrap" ml="22vw" mt="5vh">
-            {tab === 'recipes' && <Recipes recipes={recipes.filter((r) => r.authorId === user.id)} />}
-            {tab === 'drafts' && <Recipes recipes={drafts} />}
-            {tab === 'likes' && <Recipes recipes={likes} />}
-            {tab === 'bookmarks' && <Recipes recipes={bookmarks} />}
+            {tab === 'recipes' && <Recipes recipes={recipes.filter((r) => r.authorId === user.id)} loadRecipes={loadRecipes}/>}
+            {tab === 'drafts' && <Recipes recipes={drafts} loadRecipes={loadRecipes}/>}
+            {tab === 'likes' && <Recipes recipes={likes} loadRecipes={loadRecipes}/>}
+            {tab === 'bookmarks' && <Recipes recipes={bookmarks} loadRecipes={loadRecipes} />}
             {tab === 'parties' && <Parties parties={parties}/>}
             
             {isLoggedIn && <MessagingDrawer />}
