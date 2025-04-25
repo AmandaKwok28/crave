@@ -3,3 +3,4 @@ torch==2.0.1+cpu
 sentence-transformers==2.2.2
 huggingface-hub==0.13.4
 transformers==4.26.0
+numpy<2.0.0  # Add this line to force NumPy 1.x
