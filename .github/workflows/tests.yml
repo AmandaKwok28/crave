@@ -6,6 +6,11 @@ on:
       - master
       - dev
       - seeding_aa
+  push:
+    branches:
+      - master
+      - dev
+      - seeding_aa
 
 jobs:
   test:
