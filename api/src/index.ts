@@ -86,7 +86,7 @@ app.use('/like', likeRoutes);
 app.use('/bookmark', bookmarkRoutes);
 app.use('/gpt', gptRoutes);
 app.use('/party', partyRoutes);
-app.use('/users', usersRoutes);
+app.use('/users', usersRoutes);       // untested
 app.use('/message', messageRoutes);
 
 // Define __dirname for ES module

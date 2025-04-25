@@ -39,4 +39,4 @@ jobs:
       
       - name: Run Vitest Tests
         working-directory: ./api
-        run: pnpm vitest run --coverage
+        run: pnpm vitest run
