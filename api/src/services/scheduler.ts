@@ -3,7 +3,7 @@ import { processUnvectorizedRecipes, recommendedRecipes } from './background-vec
 
 export function startBackgroundJobs() {
   // Run every 10 min to check for unvectorized recipes
-  cron.schedule('0 0 * * *', async () => {
+  cron.schedule('*/5 * * * *', async () => {
     try {
       await processUnvectorizedRecipes(50, 10); // 50 recipes at a time, 10 similarities kept for each recipe
       await recommendedRecipes();         // 10 at a time, 10 recommended for now (calculate 10 at a time, delete oldest 10)
