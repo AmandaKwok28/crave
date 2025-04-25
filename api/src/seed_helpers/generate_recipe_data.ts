@@ -2,13 +2,39 @@ import { faker } from '@faker-js/faker';
 
 faker.seed(41)
 
+// enum Difficulty {
+//   EASY = "EASY",
+//   MEDIUM = "MEDIUM",
+//   HARD = "HARD",
+// }
+
+// enum Price {
+//   CHEAP = "CHEAP",
+//   MODERATE = "MODERATE",
+//   PRICEY = "PRICEY",
+//   EXPENSIVE = "EXPENSIVE",
+// }
+
+// enum Cuisine {
+//   ITALIAN = "ITALIAN",
+//   MEXICAN = "MEXICAN",
+//   CHINESE = "CHINESE",
+//   INDIAN = "INDIAN",
+//   JAPANESE = "JAPANESE",
+//   FRENCH = "FRENCH",
+//   MEDITERRANEAN = "MEDITERRANEAN",
+//   AMERICAN = "AMERICAN",
+// }
+
+
+
 const num_base_recipies = 2;
 const num_variations = 4;
 const change_arr = [0, 0, 1, 1, 1, 2, 2, 4, 5, 8];
 const mealTypes = ["Breakfast", "Lunch", "Dinner", "Snack"];
-const priceTypes = ["$", "$$", "$$$", "$$$$"];
-const cuisineTypes = ["Italian", "Mexican", "Chinese", "Indian", "Japanese", "French", "Mediterranean"];
-const difficultyTypes = ["Easy", "Medium", "Hard"];
+const priceTypes = ["CHEAP", "MODERATE", "PRICEY", "EXPENSIVE"];
+const cuisineTypes = ["ITALIAN", "MEXICAN", "ChINESE", "INDIAN", "JAPANESE", "FRENCH", "MEDITERRANEAN"];
+const difficultyTypes = ["EASY", "MEDIUM", "HARD"];
 const sourcesTypes = ["Safeway", "CharMar", "Giant", "WholeFoods", "Costco", "SamsClub", "Streets Market"];
 
 //generating a random ingredient list of length 3-15

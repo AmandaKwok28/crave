@@ -2,7 +2,16 @@ import { RecipeType } from "@/data/types";
 import { Flex, Text, Image } from "@chakra-ui/react";
 import RecipeCard from "../layout/recipeCard";
 
-const Recipes = ({ recipes, showEmptyImage = true }:{recipes:RecipeType[], showEmptyImage?: boolean}) => {
+const Recipes = ({ 
+    recipes, 
+    showEmptyImage = true,
+    loadRecipes
+}:{
+    recipes:RecipeType[], 
+    showEmptyImage?: boolean,
+    loadRecipes: any
+}) => {
+
     if (recipes.length === 0 && showEmptyImage) {
         return (
             <Flex 
@@ -27,7 +36,7 @@ const Recipes = ({ recipes, showEmptyImage = true }:{recipes:RecipeType[], showE
     return (
         <Flex gap="10" wrap="wrap" justifyContent="center" w="full">
             {recipes.map((card:RecipeType) => (
-                <RecipeCard key={card.id} recipe={card} /> 
+                <RecipeCard key={card.id} recipe={card} loadRecipes={loadRecipes}/> 
             ))}
         </Flex>
     )

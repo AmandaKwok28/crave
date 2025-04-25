@@ -142,7 +142,14 @@ const ViewRecipe = ({ recipe_id }: {
                 </Text>
 
               {/* Adding image here */}
-              <Image rounded="md" src={recipe.image ? recipe.image : '/img_placeholder.jpg'} w='40vw' minW="600px" />
+              <Image 
+                rounded="md" 
+                src={recipe.image ? recipe.image : '/img_placeholder.jpg'} 
+                w='40vw' 
+                minW="300px" 
+                maxW="600px"
+                maxH="600px"
+              />
 
               <HStack>
                 <Button

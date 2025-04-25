@@ -42,7 +42,6 @@ export async function generateBatchFeatureVectors(recipeIds: number[]): Promise<
     
     // Remove 'const' to update the outer variable instead of creating a new one
     tempFile = path.join(os.tmpdir(), `recipes_${Date.now()}.json`);
-    console.log(JSON.stringify(recipes))
     fs.writeFileSync(tempFile, JSON.stringify(recipes), 'utf8');
     console.log(`Wrote recipe data to temporary file: ${tempFile}`);
     

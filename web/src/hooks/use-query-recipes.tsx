@@ -2,7 +2,7 @@ import { fetchAllergen, fetchBookmarks, fetchDrafts, fetchLikes, fetchRecipes } 
 import { $drafts, $recipes, setDrafts, setRecipes, $filters, $searchTerm, setAllergenTable, $allergenTable, $likes, $bookmarks, setLikes, setBookmarks } from "@/lib/store";
 import { useStore } from "@nanostores/react";
 import { useAuth } from "./use-auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const useQueryRecipes = (ignoreFilters: boolean = false) => {
     const { user } = useAuth();
@@ -46,10 +46,20 @@ const useQueryRecipes = (ignoreFilters: boolean = false) => {
       }
     };
 
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
     useEffect(() => {
+      const timeout = setTimeout(() => {
+        setDebouncedSearchTerm(searchTerm);
+      }, 300); // debounce delay
+    
+      return () => clearTimeout(timeout);
+    }, [searchTerm]);
+
+    useEffect(() => {
+      // console.log('here')
       loadRecipes();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filters, searchTerm]);
+    }, [filters, debouncedSearchTerm]);
 
     useEffect(() => {
       loadAllergens();

@@ -5,14 +5,18 @@ import { redirectPage } from "@nanostores/router";
 import { Avatar, AvatarGroup } from "@chakra-ui/react"
 import { Bookmark, Heart } from "lucide-react";
 import { bookmarkRecipe, likeRecipe, unbookmarkRecipe, unlikeRecipe } from "@/data/api";
-import useQueryRecipes from "@/hooks/use-query-recipes";
 import { useRating } from "@/hooks/ratings/use-rating";
 import { useStore } from "@nanostores/react";
 import { $isMobile } from "@/lib/store";
 
-const RecipeCard = ({ recipe }: { recipe: RecipeType }) => {
-  // Whatever makes sense
-  const { loadRecipes } = useQueryRecipes();
+const RecipeCard = ({ 
+  recipe,
+  loadRecipes 
+}: { 
+  recipe: RecipeType,
+  loadRecipes: any 
+}) => {
+
   const { updateUserRating } = useRating();
   const isMobile = useStore($isMobile);
 

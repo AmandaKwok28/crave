@@ -1,0 +1,42 @@
+name: Unit Tests
+
+on:
+  pull_request:
+    branches:
+      - master
+      - dev
+  push:
+    branches:
+      - master
+      - dev
+      - seeding_aa
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.JS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '23'
+      
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      
+      - name: Install Dependencies
+        working-directory: ./api
+        run: pnpm install
+      
+      - name: Setup Prisma Client
+        working-directory: ./api
+        run: pnpm prisma generate
+      
+      - name: Run Vitest Tests
+        working-directory: ./api
+        run: pnpm vitest run --coverage
