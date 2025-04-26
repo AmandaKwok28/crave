@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">69.69% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>36/36</span>
+                <span class='fraction'>23/33</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/6</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
-                <span class="quiet">Functions</span>
                 <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">69.69% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>36/36</span>
+                <span class='fraction'>23/33</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -132,21 +132,21 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">946x</span>
-<span class="cline-any cline-yes">946x</span>
-<span class="cline-any cline-yes">946x</span>
-<span class="cline-any cline-yes">946x</span>
-<span class="cline-any cline-yes">946x</span>
-<span class="cline-any cline-yes">945x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -178,21 +178,21 @@ const allergens = [
     "Mayonnaise", "Marshmallows"
 ];
 &nbsp;
-async function seedAllergens() {
-    for (const allergen of allergens) {
-      await prisma.allergen.upsert({
-        where: { name: allergen },
-        update: {},
-        create: { name: allergen },
-      });
-    }
-    console.log("✅ Allergens seeded successfully!");
-}
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function seedAllergens() {</span></span>
+<span class="cstat-no" title="statement not covered" >    for (const allergen of allergens) {</span>
+<span class="cstat-no" title="statement not covered" >      await prisma.allergen.upsert({</span>
+<span class="cstat-no" title="statement not covered" >        where: { name: allergen },</span>
+<span class="cstat-no" title="statement not covered" >        update: {},</span>
+<span class="cstat-no" title="statement not covered" >        create: { name: allergen },</span>
+<span class="cstat-no" title="statement not covered" >      });</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" >    console.log("✅ Allergens seeded successfully!");</span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 // at startup run this to seed the allergens
-seedAllergens().catch((err) =&gt; {
-    console.error("❌ Error seeding allergens:", err);
-});
+// seedAllergens().catch((err) =&gt; {
+//     console.error("❌ Error seeding allergens:", err);
+// });
   
 &nbsp;
 // has 105 allerens listed by chat
@@ -208,7 +208,7 @@ export default allergen_route;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-25T14:36:36.189Z
+                at 2025-04-26T22:25:12.093Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

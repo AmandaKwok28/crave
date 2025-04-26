@@ -16,7 +16,7 @@ import feedRoutes from './routes/feed.routes.js'
 import likeRoutes from './routes/like.routes.js';
 import bookmarkRoutes from './routes/bookmark.routes.js';
 import gptRoutes from './routes/gpt.routes.js';
-import allergen_route from './routes/allergens.js';
+import allergen_route, { seedAllergens } from './routes/allergens.js';
 import messageRoutes from './routes/message.routes.js'
 import partyRoutes from './routes/party.routes.js';
 import { startBackgroundJobs } from './services/scheduler.js';
@@ -80,13 +80,13 @@ app.use(allergen_route);
 app.use(comments_route);    
 app.use(rating_route);
 app.use('/recipe', recipeRoutes);
-app.use('/user', userRoutes);         // untested
-app.use('/feed', feedRoutes);         // untested
+app.use('/user', userRoutes);         
+app.use('/feed', feedRoutes);         
 app.use('/like', likeRoutes);         
 app.use('/bookmark', bookmarkRoutes);
 app.use('/gpt', gptRoutes);
 app.use('/party', partyRoutes);
-app.use('/users', usersRoutes);       // untested
+app.use('/users', usersRoutes);       
 app.use('/message', messageRoutes);
 
 // Define __dirname for ES module
@@ -106,5 +106,6 @@ if (process.env.NODE_ENV !== 'test') {
   app.listen(port, '0.0.0.0', () => {
     console.log(`Listening @ http://localhost:3000`);
   });
+  await seedAllergens();
 }
 
