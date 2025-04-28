@@ -1,8 +1,8 @@
-import dotenv from 'dotenv';
+import dotenvFlow from 'dotenv-flow';
 
-// set the env
-const envFile = `.env.${process.env.NODE_ENV || '.env'}`;
-dotenv.config({ path: envFile });
+// automatically loads .env.test if NODE_ENV=test, check the env when running
+dotenvFlow.config();
+console.log("[DB] Environment:", process.env.NODE_ENV);
 
 
 import express from 'express';

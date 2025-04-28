@@ -1,4 +1,8 @@
 import { faker } from '@faker-js/faker';
+import dotenvFlow from 'dotenv-flow';
+
+// automatically loads .env.test if NODE_ENV=test, check the env when running
+dotenvFlow.config();
 
 faker.seed(42)
     
@@ -139,11 +143,11 @@ const titles = [
   
 
 
-const generateRecipes = async (): Promise<Recipe[]> => {
+const generateRecipes = async (n:number = 20): Promise<Recipe[]> => {
 
     let recipes = [];
 
-    for (let i=0; i < 20; i++) {
+    for (let i=0; i < n; i++) {
 
         const prompt = getPrompt(titles[i])
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -164,6 +168,11 @@ const generateRecipes = async (): Promise<Recipe[]> => {
         });
 
         const data: any = await response.json();
+        
+        if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+            console.error('Bad response from OpenAI:', JSON.stringify(data, null, 2));
+            throw new Error('Failed to generate recipe: missing choices');
+        }
         // Extract the content from the response
         const content = data.choices[0].message.content;
         
