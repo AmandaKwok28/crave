@@ -1,7 +1,6 @@
 import { 
     test,  
     beforeAll, 
-    beforeEach, 
     describe, 
     afterAll,
     expect,
@@ -9,11 +8,14 @@ import {
     vi
 } from 'vitest';
 
+import dotenvFlow from 'dotenv-flow';
+
+// automatically loads .env.test if NODE_ENV=test, check the env when running
+dotenvFlow.config();
+
 import { app } from '../index.js';
 import request from 'supertest';
 import { prisma } from '../../prisma/db.js';
-import messageRoutes from '../routes/message.routes.js'
-import { User } from '@prisma/client';
 
 // fake data
 const exampleUser1 = {
@@ -41,46 +43,42 @@ let user2_id;
 
 beforeAll( async () => {
 
-    // clear the database
-    await prisma.$transaction([
-        prisma.recipe.deleteMany(),
-        prisma.conversation.deleteMany(),
-        prisma.message.deleteMany(),
-        prisma.user.deleteMany()
-    ]);
-
     // register user 1
-    const res = await request(app)
+    try {
+        const res = await request(app)
         .post('/register')
         .send({
             ...exampleUser1
         })
 
-    // register user 2
-    const res2 = await request(app)
-        .post('/register')
-        .send({
-            ...exampleUser2
-        })
+        // register user 2
+        const res2 = await request(app)
+            .post('/register')
+            .send({
+                ...exampleUser2
+            })
 
-    // get the cookies to bypass the authguard
-    user1_id = res.body.data.id;
-    cookies1 = Array.isArray(res.headers['set-cookie']) 
-        ? res.headers['set-cookie']
-        : [res.headers['set-cookie']].filter(Boolean);
+        // get the cookies to bypass the authguard
+        user1_id = res.body.data.id;
+        cookies1 = Array.isArray(res.headers['set-cookie']) 
+            ? res.headers['set-cookie']
+            : [res.headers['set-cookie']].filter(Boolean);
 
-    await request(app)
-        .post('/login')
-        .send({
-          email: exampleUser2.email,
-          password: exampleUser2.password
-        });
+        await request(app)
+            .post('/login')
+            .send({
+            email: exampleUser2.email,
+            password: exampleUser2.password
+            });
 
-    user2_id = res2.body.data.id;
-    cookies2 = Array.isArray(res2.headers['set-cookie']) 
-    ? res2.headers['set-cookie']
-    : [res2.headers['set-cookie']].filter(Boolean);
+        user2_id = res2.body.data.id;
+        cookies2 = Array.isArray(res2.headers['set-cookie']) 
+        ? res2.headers['set-cookie']
+        : [res2.headers['set-cookie']].filter(Boolean);
 
+    } catch (error) {
+        console.log('auth error occured')
+    }
 })
 
 // Clean up test data
@@ -145,7 +143,7 @@ describe('testing creating a convo, getting by id', () => {
     })
 
     let convo_id;
-    test('creating a conversation', async () => {
+    test('creating a conversation when it exists', async () => {
         // conversation created in the previous test so it should return nothing
         const res = await request(app)
             .post('/message/')

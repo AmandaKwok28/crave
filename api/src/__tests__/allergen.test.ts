@@ -2,6 +2,7 @@ import { test, expect, vi } from 'vitest';
 import request from 'supertest';
 import { app } from '../index.js';
 import { prisma } from '../lib/__mocks__/prisma.js';
+import { seedAllergens } from '../routes/allergens.js';
 
 // mock the Prisma client
 vi.mock('../../prisma/db', async () => {
@@ -38,4 +39,9 @@ test('test that you can retrieve the allergen table in the database', async() =>
     }));
       
     expect(parsed).toEqual(exampleAllergens);
+})
+
+test('seeding allergens works', async () => {
+    const res = await seedAllergens();
+    expect(res).toBe(true);
 })

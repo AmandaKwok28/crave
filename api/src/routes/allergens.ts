@@ -30,6 +30,7 @@ export async function seedAllergens() {
       });
     }
     console.log("✅ Allergens seeded successfully!");
+    return true;
 }
 
 // at startup run this to seed the allergens

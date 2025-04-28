@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.17% </span>
+                <span class="strong">62.76% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>81/94</span>
+                <span class='fraction'>59/94</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/7</span>
+                <span class='fraction'>2/4</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.17% </span>
+                <span class="strong">62.76% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>81/94</span>
+                <span class='fraction'>59/94</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -239,36 +239,36 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -287,8 +287,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -301,9 +301,9 @@ import testRecipesTextData from '../src/seed_helpers/generate_recipe_data.js';
 const prisma = new PrismaClient()
 &nbsp;
 const exampleUser1 = {
-  id: '1abc',
+  id: `${Date.now()}`,
   name: 'Example User 1',
-  email: 'example1@example.com',
+  email: `${Date.now()}@example.com`,
   school: 'Example University',
   major: 'Example Major',
   rating: 0
@@ -353,31 +353,31 @@ export async function main2() {
   console.log(`Start seeding ...`);
 &nbsp;
   // Clean up in correct order
-  await prisma.recipe.deleteMany();
-  await prisma.user.deleteMany();
-  console.log("Deleted all data");
+  await prisma.recipe.deleteMany(<span class="branch-0 cbranch-no" title="branch not covered" >);</span>
+<span class="cstat-no" title="statement not covered" >  await prisma.user.deleteMany();</span>
+<span class="cstat-no" title="statement not covered" >  console.log("Deleted all data");</span>
 &nbsp;
   // Add user with upsert
-  const user = await prisma.user.upsert({
-    where: { email: exampleUser1.email },
-    update: {},
-    create: {
-      ...exampleUser1,
-      passwordHash: await hashPassword('password')
-    }
-  });
-  console.log(`Created user with id: ${user.id}`);
+<span class="cstat-no" title="statement not covered" >  const user = await prisma.user.upsert({</span>
+<span class="cstat-no" title="statement not covered" >    where: { email: exampleUser1.email },</span>
+<span class="cstat-no" title="statement not covered" >    update: {},</span>
+<span class="cstat-no" title="statement not covered" >    create: {</span>
+<span class="cstat-no" title="statement not covered" >      ...exampleUser1,</span>
+<span class="cstat-no" title="statement not covered" >      passwordHash: await hashPassword('password')</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" >  console.log(`Created user with id: ${user.id}`);</span>
 &nbsp;
   // Create recipes using the actual user ID
-  for (const testRecipe of testRecipesData) {
-    const recipe = await prisma.recipe.create({
-      data: {
-        ...testRecipe,
-        authorId: user.id // Use the actual user ID
-      }
-    });
-    console.log(`Created recipe with id: ${recipe.id}`);
-<span class="branch-0 cbranch-no" title="branch not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >  for (const testRecipe of testRecipesData) {</span>
+<span class="cstat-no" title="statement not covered" >    const recipe = await prisma.recipe.create({</span>
+<span class="cstat-no" title="statement not covered" >      data: {</span>
+<span class="cstat-no" title="statement not covered" >        ...testRecipe,</span>
+<span class="cstat-no" title="statement not covered" >        authorId: user.id // Use the actual user ID</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >    });</span>
+<span class="cstat-no" title="statement not covered" >    console.log(`Created recipe with id: ${recipe.id}`);</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
   
 <span class="cstat-no" title="statement not covered" >  console.log(`Seeding finished.`)</span>
 <span class="cstat-no" title="statement not covered" >  return true;</span>
@@ -402,8 +402,8 @@ if (process.env.NODE_ENV !== 'test') <span class="branch-0 cbranch-no" title="br
 <span class="cstat-no" title="statement not covered" >      await prisma.$disconnect()</span>
     })
     .catch(async (e) =&gt; {
-      console.error('Seeding error during tests:', e)
-      await prisma.$disconnect()
+<span class="cstat-no" title="statement not covered" >      console.error('Seeding error during tests:', e)</span>
+<span class="cstat-no" title="statement not covered" >      await prisma.$disconnect()</span>
       // Don't exit process during tests!
     })
 }
@@ -415,7 +415,7 @@ if (process.env.NODE_ENV !== 'test') <span class="branch-0 cbranch-no" title="br
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-28T17:33:32.409Z
+                at 2025-04-28T20:34:20.038Z
             </div>
         <script src="../prettify.js"></script>
         <script>

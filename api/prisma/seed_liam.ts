@@ -6,9 +6,9 @@ import testRecipesTextData from '../src/seed_helpers/generate_recipe_data.js';
 const prisma = new PrismaClient()
 
 const exampleUser1 = {
-  id: '1abc',
+  id: `${Date.now()}`,
   name: 'Example User 1',
-  email: 'example1@example.com',
+  email: `${Date.now()}@example.com`,
   school: 'Example University',
   major: 'Example Major',
   rating: 0
