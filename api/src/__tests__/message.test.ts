@@ -41,6 +41,14 @@ let user2_id;
 
 beforeAll( async () => {
 
+    // clear the database
+    await prisma.$transaction([
+        prisma.recipe.deleteMany(),
+        prisma.conversation.deleteMany(),
+        prisma.message.deleteMany(),
+        prisma.user.deleteMany()
+    ]);
+
     // register user 1
     const res = await request(app)
         .post('/register')
@@ -77,13 +85,12 @@ beforeAll( async () => {
 
 // Clean up test data
 afterAll(async () => {
-    await prisma.user.deleteMany({
-        where: {
-            email: {
-                in: [exampleUser1.email, exampleUser2.email], // Delete both users
-            },
-        },
-    });
+    await prisma.$transaction([
+        prisma.recipe.deleteMany(),
+        prisma.conversation.deleteMany(),
+        prisma.message.deleteMany(),
+        prisma.user.deleteMany()
+    ]);
 });
 
 describe('testing the get routes', () => {
