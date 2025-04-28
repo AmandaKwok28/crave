@@ -5,27 +5,10 @@ import testRecipesTextData from '../src/seed_helpers/generate_recipe_data.js';
 
 const prisma = new PrismaClient()
 
-
-const allergens = [
-  "Peanuts", "Tree nuts", "Milk", "Eggs", "Wheat", "Soy", "Fish", "Shellfish", "Sesame",
-  "Apples", "Bananas", "Peaches", "Cherries", "Strawberries", "Kiwis", "Oranges", "Lemons", "Grapes", "Mangos", "Plums",
-  "Celery", "Carrots", "Tomatoes", "Potatoes", "Bell peppers", "Cucumbers", "Avocados", "Onions", "Garlic", "Lettuce",
-  "Barley", "Rye", "Oats", "Corn", "Lentils", "Chickpeas", "Peas", "Green beans", "Lupin", "Quinoa",
-  "Casein", "Whey", "Lactose", "Egg yolk", "Egg white",
-  "Cashews", "Walnuts", "Almonds", "Pistachios", "Hazelnuts", "Pecans", "Macadamia nuts", "Brazil nuts", "Pine nuts",
-  "Sunflower seeds", "Pumpkin seeds", "Chia seeds", "Flaxseeds",
-  "Beef", "Pork", "Chicken", "Turkey", "Lamb", "Shrimp", "Crab", "Lobster", "Clams", "Mussels", "Oysters", "Squid",
-  "Tuna", "Salmon", "Cod", "Anchovies",
-  "Mustard", "Cinnamon", "Nutmeg", "Paprika", "Black pepper", "Cumin", "Coriander", "Basil", "Oregano", "Thyme",
-  "MSG", "Gelatin", "Xanthan gum", "Guar gum", "Malt", "Artificial food colorings", "Artificial sweeteners", "Yeast",
-  "Soy lecithin", "Cocoa", "Vinegar", "Soy sauce", "Miso", "Tempeh", "Kimchi", "Pickles", "Wine", "Beer", "Hard cheeses",
-  "Mayonnaise", "Marshmallows"
-];
-
 const exampleUser1 = {
-  id: '1abc',
+  id: `${Date.now()}`,
   name: 'Example User 1',
-  email: 'example1@example.com',
+  email: `${Date.now()}@example.com`,
   school: 'Example University',
   major: 'Example Major',
   rating: 0
@@ -71,51 +54,62 @@ for (let i = 0; i < testRecipesTextData.length; i++) {
   }
 }
 
-async function main() {
-  console.log(`Start seeding ...`)
+export async function main2() {
+  console.log(`Start seeding ...`);
 
-  //deleting existing data
+  // Clean up in correct order
+  await prisma.recipe.deleteMany();
   await prisma.user.deleteMany();
-  console.log("Deleted all users");
+  console.log("Deleted all data");
 
-  // Add user
-  const user = await prisma.user.create({
-    data: {
+  // Add user with upsert
+  const user = await prisma.user.upsert({
+    where: { email: exampleUser1.email },
+    update: {},
+    create: {
       ...exampleUser1,
       passwordHash: await hashPassword('password')
     }
-  })
-  console.log(`Created user with id: ${user.id}`)
+  });
+  console.log(`Created user with id: ${user.id}`);
 
-  // adding batch of test recipes
+  // Create recipes using the actual user ID
   for (const testRecipe of testRecipesData) {
     const recipe = await prisma.recipe.create({
       data: {
-          ...testRecipe
+        ...testRecipe,
+        authorId: user.id // Use the actual user ID
       }
-    })
-    console.log(`Created recipe with id: ${recipe.id}`)
-  }
-
-  // adding allergens
-  for (const allergen of allergens) {
-    await prisma.allergen.upsert({
-      where: { name: allergen },
-      update: {},
-      create: { name: allergen },
     });
+    console.log(`Created recipe with id: ${recipe.id}`);
   }
-  console.log("✅ Allergens seeded successfully!");
   
   console.log(`Seeding finished.`)
+  return true;
 }
 
-main()
-  .then(async () => {
-    await prisma.$disconnect()
-  })
-  .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+
+if (process.env.NODE_ENV !== 'test') {
+  // In production/development, exit on error
+  main2()
+    .then(async () => {
+      await prisma.$disconnect()
+    })
+    .catch(async (e) => {
+      console.error(e)
+      await prisma.$disconnect()
+      process.exit(1)
+    })
+} else {
+  // In test environment, don't exit on error
+  main2()
+    .then(async () => {
+      await prisma.$disconnect()
+    })
+    .catch(async (e) => {
+      console.error('Seeding error during tests:', e)
+      await prisma.$disconnect()
+      // Don't exit process during tests!
+    })
+}
+

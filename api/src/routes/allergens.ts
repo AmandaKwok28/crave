@@ -21,7 +21,7 @@ const allergens = [
     "Mayonnaise", "Marshmallows"
 ];
 
-async function seedAllergens() {
+export async function seedAllergens() {
     for (const allergen of allergens) {
       await prisma.allergen.upsert({
         where: { name: allergen },
@@ -30,12 +30,13 @@ async function seedAllergens() {
       });
     }
     console.log("✅ Allergens seeded successfully!");
+    return true;
 }
 
 // at startup run this to seed the allergens
-seedAllergens().catch((err) => {
-    console.error("❌ Error seeding allergens:", err);
-});
+// seedAllergens().catch((err) => {
+//     console.error("❌ Error seeding allergens:", err);
+// });
   
 
 // has 105 allerens listed by chat

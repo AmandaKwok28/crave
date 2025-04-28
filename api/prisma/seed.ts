@@ -107,7 +107,7 @@ const imagesUrls = [
 
 ];
 
-async function main() {
+export async function main(n: number = 25) {
   console.log(`Start seeding ...`);
 
   // Delete existing data
@@ -123,7 +123,7 @@ async function main() {
   console.log(`Created user with id: ${user.id}`);
 
   // Fetch GPT recipes
-  const testRecipesTextData = await generateRecipes();
+  const testRecipesTextData = await generateRecipes(n);
 
   // Seed recipes
   let iter = 0;
@@ -163,6 +163,7 @@ async function main() {
   console.log("✅ Allergens seeded successfully!");
 
   console.log(`Seeding finished.`);
+  return true;  // success
 }
 
 main()
