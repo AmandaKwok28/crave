@@ -35,15 +35,19 @@ const SlickCarouselStyles = () => (
         justify-content: center !important;
       }
 
+      /* This ensures proper centering when single slide is shown */
       .slick-slide {
         display: flex !important;
         justify-content: center !important;
         height: auto;
         padding: 0 8px; /* Horizontal spacing between slides */
+        float: none !important; /* Override slick default float */
       }
 
       .slick-slide > div {
         width: 100%;
+        display: flex !important;
+        justify-content: center !important;
       }
 
       .slick-dots {
@@ -99,8 +103,8 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
     arrows: false,
     draggable: true,
     cssEase: "ease-in-out",
-    centerMode: false, // Disabled for better control
-    variableWidth: false, // Ensure consistent slide widths
+    centerMode: false,
+    variableWidth: false,
     responsive: [
       {
         breakpoint: 1024,
@@ -110,60 +114,66 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
         }
       },
       {
-        breakpoint: 600,
+        breakpoint: 400,
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 1
+          slidesToScroll: 1,
+          dots: false // Remove dots on very small screens
         }
       }
     ]
   };
 
   return (
-    <Box width="100%" my={8} px={isMobile ? 12 : 8} alignContent='center'>
+    <Box width="100%" my={isMobile ? 4 : 8} px={isMobile ? 4 : 8} alignContent='center'>
       <SlickCarouselStyles />
       {title && <Heading size="lg" mb={6} textAlign="center">{title}</Heading>}
       
-      <Box position="relative" width="100%" maxWidth="1200px" mx="auto">
-        {similarRecipes.length > 3 && (
+      <Box position="relative" width="100%" maxWidth={isMobile ? "100%" : "1200px"} mx="auto">
+        {/* Only show buttons on desktop view */}
+        {similarRecipes.length > 3 && !isMobile && (
           <>
             <Button
               position="absolute"
-              left={isMobile ? "-15px" : "-30px"}
+              left={"-30px"}
               top="50%"
               transform="translateY(-50%)"
               zIndex={2}
               onClick={goToPrev}
               borderRadius="full"
               colorScheme="teal"
-              size={isMobile ? "sm" : "md"}
+              size="md"
               boxShadow="md"
               _hover={{ boxShadow: "lg" }}
-              w={isMobile ? "30px" : "40px"}
-              h={isMobile ? "30px" : "40px"}
+              w="40px"
+              h="40px"
+              minW="40px"
+              p="0"
             >
               ←
             </Button>
             <Button
               position="absolute"
-              right={isMobile ? "-15px" : "-30px"}
+              right={"-30px"}
               top="50%"
               transform="translateY(-50%)"
               zIndex={2}
               onClick={goToNext}
               borderRadius="full"
               colorScheme="teal"
-              size={isMobile ? "sm" : "md"}
+              size="md"
               boxShadow="md"
               _hover={{ boxShadow: "lg" }}
-              w={isMobile ? "30px" : "40px"}
-              h={isMobile ? "30px" : "40px"}
+              w="40px"
+              h="40px"
+              minW="40px"
+              p="0"
             >
               →
             </Button>
           </>
         )}
-
+  
         <Suspense fallback={
           <Center py={8}>
             <Spinner size="xl" color="teal.500" />
@@ -171,7 +181,7 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
         }>
           <Slider ref={sliderRef} {...slickSettings}>
             {similarRecipes.map((card: RecipeType) => (
-              <Box key={card.id} px={2} maxW="350px" w="100%" mx="auto">
+              <Box key={card.id} px={2} maxW={isMobile ? "280px" : "350px"} w="100%" mx="auto">
                 <RecipeCard recipe={card}/>
               </Box>
             ))}
