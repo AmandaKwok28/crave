@@ -45,7 +45,7 @@ conda env list                    # get a list of conda environements on your lo
 conda activate my_env             # activate your environment
 pip install -r requirements.txt   # install the requirements
 ```
-
+If you do not have conda installed and the venv virtual environemnt is not working, please download anaconda from the internet and install conda and try the conda environment method.
 
 
 ## Developing
@@ -82,7 +82,7 @@ There are 10 recipes to start with in the seed data. 2 categories of 5 recipies 
 
 ## Testing
 
-Normally, testing is ran automatically on any pull request to `dev` or `master`. For the time being, this functionality is restricted and testing must be done locally.
+Normally, testing is ran automatically on any pull request to `dev` or `master`. For the time being, this functionality is restricted and testing must be done locally. 
 
 ### Backend Testing
 
@@ -91,6 +91,13 @@ Backend tests are run using [Vitest](https://vitest.dev/). Simply navigate to th
 ```bash
 pnpm test
 ```
+
+We also added additional tests that require a testing database so create a .env.test file in the root of the api directory. Then populate it with the same urls in the .env file but using test versions. To run tests and get a coverage score use this command:
+
+```bash
+pnpm vitest --coverage
+```
+
 
 Adding additional backend tests is extremely easy. Simply create a new file in the `api/src/__tests__/` directory that ends in `.test.ts` and it will automatically be detected by Vitest. At the top of the file, make sure you copy the Mock Prisma client initialization code:
 
