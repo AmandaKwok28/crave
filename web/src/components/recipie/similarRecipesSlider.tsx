@@ -8,7 +8,6 @@ import { Global, css } from '@emotion/react';
 import Slider from 'react-slick';
 import { useStore } from "@nanostores/react";
 import { $isMobile } from "@/lib/store";
-import useQueryRecipes from "@/hooks/use-query-recipes";
 
 interface SimilarRecipesSliderProps {
   recipes: RecipeType[];
@@ -70,7 +69,6 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
   const sliderRef = useRef<any>(null);
   const [isDebounced, setIsDebounced] = useState(false);
   const isMobile = useStore($isMobile);
-  const { loadRecipes } = useQueryRecipes();
 
   const similarRecipes = recipes;
 

@@ -5,7 +5,6 @@ import { $trendingrecipes, setTrendingRecipes } from "@/lib/store";
 import { useStore } from "@nanostores/react";
 import { useState } from "react";
 import { Field } from "@/components/ui/field";
-import useQueryRecipes from "@/hooks/use-query-recipes";
 
 const TrendingRecipes = ({recipes}:{recipes:RecipeType[]}) => {
     if (recipes.length === 0) {
@@ -15,7 +14,6 @@ const TrendingRecipes = ({recipes}:{recipes:RecipeType[]}) => {
     }
 
     const trendingRecipes = useStore($trendingrecipes);
-    const { loadRecipes } = useQueryRecipes();
 
     const [ targetDate, setTargetDate ] = useState<string>('');
 

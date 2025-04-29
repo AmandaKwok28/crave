@@ -11,9 +11,8 @@ import PartyMembers from "@/components/party/partyMembers";
 import PartyRecButton from "@/components/party/partyRecButton";
 
 // Party page
-const ViewParty = ({ share_link, loadRecipe }: { 
+const ViewParty = ({ share_link }: { 
   share_link: string; 
-  loadRecipe: any
 }) => {
   const [ party, setParty ] = useState<PartyType | null>();
   const [ refresh, setRefresh ] = useState<boolean>(true);
@@ -83,7 +82,7 @@ const ViewParty = ({ share_link, loadRecipe }: {
                     >
                       Recomended Recipes:
                     </Text>
-                    <PartyRecButton party={party} loadRecipes={loadRecipe}/>
+                    <PartyRecButton party={party} />
                     <Separator w='50rem' maxW='100%' size="sm" mt="2"/>
                     <Text
                         textStyle="2xl"

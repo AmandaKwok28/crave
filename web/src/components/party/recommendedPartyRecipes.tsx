@@ -2,7 +2,7 @@ import { PartyRecommendationType } from "@/data/types";
 import { Flex, Text } from "@chakra-ui/react";
 import RecipeCard from "../layout/recipeCard";
 
-const PartyRecs = ({partyRecs, loadRecipes}:{partyRecs: PartyRecommendationType[], loadRecipes: any }) => {
+const PartyRecs = ({partyRecs}:{partyRecs: PartyRecommendationType[]}) => {
 
     const arr = Object.values(partyRecs);
 

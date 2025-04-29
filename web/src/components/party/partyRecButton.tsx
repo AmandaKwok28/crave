@@ -4,7 +4,7 @@ import { PartyRecommendationType, PartyType } from "@/data/types";
 import PartyRecs from "./recommendedPartyRecipes";
 import { useState } from "react";
 
-const PartyRecButton = ({party, loadRecipes} :{party: PartyType, loadRecipes: any}) => {
+const PartyRecButton = ({party} :{party: PartyType }) => {
     const [showRecs, setShowRecs] = useState<boolean>(false);
     const [ partyRecs, setPartyRecs ] = useState<PartyRecommendationType[]>([]);
     const partyId = party.id;
@@ -18,14 +18,14 @@ const PartyRecButton = ({party, loadRecipes} :{party: PartyType, loadRecipes: an
         setPartyRecs(partyrecs);
         setLoading(false);
         setShowRecs(true);
-        return <PartyRecs partyRecs={partyrecs} loadRecipes={loadRecipes}/>
+        return <PartyRecs partyRecs={partyrecs}/>
     }
 
     return (
         <Flex> 
             <Stack >
                 {loading && <Spinner size="xl" color= "real.500"/> }
-                {!loading && showRecs && <PartyRecs partyRecs={partyRecs} loadRecipes={loadRecipes}/> }
+                {!loading && showRecs && <PartyRecs partyRecs={partyRecs} /> }
                 <Button 
                     variant="subtle" 
                     color="white" 

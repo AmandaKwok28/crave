@@ -28,7 +28,7 @@ import { useAuth } from "@/hooks/use-auth";
 const Home = () => {
     const { user } = useAuth();
     const { following } = useQueryUser(user.id);
-    const { recipes, loadRecipes } = useQueryRecipes(true);
+    const { recipes } = useQueryRecipes(true);
     const { recommendedRecipes, isLoading, error } = useRecommendedRecipes(10);
     const [cookTime, setCookTime] = useState<[number, number]>([10, 20]);
     const isMobile = useStore($isMobile);
@@ -247,7 +247,6 @@ const Home = () => {
                             following.some(follow => follow.id === recipe.author.id)
                         )}
                         showEmptyImage={false}
-                        loadRecipes={loadRecipes}
                     />
                 </Flex>
             </Flex>

@@ -14,13 +14,11 @@ import ViewParty from "./pages/partyPages/viewParty";
 import HostPrefrencesForm from "./pages/partyPages/hostPrefrencesForm";
 import { useEffect } from "react";
 import { setIsMobile } from "./lib/store";
-import useQueryRecipes from "./hooks/use-query-recipes";
 
 function App() {
   const page = useStore($router);
   
   const { user } = useAuth();
-  const { loadRecipes } = useQueryRecipes();
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -64,7 +62,7 @@ function App() {
         <RecipeForm />
       )}
       {page.route === "party" && (
-        <ViewParty share_link={String(page.params.share_link)} loadRecipe={loadRecipes} />
+        <ViewParty share_link={String(page.params.share_link)} />
       )}
       {page.route === "createParty" && (
         <HostPrefrencesForm share_link={String(page.params.share_link)} />

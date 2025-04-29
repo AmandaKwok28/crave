@@ -7,8 +7,7 @@ const Recipes = ({
     showEmptyImage = true,
 }:{
     recipes:RecipeType[], 
-    showEmptyImage?: boolean,
-    loadRecipes: any
+    showEmptyImage?: boolean
 }) => {
 
     if (recipes.length === 0 && showEmptyImage) {
