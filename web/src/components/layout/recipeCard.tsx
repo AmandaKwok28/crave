@@ -7,14 +7,12 @@ import { Bookmark, Heart } from "lucide-react";
 import { bookmarkRecipe, likeRecipe, unbookmarkRecipe, unlikeRecipe } from "@/data/api";
 import { useRating } from "@/hooks/ratings/use-rating";
 import { useStore } from "@nanostores/react";
-import { $isMobile } from "@/lib/store";
+import { $isMobile, setRecipeBookmark, setRecipeLike, setRecipeUnbookmark, setRecipeUnLike } from "@/lib/store";
 
 const RecipeCard = ({ 
   recipe,
-  loadRecipes 
 }: { 
   recipe: RecipeType,
-  loadRecipes: any 
 }) => {
 
   const { updateUserRating } = useRating();
@@ -27,12 +25,12 @@ const RecipeCard = ({
 
     if (recipe.liked) {
       unlikeRecipe(recipe.id)
-        .then(() => loadRecipes())
+        .then(() => setRecipeUnLike(recipe))
         .catch(console.error);
       updateUserRating(recipe.authorId, RatingType.UNLIKE);  // update user rating
     } else {
       likeRecipe(recipe.id)
-        .then(() => loadRecipes())
+        .then(() => setRecipeLike(recipe))
         .catch(console.error);
       updateUserRating(recipe.authorId, RatingType.LIKE);
 
@@ -46,12 +44,12 @@ const RecipeCard = ({
 
     if (recipe.bookmarked) {
       unbookmarkRecipe(recipe.id)
-        .then(() => loadRecipes())
+        .then(() => setRecipeUnbookmark(recipe))
         .catch(console.error);
       updateUserRating(recipe.authorId, RatingType.UNBOOKMARK);
     } else {
       bookmarkRecipe(recipe.id)
-        .then(() => loadRecipes())
+        .then(() => setRecipeBookmark(recipe))
         .catch(console.error);
       updateUserRating(recipe.authorId, RatingType.BOOKMARK);
     }

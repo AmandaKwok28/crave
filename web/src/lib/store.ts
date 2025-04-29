@@ -233,3 +233,51 @@ export function removeParty(partyId: string) {
 export function addParty(party: PartyType) {
     $parties.set([...$parties.get(), party]);
 }
+
+export function setRecipeLike(recipe: RecipeType) {
+  $recipes.set($recipes.get().map((r) => {
+    if (r.id === recipe.id) {
+      r.liked = true;
+      r.likes = r.likes + 1;
+      return r;
+    } else {
+      return r;
+    }
+  }))
+}
+
+
+export function setRecipeUnLike(recipe: RecipeType) {
+  $recipes.set($recipes.get().map((r) => {
+    if (r.id === recipe.id) {
+      r.liked = false;
+      r.likes = r.likes - 1;
+      return r;
+    } else {
+      return r;
+    }
+  }))
+}
+
+
+export function setRecipeUnbookmark(recipe: RecipeType) {
+  $recipes.set($recipes.get().map((r) => {
+    if (r.id === recipe.id) {
+      r.bookmarked = false;
+      return r;
+    } else {
+      return r;
+    }
+  }))
+}
+
+export function setRecipeBookmark(recipe: RecipeType) {
+  $recipes.set($recipes.get().map((r) => {
+    if (r.id === recipe.id) {
+      r.bookmarked = true;
+      return r;
+    } else {
+      return r;
+    }
+  }))
+}

@@ -15,7 +15,7 @@ const PartyRecs = ({partyRecs, loadRecipes}:{partyRecs: PartyRecommendationType[
     return (
         <Flex gap="10" wrap="wrap" justifyContent="center" w="full">
             {arr.map((card:PartyRecommendationType) => (
-                <RecipeCard key={card.id} recipe={card.recipe} loadRecipes={loadRecipes}/> 
+                <RecipeCard key={card.id} recipe={card.recipe}/> 
             ))}
         </Flex>
     )

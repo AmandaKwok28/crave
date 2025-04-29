@@ -82,7 +82,7 @@ const TrendingRecipes = ({recipes}:{recipes:RecipeType[]}) => {
             </Flex>
             <Flex gap="10" wrap="wrap" justifyContent="center" w="full">
                 {trendingRecipes.map((card:RecipeType) => (
-                    <RecipeCard key={card.id} recipe={card} loadRecipes={loadRecipes}/> 
+                    <RecipeCard key={card.id} recipe={card} /> 
                 ))}
             </Flex>
         </Stack>

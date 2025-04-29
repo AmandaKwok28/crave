@@ -172,7 +172,7 @@ const SimilarRecipesSlider = ({ recipes, title = "Similar Recipes" }: SimilarRec
           <Slider ref={sliderRef} {...slickSettings}>
             {similarRecipes.map((card: RecipeType) => (
               <Box key={card.id} px={2} maxW="350px" w="100%" mx="auto">
-                <RecipeCard recipe={card} loadRecipes={loadRecipes}/>
+                <RecipeCard recipe={card}/>
               </Box>
             ))}
           </Slider>

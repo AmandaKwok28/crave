@@ -5,7 +5,6 @@ import RecipeCard from "../layout/recipeCard";
 const Recipes = ({ 
     recipes, 
     showEmptyImage = true,
-    loadRecipes
 }:{
     recipes:RecipeType[], 
     showEmptyImage?: boolean,
@@ -36,7 +35,7 @@ const Recipes = ({
     return (
         <Flex gap="10" wrap="wrap" justifyContent="center" w="full">
             {recipes.map((card:RecipeType) => (
-                <RecipeCard key={card.id} recipe={card} loadRecipes={loadRecipes}/> 
+                <RecipeCard key={card.id} recipe={card}/> 
             ))}
         </Flex>
     )
