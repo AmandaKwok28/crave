@@ -60,15 +60,16 @@ const Home = () => {
                 bgGradient="to-r"
                 gradientFrom="cyan.500"
                 gradientTo="purple.600"
-                h={isMobile ? '200px' : '500px'}
+                h={isMobile ? '180px' : '500px'}
                 w="100vw"
                 overflowX="hidden"
                 mt={4}
             >
                 <Box
                     alignContent="center"
-                    p="16px"
-                    ml="4"
+                    p={isMobile ? "10px" : "16px"}
+                    ml={isMobile ? "2" : "4"}
+                    maxW={isMobile ? "90%" : "auto"}
                 >
                     <Text
                         textStyle={isMobile ? "3xl" : "7xl"}
@@ -180,10 +181,11 @@ const Home = () => {
             </Text>
             <Box 
                 width="100%" 
-                pt="8" 
+                pt={isMobile ? "4" : "8"}
+                pb={isMobile ? "4" : "8"}
                 display="flex" 
-                justifyContent="center" // Center the content horizontally
-                alignItems="center" // Center the content vertically (if needed)
+                justifyContent="center"
+                alignItems="center"
             >
                 
                 {isLoading ? (
@@ -200,10 +202,10 @@ const Home = () => {
                     </Center>
                 ) : (
                     <Box 
-                    width={isMobile ? "100%" : "80%"} 
-                    mb="12" 
+                    width="100%" 
+                    mb={isMobile ? "8" : "12"}
                     display="flex" 
-                    justifyContent="center" // Center slider content
+                    justifyContent="center"
                     >
                     <SimilarRecipesSlider 
                         recipes={recommendedRecipes} 
@@ -212,7 +214,7 @@ const Home = () => {
                     />
                     </Box>
                 )}
-                </Box>
+            </Box>
 
 
             {/* Following Section */}
