@@ -3,8 +3,7 @@ name: Build and push the API container image
 on:
   push:
     branches:
-      - master
-      - dockerize_ak
+      - never
     paths:
       - 'api/**'
       - '.github/workflows/api.container.yml'

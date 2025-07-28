@@ -213,7 +213,7 @@ const Profile = ({ userId }: {userId: string}) => {
               </div>
             </Box>
 
-          <Flex direction="row" m="3" wrap="wrap" ml="22vw" mt="5vh">
+          <Flex direction="row" m="3" wrap="wrap" ml="22vw" mt="5vh" align="flex-start">
             {tab === 'recipes' && <Recipes recipes={recipes.filter((r) => r.authorId === user.id)}/>}
             {tab === 'drafts' && <Recipes recipes={drafts} />}
             {tab === 'likes' && <Recipes recipes={likes} />}
