@@ -3,8 +3,7 @@ name: Build and push the Web container image
 on:
   push:
     branches:
-      - master
-      - dockerize_ak
+      - never
     paths:
       - 'web/**'
       - '.github/workflows/web.container.yml'

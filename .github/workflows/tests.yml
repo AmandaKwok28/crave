@@ -3,8 +3,7 @@ name: Unit Tests
 on:
   pull_request:
     branches:
-      - master
-      - dev
+      - never
   push:
     branches:
       - master
