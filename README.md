@@ -1,6 +1,6 @@
 # OOSE Team Project
 
-![App Screenshot](images/crave.png)
+![App Screenshot](web/images/crave.png)
 
 Crave - A recipe sharing app for college students
 
@@ -25,7 +25,7 @@ Furthermore, you need to provide your own OpenAI API key to use our AI-powered f
 
 Within the `api/` directory, save a `.env` file with the following schema:
 
-```json
+```env
 DATABASE_URL=<YOUR_URL_HERE>
 OPEN_AI_KEY=<YOUR_OPENAI_API_KEY_HERE>
 ```
@@ -139,13 +139,6 @@ the root directory of the app and cd to crave-app-development/ folder. Then run 
 ```
 docker-compose up -d
 ```
-
-The working link should be hosted at https://team05.zapto.org/api for the api container and https://team05.zapto.org/web for the web container.
-To deploy on the cloud, you need to connect to an existing cloud provider. We chose to use AWS free trial.
-
-For our application:
-You can access the app at <https://team05.zapto.org/>.
-
 
 ## Contributing
 
