@@ -1,5 +1,7 @@
 # OOSE Team Project
 
+![App Screenshot](images/crave.png)
+
 Crave - A recipe sharing app for college students
 
 - [Team Information & Agreement](./docs/team-agreement.md)
