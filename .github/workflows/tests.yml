@@ -6,9 +6,7 @@ on:
       - never
   push:
     branches:
-      - master
-      - dev
-      - seeding_aa
+      - never
 
 jobs:
   test:
