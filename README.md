@@ -1,6 +1,6 @@
 # OOSE Team Project
 
-![App Screenshot](images/crave.png)
+![App Screenshot](web/images/crave.png)
 
 Crave - A recipe sharing app for college students
 
