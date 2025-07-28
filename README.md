@@ -140,13 +140,6 @@ the root directory of the app and cd to crave-app-development/ folder. Then run 
 docker-compose up -d
 ```
 
-The working link should be hosted at https://team05.zapto.org/api for the api container and https://team05.zapto.org/web for the web container.
-To deploy on the cloud, you need to connect to an existing cloud provider. We chose to use AWS free trial.
-
-For our application:
-You can access the app at <https://team05.zapto.org/>.
-
-
 ## Contributing
 
 Refer to the [Contributing Guidelines](./CONTRIBUTING.md) for information on how to contribute to the project.
