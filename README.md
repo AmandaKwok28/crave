@@ -25,7 +25,7 @@ Furthermore, you need to provide your own OpenAI API key to use our AI-powered f
 
 Within the `api/` directory, save a `.env` file with the following schema:
 
-```json
+```env
 DATABASE_URL=<YOUR_URL_HERE>
 OPEN_AI_KEY=<YOUR_OPENAI_API_KEY_HERE>
 ```
